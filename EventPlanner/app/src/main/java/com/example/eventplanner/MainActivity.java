@@ -1,5 +1,6 @@
 package com.example.eventplanner;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,9 +20,9 @@ public class MainActivity extends AppCompatActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                //Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 
-                //startActivity(intent);
+                startActivity(intent);
                 finish();
             }
         }, SPLASH_TIME_OUT);
