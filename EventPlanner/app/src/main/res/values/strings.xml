@@ -1,4 +1,11 @@
 <resources>
     <string name="app_name">Event Planner</string>
     <string name="homeScreen_name">Home Screen</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
 </resources>
