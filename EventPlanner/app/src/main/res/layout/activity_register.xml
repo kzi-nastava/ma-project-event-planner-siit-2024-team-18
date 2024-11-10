@@ -29,7 +29,7 @@
             android:layout_gravity="center"
             android:fontFamily="@font/merriweather_bold"
             android:gravity="center"
-            android:text="@string/registration"
+            android:text="@string/sign_up"
             android:textColor="@color/lightText"
             android:textSize="36sp"
             android:textStyle="bold" />
@@ -653,7 +653,7 @@
             android:backgroundTint="@color/secondary"
             android:fontFamily="@font/raleway"
             android:padding="12dp"
-            android:text="@string/register"
+            android:text="@string/sign_up"
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textSize="24sp" />

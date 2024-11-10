@@ -51,7 +51,7 @@ public class RegisterActivity extends AppCompatActivity {
     private Spinner spinnerEventTypes;
 
     private Button selectPhotoButton;
-    private Button registerButton;
+    private Button signUpButton;
 
     private RadioGroup role;
 
@@ -99,7 +99,7 @@ public class RegisterActivity extends AppCompatActivity {
 
 
 
-        registerButton.setOnClickListener(v -> {
+        signUpButton.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();
             String firstName = editTextFirstName.getText().toString().trim();
             String lastName = editTextLastName.getText().toString().trim();
@@ -168,7 +168,7 @@ public class RegisterActivity extends AppCompatActivity {
         errorConfirmPassword = findViewById(R.id.text_confirm_password_error);
 
         selectPhotoButton = findViewById(R.id.button_select_photo);
-        registerButton = findViewById(R.id.button_register);
+        signUpButton = findViewById(R.id.button_register);
 
         profilePhoto = findViewById(R.id.image_view_profile_photo);
         delete = findViewById(R.id.delete);
