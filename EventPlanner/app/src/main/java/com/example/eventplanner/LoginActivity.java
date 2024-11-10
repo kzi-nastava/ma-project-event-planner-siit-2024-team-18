@@ -61,10 +61,10 @@ public class LoginActivity extends AppCompatActivity {
 
     private void ValidateEmail(String email) {
         if (email.isEmpty()) {
-            emailErrorTextView.setText("Please enter e-mail address.");
+            emailErrorTextView.setText(R.string.please_enter_e_mail_address);
             emailErrorTextView.setVisibility(View.VISIBLE);
         } else if (!email.matches(EMAIL_REGEX)) {
-            emailErrorTextView.setText("E-mail address is invalid.");
+            emailErrorTextView.setText(R.string.e_mail_address_is_invalid);
             emailErrorTextView.setVisibility(View.VISIBLE);
         } else {
             emailErrorTextView.setVisibility(View.GONE);
@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void ValidatePassword(String password) {
         if (password.isEmpty()) {
-            passwordErrorTextView.setText("Please enter password.");
+            passwordErrorTextView.setText(R.string.please_enter_password);
             passwordErrorTextView.setVisibility(View.VISIBLE);
         } else {
             passwordErrorTextView.setVisibility(View.GONE);
