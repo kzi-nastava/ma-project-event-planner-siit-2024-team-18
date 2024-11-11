@@ -286,7 +286,6 @@
             android:layout_marginTop="8dp"
             android:layout_gravity="center">
 
-            <!-- Profile Photo Image -->
             <ImageView
                 android:id="@+id/image_view_profile_photo"
                 android:layout_width="match_parent"
@@ -479,16 +478,17 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinner_categories"
+        <Button
+            android:id="@+id/btn_select_categories"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_design"
             android:padding="12dp"
             android:textSize="20sp"
             android:textColor="@color/darkText"
-            android:spinnerMode="dropdown"
+            android:text="@string/select_categories"
+            android:backgroundTint="@color/lightText"
+            android:fontFamily="@font/raleway"
             android:visibility="gone" />
 
         <TextView
@@ -525,16 +525,17 @@
                 android:textSize="20sp" />
         </LinearLayout>
 
-        <Spinner
-            android:id="@+id/spinner_event_types"
+        <Button
+            android:id="@+id/btn_select_event_types"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:background="@drawable/edit_text_design"
             android:padding="12dp"
             android:textSize="20sp"
             android:textColor="@color/darkText"
-            android:spinnerMode="dropdown"
+            android:text="@string/select_event_types"
+            android:backgroundTint="@color/lightText"
+            android:fontFamily="@font/raleway"
             android:visibility="gone" />
 
         <TextView
