@@ -1,0 +1,446 @@
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingHorizontal="16dp"
+    android:background="@color/background">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:contentDescription="@string/description"
+                android:src="@drawable/close"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/createServiceTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/merriweather_bold"
+                android:text="@string/service"
+                android:textAlignment="center"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputServiceName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintTop_toBottomOf="@id/createServiceTitle"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createServiceName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="Service Name"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/createServiceSpecifics"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                android:fontFamily="@font/raleway"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputServiceSpecifics"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/serviceSpecifics"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputServiceDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintTop_toBottomOf="@id/createServiceSpecifics"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createServiceDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/serviceDescription"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputServicePrice"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                android:fontFamily="@font/raleway"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceDescription"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createServicePrice"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/servicePrice"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputServiceDiscount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                android:fontFamily="@font/raleway"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/inputServicePrice"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createServiceDiscount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/serviceDiscount"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:id="@+id/filters"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceDiscount">
+
+                <Spinner
+                    android:id="@+id/spinnerCategory"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/raleway"
+                    android:textColor="@color/darkText" />
+
+                <Spinner
+                    android:id="@+id/spinnerEventType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/raleway"
+                    android:textColor="@color/darkText" />
+
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switchAvailability"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:fontFamily="@font/raleway"
+                    android:text="@string/public_event"
+                    android:textColor="@color/darkText" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/imagesLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/filters">
+
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/selectedImagesContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp" />
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:id="@+id/imagesButtonsLinearLayout"
+                    android:layout_width="35dp"
+                    android:layout_height="107dp"
+                    android:orientation="vertical"
+                    app:layout_constraintTop_toBottomOf="@id/filters">
+
+                    <ImageView
+                        android:id="@+id/btnSelectPictures"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/description"
+                        android:src="@drawable/add_image"/>
+
+                    <ImageView
+                        android:id="@+id/btnClearPictures"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:src="@drawable/delete"
+                        android:contentDescription="@string/description"/>
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/timeSelectLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imagesLinearLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputSelectTime"
+                    android:layout_width="0dp"
+                    android:layout_height="63dp"
+                    android:layout_weight="1"
+                    android:hint="@string/serviceTime"
+                    android:fontFamily="@font/raleway"
+                    app:boxBackgroundMode="outline">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/editSelectTime"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none"
+                        android:focusable="false"
+                        android:fontFamily="@font/raleway" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/btnPickTime"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="8dp"
+                    android:contentDescription="@string/description"
+                    android:src="@drawable/clock" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reservationDateLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/timeSelectLinearLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputReservationDate"
+                    android:layout_width="0dp"
+                    android:layout_height="63dp"
+                    android:layout_weight="1"
+                    android:fontFamily="@font/raleway"
+                    app:boxBackgroundMode="outline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/createReservationDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway"
+                        android:focusable="false"
+                        android:hint="@string/reservationDate" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/btnPickReservationDate"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:src="@drawable/calendar"
+                    app:layout_constraintStart_toEndOf="@id/reservationDateLinearLayout"
+                    app:layout_constraintTop_toTopOf="@id/reservationDateLinearLayout" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/cancellationDateLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reservationDateLinearLayout">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/inputCancellationDate"
+                    android:layout_width="0dp"
+                    android:layout_height="63dp"
+                    android:layout_weight="1"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/raleway"
+                    app:boxBackgroundMode="outline"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/reservationDateLinearLayout">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/createCancellationDate"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway"
+                        android:focusable="false"
+                        android:hint="@string/cancellationDate" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageView
+                    android:id="@+id/btnPickCancellationDate"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginStart="8dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:contentDescription="@string/description"
+                    android:src="@drawable/calendar"
+                    app:layout_constraintStart_toEndOf="@id/cancellationDateLinearLayout"
+                    app:layout_constraintTop_toTopOf="@id/cancellationDateLinearLayout" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/txtDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/durationMinutes"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintTop_toBottomOf="@id/cancellationDateLinearLayout"
+                app:layout_constraintStart_toStartOf="parent"
+                android:layout_marginTop="16dp" />
+
+            <com.google.android.material.slider.Slider
+                android:id="@+id/sliderDuration"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:valueFrom="15"
+                android:valueTo="180"
+                android:stepSize="15"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintTop_toBottomOf="@id/txtDuration"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/reservationType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sliderDuration">
+
+                <TextView
+                    android:id="@+id/txtReservationTypeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/reservationType"
+                    android:textStyle="bold"
+                    android:fontFamily="@font/raleway"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:textColor="@color/darkText" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupReservationType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioAuto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/auto"
+                        android:fontFamily="@font/raleway"
+                        android:layout_marginEnd="16dp"
+                        android:textColor="@color/darkText" />
+
+                    <RadioButton
+                        android:id="@+id/radioManual"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway"
+                        android:text="@string/manual"
+                        android:textColor="@color/darkText" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveNewService"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="@string/submit"
+                android:fontFamily="@font/raleway"
+                app:layout_constraintTop_toBottomOf="@id/reservationType"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/secondary"
+                android:textColor="@android:color/white" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
