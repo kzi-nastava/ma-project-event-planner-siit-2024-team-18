@@ -35,4 +35,8 @@
     <string name="phone_number_is_invalid">Phone number is invalid.</string>
     <string name="please_confirm_password">Please confirm password.</string>
     <string name="not_same_as_password">Not same as password.</string>
+    <string name="select_categories">--- Select Categories ---</string>
+    <string name="select_event_types">--- Select Event Types ---</string>
+    <string name="please_select_categories">Please select categories.</string>
+    <string name="please_select_event_types">Please select event types.</string>
 </resources>

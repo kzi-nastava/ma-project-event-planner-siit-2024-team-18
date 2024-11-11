@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -17,6 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -46,10 +51,11 @@ public class RegisterActivity extends AppCompatActivity {
     private TextView errorPhoneNumber;
     private TextView errorPassword;
     private TextView errorConfirmPassword;
+    private TextView errorCategories;
+    private TextView errorEventTypes;
 
-    private Spinner spinnerCategories;
-    private Spinner spinnerEventTypes;
-
+    private Button selectCategories;
+    private Button selectEventTypes;
     private Button selectPhotoButton;
     private Button signUpButton;
 
@@ -57,6 +63,12 @@ public class RegisterActivity extends AppCompatActivity {
 
     private ImageView profilePhoto;
     private ImageView delete;
+
+    private final List<String> categories = Arrays.asList("Category 1", "Category 2", "Category 3", "Category 4");
+    private final List<String> selectedCategories = new ArrayList<>();
+
+    private final List<String> eventTypes = Arrays.asList("Event Type 1", "Event Type 2", "Event Type 3", "Event Type 4");
+    private final List<String> selectedEventTypes = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,10 +91,10 @@ public class RegisterActivity extends AppCompatActivity {
         role.setOnCheckedChangeListener((group, checkedId) -> {
             if (checkedId == R.id.radioEventOrganizer) {
                 SetVisibilityForComponents(View.GONE);
-                errorDescription.setVisibility(View.GONE);
-                errorCompanyName.setVisibility(View.GONE);
+                DisableErrors();
             } else if (checkedId == R.id.radioServiceProductProvider) {
                 SetVisibilityForComponents(View.VISIBLE);
+                DisableErrors();
             }
         });
 
@@ -97,7 +109,67 @@ public class RegisterActivity extends AppCompatActivity {
             profilePhoto.setImageResource(R.drawable.profile_photo_placeholder);
         });
 
+        selectCategories.setOnClickListener(v -> {
+            boolean[] checkedItems = new boolean[categories.size()];
 
+            for (int i = 0; i < categories.size(); i++) {
+                checkedItems[i] = selectedCategories.contains(categories.get(i));
+            }
+
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Select Categories")
+                    .setMultiChoiceItems(
+                            categories.toArray(new CharSequence[0]),
+                            checkedItems,
+                            (dialog, which, isChecked) -> {
+                                String selectedItem = categories.get(which);
+                                if (isChecked) {
+                                    selectedCategories.add(selectedItem);
+                                } else {
+                                    selectedCategories.remove(selectedItem);
+                                }
+                            })
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        if (selectedCategories.isEmpty()) {
+                            selectCategories.setText(R.string.select_categories);
+                        } else {
+                            selectCategories.setText(selectedCategories.toString());
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+
+        selectEventTypes.setOnClickListener(v -> {
+            boolean[] checkedItems = new boolean[eventTypes.size()];
+
+            for (int i = 0; i < eventTypes.size(); i++) {
+                checkedItems[i] = selectedEventTypes.contains(eventTypes.get(i));
+            }
+
+            new MaterialAlertDialogBuilder(this)
+                    .setTitle("Select Event Types")
+                    .setMultiChoiceItems(
+                            eventTypes.toArray(new CharSequence[0]),
+                            checkedItems,
+                            (dialog, which, isChecked) -> {
+                                String selectedItem = eventTypes.get(which);
+                                if (isChecked) {
+                                    selectedEventTypes.add(selectedItem);
+                                } else {
+                                    selectedEventTypes.remove(selectedItem);
+                                }
+                            })
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        if (selectedEventTypes.isEmpty()) {
+                            selectEventTypes.setText(R.string.select_event_types);
+                        } else {
+                            selectEventTypes.setText(selectedEventTypes.toString());
+                        }
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
 
         signUpButton.setOnClickListener(v -> {
             String email = editTextEmail.getText().toString().trim();
@@ -120,6 +192,8 @@ public class RegisterActivity extends AppCompatActivity {
             if (role.getCheckedRadioButtonId() == R.id.radioServiceProductProvider) {
                 ValidateCompanyName(companyName);
                 ValidateDescription(description);
+                ValidateCategories();
+                ValidateEventTypes();
             }
         });
     }
@@ -144,9 +218,6 @@ public class RegisterActivity extends AppCompatActivity {
         layoutCategories = findViewById(R.id.layout_categories);
         layoutEventTypes = findViewById(R.id.layout_event_types);
 
-        spinnerCategories = findViewById(R.id.spinner_categories);
-        spinnerEventTypes = findViewById(R.id.spinner_event_types);
-
         editTextDescription = findViewById(R.id.edit_text_description);
         editTextCompanyName = findViewById(R.id.edit_text_company_name);
         editTextEmail = findViewById(R.id.edit_text_email);
@@ -166,12 +237,30 @@ public class RegisterActivity extends AppCompatActivity {
         errorPhoneNumber = findViewById(R.id.text_phone_number_error);
         errorPassword = findViewById(R.id.text_password_error);
         errorConfirmPassword = findViewById(R.id.text_confirm_password_error);
+        errorCategories = findViewById(R.id.text_categories_error);
+        errorEventTypes = findViewById(R.id.text_event_types_error);
 
         selectPhotoButton = findViewById(R.id.button_select_photo);
         signUpButton = findViewById(R.id.button_register);
+        selectCategories = findViewById(R.id.btn_select_categories);
+        selectEventTypes = findViewById(R.id.btn_select_event_types);
 
         profilePhoto = findViewById(R.id.image_view_profile_photo);
         delete = findViewById(R.id.delete);
+    }
+
+    private void DisableErrors() {
+        errorCompanyName.setVisibility(View.GONE);
+        errorDescription.setVisibility(View.GONE);
+        errorEmail.setVisibility(View.GONE);
+        errorFirstName.setVisibility(View.GONE);
+        errorLastName.setVisibility(View.GONE);
+        errorAddress.setVisibility(View.GONE);
+        errorPhoneNumber.setVisibility(View.GONE);
+        errorPassword.setVisibility(View.GONE);
+        errorConfirmPassword.setVisibility(View.GONE);
+        errorCategories.setVisibility(View.GONE);
+        errorEventTypes.setVisibility(View.GONE);
     }
 
     private void SetVisibilityForComponents(int id) {
@@ -180,9 +269,9 @@ public class RegisterActivity extends AppCompatActivity {
         layoutDescription.setVisibility(id);
         editTextDescription.setVisibility(id);
         layoutCategories.setVisibility(id);
-        spinnerCategories.setVisibility(id);
+        selectCategories.setVisibility(id);
         layoutEventTypes.setVisibility(id);
-        spinnerEventTypes.setVisibility(id);
+        selectEventTypes.setVisibility(id);
     }
 
     private void ValidateEmail(String email) {
@@ -271,4 +360,22 @@ public class RegisterActivity extends AppCompatActivity {
             errorConfirmPassword.setVisibility(View.GONE);
         }
      }
+
+     private void ValidateCategories() {
+        if (selectedCategories.isEmpty()) {
+            errorCategories.setText(R.string.please_select_categories);
+            errorCategories.setVisibility(View.VISIBLE);
+        } else {
+            errorCategories.setVisibility(View.GONE);
+        }
+     }
+
+    private void ValidateEventTypes() {
+        if (selectedEventTypes.isEmpty()) {
+            errorEventTypes.setText(R.string.please_select_event_types);
+            errorEventTypes.setVisibility(View.VISIBLE);
+        } else {
+            errorEventTypes.setVisibility(View.GONE);
+        }
+    }
 }
