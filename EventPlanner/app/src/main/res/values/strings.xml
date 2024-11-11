@@ -1,4 +1,28 @@
 <resources>
     <string name="app_name">Event Planner</string>
+    <string name="services">Services</string>
+    <string name="service">Service</string>
+    <string name="edit_service">Edit Service</string>
     <string name="homeScreen_name">Home Screen</string>
+    <string name="public_event">Public</string>
+    <string name="required">This field is required</string>
+    <string name="description">Description...</string>
+    <string name="searchServices">Search Services</string>
+    <string name="serviceName">Service Name</string>
+    <string name="serviceDescription">Service Description</string>
+    <string name="serviceSpecifics">Service Specifics</string>
+    <string name="servicePrice">Service Price</string>
+    <string name="serviceDiscount">Service Discount</string>
+    <string name="serviceTime">Select Time</string>
+    <string name="reservationDate">Reservation Date</string>
+    <string name="cancellationDate">Cancellation Date</string>
+    <string name="durationMinutes">Duration (minutes):</string>
+    <string name="reservationType">Reservation Type:</string>
+    <string name="auto">Auto</string>
+    <string name="manual">Manual</string>
+    <string name="submit">Submit</string>
+    <string name="previousPage">Previous Page</string>
+    <string name="one">1</string>
+    <string name="nextPage">Next Page</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
 </resources>
