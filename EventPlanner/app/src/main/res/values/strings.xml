@@ -1,4 +1,53 @@
 <resources>
     <string name="app_name">Event Planner</string>
     <string name="homeScreen_name">Home Screen</string>
+    <string name="event_details_image">Event details Image</string>
+    <string name="top_5_events_section">Top 5 Events Section</string>
+    <string name="all_events_section">All Events Section</string>
+    <string name="top_5_products_services_section">Top 5 Products/Services Section</string>
+    <string name="all_products_services_section">All Products/Services Section</string>
+    <string name="product_service_image">Product/Service Image</string>
+    <string name="product_service_title">Product/Service Title</string>
+    <string name="product_service_description">Product/Service Description</string>
+    <string name="all_events_title">All Events</string>
+    <string name="search_icon_description">Search icon</string>
+    <string name="search_hint">Search events</string>
+    <string name="from_date_button">From</string>
+    <string name="to_date_button">To</string>
+    <string name="prev_page_button">Previous page</string>
+    <string name="current_page_button">Current page</string>
+    <string name="next_page_button">Next page</string>
+    <string name="_1">1</string>
+    <string name="all_products_services_title">All Products/Services</string>
+    <string name="from_date">From</string>
+    <string name="to_date">To</string>
+    <string name="select_type">Select Type:</string>
+    <string name="show_products">Products</string>
+    <string name="show_services">Services</string>
+    <string name="prev_page">Previous page</string>
+    <string name="current_page">Current page</string>
+    <string name="next_page">Next page</string>
+    <string name="search_icon">Search icon</string>
+    <string name="event_image_description">Event Image</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_description">Event description goes here…</string>
+    <string name="product_service_image_description">Product/Service Image</string>
+    <string name="top_5_events_label">Top 5 Events</string>
+    <string name="top_5_products_services_label">Top 5 Products/Services</string>
+    <string-array name="sort_options">
+        <item>Select sort</item>
+        <item>Ascending</item>
+        <item>Descending</item>
+        <item>Sort by Date</item>
+        <item>Sort by Name</item>
+        <!-- Add more sorting options -->
+    </string-array>
+
+    <string-array name="filter_options">
+        <item>Select filter</item>
+        <item>All</item>
+        <item>Upcoming</item>
+        <item>Past</item>
+        <!-- Add more filtering options -->
+    </string-array>
 </resources>
