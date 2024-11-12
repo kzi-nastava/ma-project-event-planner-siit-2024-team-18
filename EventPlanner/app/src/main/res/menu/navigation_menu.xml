@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/nav_home"
+        android:title="@string/home"/>
+    <item android:id="@+id/nav_chat"
+        android:title="@string/chat"/>
+    <item android:id="@+id/nav_notifications"
+        android:title="@string/notifications"/>
+    <item android:id="@+id/nav_events"
+        android:title="@string/events"/>
+    <item android:id="@+id/nav_services"
+        android:title="@string/services"/>
+    <item android:id="@+id/nav_products"
+        android:title="@string/products"/>
+    <item android:id="@+id/nav_profile"
+        android:title="@string/profile"/>
+    <item android:id="@+id/nav_settings"
+        android:title="@string/settings"/>
+    <item android:id="@+id/nav_about"
+        android:title="@string/about"/>
+    <item android:id="@+id/nav_sign_out"
+        android:title="@string/sign_out"/>
+</menu>

@@ -1,15 +1,17 @@
 package com.example.eventplanner;
 
 import android.os.Bundle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-public class HomeScreen extends AppCompatActivity {
+public class HomeScreen extends BaseActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home_screen);
+
+        setContentView(R.layout.activity_base);
+
+        getLayoutInflater().inflate(R.layout.activity_home_screen, findViewById(R.id.content_frame));
 
         Fragment top5EventsFragment = new Top5EventsFragment();
         Fragment allEventsFragment = new AllEventsFragment();
