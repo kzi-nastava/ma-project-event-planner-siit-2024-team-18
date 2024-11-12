@@ -1,0 +1,57 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="250dp"
+    android:layout_height="250dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginBottom="16dp"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="4dp"
+    tools:ignore="TextSizeCheck">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/carousel_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:contentDescription="@string/product_service_image_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/product_service_placeholder"
+            card_view:shapeAppearance="@style/RoundedImageView" />
+
+        <TextView
+            android:id="@+id/carousel_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/merriweather"
+            android:gravity="center"
+            android:maxLines="1"
+            android:text="@string/product_service_title"
+            android:textColor="@color/darkText"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/carousel_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:ellipsize="end"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:maxLines="2"
+            android:text="@string/product_service_description"
+            android:textColor="@color/darkText"
+            android:textSize="12sp" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>

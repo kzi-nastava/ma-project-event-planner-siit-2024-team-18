@@ -1,0 +1,55 @@
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="250dp"
+    android:layout_height="250dp"
+    android:layout_marginEnd="8dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginTop="16dp"
+    android:layout_marginBottom="16dp"
+    card_view:cardCornerRadius="16dp"
+    card_view:cardElevation="4dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="8dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/carousel_item_image"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:contentDescription="@string/event_image_description"
+            android:scaleType="centerCrop"
+            android:src="@drawable/event_placeholder"
+            card_view:shapeAppearance="@style/RoundedImageView" />
+
+        <TextView
+            android:id="@+id/carousel_item_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event_title"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/merriweather"
+            android:textColor="@color/darkText" />
+
+        <TextView
+            android:id="@+id/carousel_item_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event_description"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/raleway"
+            android:textColor="@color/darkText" />
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
