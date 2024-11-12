@@ -21,14 +21,14 @@
     <LinearLayout
         android:id="@+id/custom_search_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="60dp"
         android:background="@drawable/general_border"
         android:orientation="horizontal"
         android:padding="8dp">
 
         <ImageView
             android:id="@+id/search_icon"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:background="@drawable/general_border"
             android:contentDescription="@string/search_icon"

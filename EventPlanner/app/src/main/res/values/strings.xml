@@ -1,4 +1,113 @@
 <resources>
     <string name="app_name">Event Planner</string>
+    <string name="services">Services</string>
+    <string name="service">Service</string>
+    <string name="edit_service">Edit Service</string>
     <string name="homeScreen_name">Home Screen</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up">Sign up</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="remember_me">Remember me</string>
+    <string name="forgot_password">Forgot password?</string>
+    <string name="don_t_have_an_account">Don\'t have an account?</string>
+    <string name="registration">Registration</string>
+    <string name="first_name">First Name</string>
+    <string name="register">Register</string>
+    <string name="confirm_password">Confirm Password</string>
+    <string name="last_name">Last Name</string>
+    <string name="address">Address</string>
+    <string name="phone_number">Phone Number</string>
+    <string name="profile_photo">Profile Photo</string>
+    <string name="select_photo">Select Photo</string>
+    <string name="company_name">Company Name</string>
+    <string name="categories">Categories</string>
+    <string name="event_organizer">Event Organizer</string>
+    <string name="service_product_provider">Service Product Provider</string>
+    <string name="event_types">Event Types</string>
+    <string name="please_enter_e_mail_address">Please enter e-mail address.</string>
+    <string name="e_mail_address_is_invalid">E-mail address is invalid.</string>
+    <string name="please_enter_password">Please enter password.</string>
+    <string name="please_enter_first_name">Please enter first name.</string>
+    <string name="please_enter_last_name">Please enter last name.</string>
+    <string name="please_enter_company_name">Please enter company name.</string>
+    <string name="please_enter_description">Please enter description.</string>
+    <string name="please_enter_address">Please enter address.</string>
+    <string name="please_enter_phone_number">Please enter phone number.</string>
+    <string name="phone_number_is_invalid">Phone number is invalid.</string>
+    <string name="please_confirm_password">Please confirm password.</string>
+    <string name="not_same_as_password">Not same as password.</string>
+    <string name="select_categories">--- Select Categories ---</string>
+    <string name="select_event_types">--- Select Event Types ---</string>
+    <string name="please_select_categories">Please select categories.</string>
+    <string name="please_select_event_types">Please select event types.</string>
+    <string name="public_event">Public</string>
+    <string name="required">This field is required</string>
+    <string name="description">Description…</string>
+    <string name="searchServices">Search Services</string>
+    <string name="serviceName">Service Name</string>
+    <string name="serviceDescription">Service Description</string>
+    <string name="serviceSpecifics">Service Specifics</string>
+    <string name="servicePrice">Service Price</string>
+    <string name="serviceDiscount">Service Discount</string>
+    <string name="serviceTime">Select Time</string>
+    <string name="reservationDate">Reservation Date</string>
+    <string name="cancellationDate">Cancellation Date</string>
+    <string name="durationMinutes">Duration (minutes):</string>
+    <string name="reservationType">Reservation Type:</string>
+    <string name="auto">Auto</string>
+    <string name="manual">Manual</string>
+    <string name="submit">Submit</string>
+    <string name="previousPage">Previous Page</string>
+    <string name="one">1</string>
+    <string name="nextPage">Next Page</string>
+    <string name="lorem_ipsum">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="event_details_image">Event details Image</string>
+    <string name="top_5_events_section">Top 5 Events Section</string>
+    <string name="all_events_section">All Events Section</string>
+    <string name="top_5_products_services_section">Top 5 Products/Services Section</string>
+    <string name="all_products_services_section">All Products/Services Section</string>
+    <string name="product_service_image">Product/Service Image</string>
+    <string name="product_service_title">Product/Service Title</string>
+    <string name="product_service_description">Product/Service Description</string>
+    <string name="all_events_title">All Events</string>
+    <string name="search_icon_description">Search icon</string>
+    <string name="search_hint">Search events</string>
+    <string name="from_date_button">From</string>
+    <string name="to_date_button">To</string>
+    <string name="prev_page_button">Previous page</string>
+    <string name="current_page_button">Current page</string>
+    <string name="next_page_button">Next page</string>
+    <string name="_1">1</string>
+    <string name="all_products_services_title">All Products/Services</string>
+    <string name="from_date">From</string>
+    <string name="to_date">To</string>
+    <string name="select_type">Select Type:</string>
+    <string name="show_products">Products</string>
+    <string name="show_services">Services</string>
+    <string name="prev_page">Previous page</string>
+    <string name="current_page">Current page</string>
+    <string name="next_page">Next page</string>
+    <string name="search_icon">Search icon</string>
+    <string name="event_image_description">Event Image</string>
+    <string name="event_title">Event Title</string>
+    <string name="event_description">Event description goes here…</string>
+    <string name="product_service_image_description">Product/Service Image</string>
+    <string name="top_5_events_label">Top 5 Events</string>
+    <string name="top_5_products_services_label">Top 5 Products/Services</string>
+    <string-array name="sort_options">
+        <item>Select sort</item>
+        <item>Ascending</item>
+        <item>Descending</item>
+        <item>Sort by Date</item>
+        <item>Sort by Name</item>
+        <!-- Add more sorting options -->
+    </string-array>
+    <string-array name="filter_options">
+        <item>Select filter</item>
+        <item>All</item>
+        <item>Upcoming</item>
+        <item>Past</item>
+        <!-- Add more filtering options -->
+    </string-array>
 </resources>
