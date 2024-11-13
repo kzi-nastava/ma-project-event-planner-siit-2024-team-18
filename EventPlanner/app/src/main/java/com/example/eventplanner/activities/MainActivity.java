@@ -1,9 +1,11 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eventplanner.R;
 
 import java.util.Timer;
 import java.util.TimerTask;

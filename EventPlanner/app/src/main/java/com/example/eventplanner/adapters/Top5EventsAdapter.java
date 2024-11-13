@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.SnapHelper;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Event;
-import com.example.eventplanner.EventDetailsActivity;
+import com.example.eventplanner.activities.EventDetailsActivity;
 
 import java.util.List;
 import java.util.Objects;

@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,8 +8,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.ArrayAdapter;
+
+import com.example.eventplanner.models.EventType;
+import com.example.eventplanner.R;
+import com.example.eventplanner.models.Service;
+import com.example.eventplanner.adapters.ServiceAdapter;
+import com.example.eventplanner.models.ServiceCategory;
 import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.app.AppCompatActivity;
+
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.view.inputmethod.InputMethodManager;
@@ -18,7 +24,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AllServicesActivity extends AppCompatActivity {
+public class AllServicesActivity extends BaseActivity {
     private ListView listViewServices;
     private TextInputEditText searchEditText;
     private ImageView addServiceButton, btnBack;
@@ -33,7 +39,7 @@ public class AllServicesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_all_services);
+        getLayoutInflater().inflate(R.layout.activity_all_services, findViewById(R.id.content_frame));
 
         // receiving views
         addServiceButton = findViewById(R.id.addService);

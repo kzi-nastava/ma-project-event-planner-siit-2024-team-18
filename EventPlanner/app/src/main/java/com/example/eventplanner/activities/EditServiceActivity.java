@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -20,16 +20,19 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.example.eventplanner.models.EventType;
+import com.example.eventplanner.R;
+import com.example.eventplanner.models.Service;
+import com.example.eventplanner.models.ServiceCategory;
 import com.google.android.material.slider.Slider;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class EditServiceActivity extends AppCompatActivity {
+public class EditServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private EditText editServiceName, editServiceDescription, editServicePrice, editServiceSpecifics, editServiceDiscount, editReservationDate, editCancellationDateDate, editReservationTime;
@@ -49,7 +52,7 @@ public class EditServiceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_edit_service);
+        getLayoutInflater().inflate(R.layout.activity_edit_service, findViewById(R.id.content_frame));
 
         // initialize views
         editServiceName = findViewById(R.id.editServiceName);
