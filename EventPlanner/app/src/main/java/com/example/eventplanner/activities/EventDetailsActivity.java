@@ -1,15 +1,16 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
 
-public class EventDetailsActivity extends AppCompatActivity {
+import com.example.eventplanner.R;
+
+public class EventDetailsActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_event_details);
+        getLayoutInflater().inflate(R.layout.activity_event_details, findViewById(R.id.content_frame));
 
         ImageView eventImage = findViewById(R.id.event_image);
         TextView eventTitle = findViewById(R.id.event_title);

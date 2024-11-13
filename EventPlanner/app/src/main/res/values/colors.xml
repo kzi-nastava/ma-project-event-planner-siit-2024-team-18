@@ -9,4 +9,5 @@
     <color name="darkText">#3F3F3F</color>
     <color name="success">#26C067</color>
     <color name="alert">#DE4D3E</color>
+    <color name="selected">#667A8A</color>
 </resources>

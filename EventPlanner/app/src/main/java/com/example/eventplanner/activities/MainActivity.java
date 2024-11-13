@@ -1,9 +1,11 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.eventplanner.R;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -16,11 +18,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // getSupportActionBar().hide();
-        int SPLASH_TIME_OUT = 1000;
+        int SPLASH_TIME_OUT = 5000;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, HomeScreen.class);
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
 
                 startActivity(intent);
                 finish();

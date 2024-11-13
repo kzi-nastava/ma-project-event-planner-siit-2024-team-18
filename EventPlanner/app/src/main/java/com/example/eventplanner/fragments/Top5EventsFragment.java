@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.Top5EventsAdapter;
 import com.example.eventplanner.models.Event;
 import java.util.ArrayList;

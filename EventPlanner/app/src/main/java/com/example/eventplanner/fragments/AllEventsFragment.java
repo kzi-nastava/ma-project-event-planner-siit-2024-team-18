@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.fragments;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -16,19 +16,19 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.adapters.AllProductsServicesAdapter;
-import com.example.eventplanner.models.ProductService;
+import com.example.eventplanner.R;
+import com.example.eventplanner.adapters.AllEventsAdapter;
+import com.example.eventplanner.models.Event;
 
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class AllProductsServicesFragment extends Fragment {
+public class AllEventsFragment extends Fragment {
 
-    private AllProductsServicesAdapter allProductsServicesAdapter;
-    private List<ProductService> allProductsServicesList;
+    private AllEventsAdapter allEventsAdapter;
+    private List<Event> allEventsList;
     private EditText searchEditText;
-
     private Button fromDateButton, toDateButton;
     private Calendar calendar;
 
@@ -36,28 +36,28 @@ public class AllProductsServicesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        allProductsServicesList = new ArrayList<>();
-        allProductsServicesList.add(new ProductService("Product 1", "Description for Product 1", R.drawable.product_service_placeholder2));
-        allProductsServicesList.add(new ProductService("Service 1", "Description for Service 1", R.drawable.product_service_placeholder3));
-        allProductsServicesList.add(new ProductService("Product 2", "Description for Product 2", R.drawable.product_service_placeholder3));
-        allProductsServicesList.add(new ProductService("Product 3", "Description for Product 3", R.drawable.product_service_placeholder));
-        allProductsServicesList.add(new ProductService("Service 2", "Description for Service 2", R.drawable.product_service_placeholder4));
-        allProductsServicesList.add(new ProductService("Product 4", "Description for Product 4", R.drawable.product_service_placeholder4));
-        allProductsServicesList.add(new ProductService("Product 5", "Description for Product 5", R.drawable.product_service_placeholder4));
-        allProductsServicesList.add(new ProductService("Service 3", "Description for Service 3", R.drawable.product_service_placeholder));
-        allProductsServicesList.add(new ProductService("Product 6", "Description for Product 6", R.drawable.product_service_placeholder));
-        allProductsServicesList.add(new ProductService("Product 7", "Description for Product 7", R.drawable.product_service_placeholder3));
+        allEventsList = new ArrayList<>();
+        allEventsList.add(new Event("Event 1", "Description for Event 1", R.drawable.event_placeholder4));
+        allEventsList.add(new Event("Event 2", "Description for Event 2", R.drawable.event_placeholder));
+        allEventsList.add(new Event("Event 3", "Description for Event 3", R.drawable.event_placeholder4));
+        allEventsList.add(new Event("Event 4", "Description for Event 4", R.drawable.event_placeholder));
+        allEventsList.add(new Event("Event 5", "Description for Event 5", R.drawable.event_placeholder));
+        allEventsList.add(new Event("Event 1", "Description for Event 1", R.drawable.event_placeholder2));
+        allEventsList.add(new Event("Event 2", "Description for Event 2", R.drawable.event_placeholder2));
+        allEventsList.add(new Event("Event 3", "Description for Event 3", R.drawable.event_placeholder2));
+        allEventsList.add(new Event("Event 4", "Description for Event 4", R.drawable.event_placeholder));
+        allEventsList.add(new Event("Event 5", "Description for Event 5", R.drawable.event_placeholder));
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.all_products_services_section, container, false);
+        View view = inflater.inflate(R.layout.all_events_section, container, false);
 
-        RecyclerView allProductsServicesRecyclerView = view.findViewById(R.id.all_products_services_recycler_view);
-        allProductsServicesRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        allProductsServicesAdapter = new AllProductsServicesAdapter(getContext(), allProductsServicesList);
-        allProductsServicesRecyclerView.setAdapter(allProductsServicesAdapter);
+        RecyclerView allEventsRecyclerView = view.findViewById(R.id.all_events_recycler_view);
+        allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        allEventsAdapter = new AllEventsAdapter(getContext(), allEventsList);
+        allEventsRecyclerView.setAdapter(allEventsAdapter);
 
         Spinner sortSpinner = view.findViewById(R.id.sort_spinner);
         Spinner filterSpinner = view.findViewById(R.id.filter_spinner);
@@ -74,11 +74,11 @@ public class AllProductsServicesFragment extends Fragment {
         filterAdapter.setDropDownViewResource(R.layout.spinner_item);
         filterSpinner.setAdapter(filterAdapter);
 
-        searchIcon.setOnClickListener(v -> filterProductsServices(searchEditText.getText().toString()));
+        searchIcon.setOnClickListener(v -> filterEvents(searchEditText.getText().toString()));
         sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
-                sortProductsServices(position);
+                sortEvents(position);
             }
 
             @Override
@@ -88,7 +88,7 @@ public class AllProductsServicesFragment extends Fragment {
         filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View view, int position, long id) {
-                filterProductsServicesByType(position);
+                filterEventsByType(position);
             }
 
             @Override
@@ -121,22 +121,22 @@ public class AllProductsServicesFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void filterProductsServices(String query) {
-        List<ProductService> filteredProductsServices = new ArrayList<>();
-        for (ProductService productService : allProductsServicesList) {
-            if (productService.getTitle().toLowerCase().contains(query.toLowerCase()) ||
-                    productService.getDescription().toLowerCase().contains(query.toLowerCase())) {
-                filteredProductsServices.add(productService);
+    private void filterEvents(String query) {
+        List<Event> filteredEvents = new ArrayList<>();
+        for (Event event : allEventsList) {
+            if (event.getTitle().toLowerCase().contains(query.toLowerCase()) ||
+                    event.getDescription().toLowerCase().contains(query.toLowerCase())) {
+                filteredEvents.add(event);
             }
         }
-        allProductsServicesAdapter.updateProductServiceList(filteredProductsServices);
+        allEventsAdapter.updateEventList(filteredEvents);
     }
 
-    private void sortProductsServices(int sortType) {
-        // Implement sorting logic for products/services
+    private void sortEvents(int sortType) {
+        // Implement sorting logic for events
     }
 
-    private void filterProductsServicesByType(int filterType) {
-        // Implement filtering logic for products/services
+    private void filterEventsByType(int filterType) {
+        // Implement filtering logic for events
     }
 }

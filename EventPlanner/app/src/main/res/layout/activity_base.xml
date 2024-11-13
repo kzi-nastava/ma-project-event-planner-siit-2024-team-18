@@ -15,14 +15,15 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/primary"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+            app:titleTextColor="@color/lightText">
 
             <ImageView
-                android:id="@+id/logo"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:src="@drawable/logo" />
-
+                android:id="@+id/logo_image"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="end"
+                android:src="@drawable/logo"
+                android:layout_marginEnd="16dp"/>
         </androidx.appcompat.widget.Toolbar>
 
         <FrameLayout
@@ -34,11 +35,15 @@
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/nav_view"
-        android:layout_width="300dp"
+        android:layout_width="250dp"
         android:layout_height="match_parent"
-        android:layout_gravity="end"
+        android:layout_gravity="start"
         android:background="@color/primary"
+        app:headerLayout="@layout/nav_header"
+        app:menu="@menu/navigation_menu"
         app:itemTextColor="@color/lightText"
-        app:menu="@menu/navigation_menu" />
+        app:itemIconTint="@color/lightText"
+        app:itemBackground="@color/nav_item_color"
+        app:itemTextAppearance="@style/NavigationDrawerTextStyle" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

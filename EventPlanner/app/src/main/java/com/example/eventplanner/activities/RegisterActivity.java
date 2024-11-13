@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -17,6 +17,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.eventplanner.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;

@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.SnapHelper;
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.ProductService;
-import com.example.eventplanner.ProductServiceDetailsActivity;
+import com.example.eventplanner.activities.ProductServiceDetailsActivity;
 import java.util.List;
 
 public class Top5ProductsServicesAdapter extends RecyclerView.Adapter<Top5ProductsServicesAdapter.Top5ProductsServicesViewHolder> {

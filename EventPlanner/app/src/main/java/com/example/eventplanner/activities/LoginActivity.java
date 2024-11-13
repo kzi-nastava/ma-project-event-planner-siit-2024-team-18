@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +12,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+
+import com.example.eventplanner.R;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -39,8 +41,14 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
-            ValidateEmail(email);
-            ValidatePassword(password);
+            boolean isValidEmail = ValidateEmail(email);
+            boolean isValidPassword = ValidatePassword(password);
+
+            if (isValidEmail && isValidPassword) {
+                Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
+                startActivity(intent);
+                finish();
+            }
 
         });
 
@@ -59,24 +67,29 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.button_sign_in);
     }
 
-    private void ValidateEmail(String email) {
+    private boolean ValidateEmail(String email) {
         if (email.isEmpty()) {
             emailErrorTextView.setText(R.string.please_enter_e_mail_address);
             emailErrorTextView.setVisibility(View.VISIBLE);
+            return false;
         } else if (!email.matches(EMAIL_REGEX)) {
             emailErrorTextView.setText(R.string.e_mail_address_is_invalid);
             emailErrorTextView.setVisibility(View.VISIBLE);
+            return false;
         } else {
             emailErrorTextView.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidatePassword(String password) {
+    private boolean ValidatePassword(String password) {
         if (password.isEmpty()) {
             passwordErrorTextView.setText(R.string.please_enter_password);
             passwordErrorTextView.setVisibility(View.VISIBLE);
+            return false;
         } else {
             passwordErrorTextView.setVisibility(View.GONE);
+            return true;
         }
     }
 }

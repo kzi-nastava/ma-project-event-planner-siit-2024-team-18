@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.activities;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
@@ -18,8 +18,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.eventplanner.models.EventType;
+import com.example.eventplanner.R;
+import com.example.eventplanner.models.ServiceCategory;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -29,7 +31,7 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-public class CreateServiceActivity extends AppCompatActivity {
+public class CreateServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private EditText createServiceName, createServiceDescription, createServicePrice, editSelectTime;
@@ -45,7 +47,7 @@ public class CreateServiceActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_service);
+        getLayoutInflater().inflate(R.layout.activity_add_service, findViewById(R.id.content_frame));
 
         // initialize views
         createServiceName = findViewById(R.id.createServiceName);

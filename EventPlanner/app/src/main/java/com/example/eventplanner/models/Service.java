@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.models;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;

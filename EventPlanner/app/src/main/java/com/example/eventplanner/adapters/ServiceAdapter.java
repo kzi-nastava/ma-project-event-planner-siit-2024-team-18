@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -13,6 +13,10 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.eventplanner.R;
+import com.example.eventplanner.activities.EditServiceActivity;
+import com.example.eventplanner.models.Service;
 
 import java.util.ArrayList;
 import java.util.List;

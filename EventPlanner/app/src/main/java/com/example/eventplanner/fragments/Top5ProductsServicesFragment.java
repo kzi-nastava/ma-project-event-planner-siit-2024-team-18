@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.fragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.Top5ProductsServicesAdapter;
 import com.example.eventplanner.models.ProductService;
 

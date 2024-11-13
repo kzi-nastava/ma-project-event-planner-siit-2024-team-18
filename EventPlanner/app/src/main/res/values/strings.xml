@@ -106,6 +106,8 @@
     <string name="sign_out">Sign Out</string>
     <string name="open_drawer">Open Navigation Drawer</string>
     <string name="close_drawer">Close Navigation Drawer</string>
+    <string name="johndoe_gmail_com">johndoe@gmail.com</string>
+    <string name="john_doe">John Doe</string>
     <string-array name="sort_options">
         <item>Select sort</item>
         <item>Ascending</item>

@@ -1,4 +1,4 @@
-package com.example.eventplanner;
+package com.example.eventplanner.models;
 
 public class EventType {
     private String type;
