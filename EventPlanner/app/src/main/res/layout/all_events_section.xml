@@ -1,0 +1,176 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:gravity="center_horizontal"
+    android:background="@drawable/rounded_background">
+
+    <TextView
+        android:id="@+id/all_events_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/all_events_title"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:textColor="@color/lightText"
+        android:fontFamily="@font/merriweather" />
+
+    <LinearLayout
+        android:id="@+id/custom_search_bar"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:background="@drawable/general_border"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <ImageView
+            android:id="@+id/search_icon"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/general_border"
+            android:contentDescription="@string/search_icon_description"
+            android:padding="8dp"
+            android:src="@drawable/search" />
+
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="52dp"
+            android:layout_weight="1"
+            android:autofillHints=""
+            android:background="@android:color/white"
+            android:fontFamily="@font/raleway"
+            android:hint="@string/search_hint"
+            android:inputType="text"
+            android:padding="8dp"
+            android:textColor="@color/darkText"
+            android:textColorHint="#757575" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/from_date_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="32dp"
+            android:text="@string/from_date_button"
+            android:textColor="@color/darkText"
+            android:drawableStart="@drawable/date"
+            android:drawablePadding="16dp"
+            android:background="@drawable/general_border"
+            android:maxLines="1" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/to_date_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_weight="1"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:paddingStart="10dp"
+            android:paddingEnd="32dp"
+            android:text="@string/to_date_button"
+            android:textColor="@color/darkText"
+            android:drawableStart="@drawable/date"
+            android:drawablePadding="16dp"
+            android:background="@drawable/general_border"
+            android:maxLines="1" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="73dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <Spinner
+            android:id="@+id/sort_spinner"
+            android:layout_width="150dp"
+            android:layout_height="62dp"
+            android:background="@drawable/general_border"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textColor="@color/lightText" />
+
+        <Spinner
+            android:id="@+id/filter_spinner"
+            android:layout_width="150dp"
+            android:layout_height="62dp"
+            android:layout_marginStart="30dp"
+            android:background="@drawable/general_border"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:padding="12dp"
+            android:textColor="@color/lightText" />
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/all_events_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="372dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/prev_page_button"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_image_background"
+            android:contentDescription="@string/prev_page_button"
+            android:drawableStart="@drawable/keyboard_arrow_left"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:padding="18dp"
+            android:textColor="@color/darkText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/current_page_button"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:background="@drawable/rounded_image_background"
+            android:contentDescription="@string/current_page_button"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="@string/_1"
+            android:textColor="@color/darkText" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/next_page_button"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_image_background"
+            android:contentDescription="@string/next_page_button"
+            android:drawableEnd="@drawable/keyboard_arrow_right"
+            android:fontFamily="@font/raleway"
+            android:gravity="center"
+            android:padding="18dp"
+            android:textColor="@color/darkText" />
+    </LinearLayout>
+</LinearLayout>
