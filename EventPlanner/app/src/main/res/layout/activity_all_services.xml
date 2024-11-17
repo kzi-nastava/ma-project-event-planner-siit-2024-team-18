@@ -42,7 +42,7 @@
         android:id="@+id/addService"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        android:layout_marginStart="368dp"
+        android:layout_marginStart="358dp"
         android:layout_marginTop="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:clickable="true"

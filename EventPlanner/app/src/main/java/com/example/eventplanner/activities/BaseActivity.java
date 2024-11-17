@@ -3,6 +3,8 @@ package com.example.eventplanner.activities;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.Button;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -15,6 +17,7 @@ public class BaseActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
+    private Button signInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +40,12 @@ public class BaseActivity extends AppCompatActivity {
         drawerLayout.addDrawerListener(actionBarDrawerToggle);
         actionBarDrawerToggle.syncState();
 
+        signInButton = findViewById(R.id.button_sign_in);
+        signInButton.setOnClickListener(v -> {
+            Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
+            startActivity(loginIntent);
+        });
+
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
@@ -53,10 +62,6 @@ public class BaseActivity extends AppCompatActivity {
                     Intent servicesIntent = new Intent(BaseActivity.this, AllServicesActivity.class);
                     startActivity(servicesIntent);
                 }
-            } else if (id == R.id.nav_sign_out) {
-                Intent signOutIntent = new Intent(BaseActivity.this, LoginActivity.class);
-                startActivity(signOutIntent);
-                finish();
             }
 
             drawerLayout.closeDrawers();

@@ -41,15 +41,8 @@ public class LoginActivity extends AppCompatActivity {
             String email = emailEditText.getText().toString().trim();
             String password = passwordEditText.getText().toString().trim();
 
-            boolean isValidEmail = ValidateEmail(email);
-            boolean isValidPassword = ValidatePassword(password);
-
-            if (isValidEmail && isValidPassword) {
-                Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
-                startActivity(intent);
-                finish();
-            }
-
+            ValidateEmail(email);
+            ValidatePassword(password);
         });
 
         TextView signUpTextView = findViewById(R.id.text_sign_up);
@@ -67,29 +60,24 @@ public class LoginActivity extends AppCompatActivity {
         signInButton = findViewById(R.id.button_sign_in);
     }
 
-    private boolean ValidateEmail(String email) {
+    private void ValidateEmail(String email) {
         if (email.isEmpty()) {
             emailErrorTextView.setText(R.string.please_enter_e_mail_address);
             emailErrorTextView.setVisibility(View.VISIBLE);
-            return false;
         } else if (!email.matches(EMAIL_REGEX)) {
             emailErrorTextView.setText(R.string.e_mail_address_is_invalid);
             emailErrorTextView.setVisibility(View.VISIBLE);
-            return false;
         } else {
             emailErrorTextView.setVisibility(View.GONE);
-            return true;
         }
     }
 
-    private boolean ValidatePassword(String password) {
+    private void ValidatePassword(String password) {
         if (password.isEmpty()) {
             passwordErrorTextView.setText(R.string.please_enter_password);
             passwordErrorTextView.setVisibility(View.VISIBLE);
-            return false;
         } else {
             passwordErrorTextView.setVisibility(View.GONE);
-            return true;
         }
     }
 }

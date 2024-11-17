@@ -18,11 +18,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // getSupportActionBar().hide();
-        int SPLASH_TIME_OUT = 5000;
+        int SPLASH_TIME_OUT = 2000;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
 
                 startActivity(intent);
                 finish();
