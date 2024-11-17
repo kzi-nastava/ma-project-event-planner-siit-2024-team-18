@@ -1,0 +1,58 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:layout_marginHorizontal="16dp"
+    android:background="@drawable/bg_floating_card"
+    android:elevation="8dp">
+
+    <Spinner
+        android:id="@+id/spinnerCategory"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Select Category" />
+
+    <Spinner
+        android:id="@+id/spinnerEventType"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Select Event Type" />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switchAvailability"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:textSize="16dp"
+        android:paddingStart="10dp"
+        android:text="Public Event" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+        <EditText
+            android:id="@+id/etMinPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:inputType="numberDecimal"
+            android:hint="Min Price"
+            android:layout_height="50dp"/>
+
+        <EditText
+            android:id="@+id/etMaxPrice"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:inputType="numberDecimal"
+            android:hint="Max Price"
+            android:layout_height="50dp"/>
+    </LinearLayout>
+
+    <EditText
+        android:id="@+id/etCreatorName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Creator Name" />
+</LinearLayout>

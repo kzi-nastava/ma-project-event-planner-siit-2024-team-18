@@ -9,6 +9,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -27,6 +28,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -43,6 +45,7 @@ public class CreateServiceActivity extends BaseActivity {
     private LinearLayout selectedImagesContainer;
     private List<ServiceCategory> categories;
     private List<EventType> eventTypes;
+    private AutoCompleteTextView categoryAutoComplete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,13 +62,15 @@ public class CreateServiceActivity extends BaseActivity {
         btnPickReservationDate = findViewById(R.id.btnPickReservationDate);
         selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
         btnClearPictures = findViewById(R.id.btnClearPictures);
-        categorySpinner = findViewById(R.id.spinnerCategory);
-        eventTypeSpinner = findViewById(R.id.spinnerEventType);
+        eventTypeSpinner = findViewById(R.id.spinnerEventTypeCreate);
         errorServiceName = findViewById(R.id.errorServiceName);
+        categoryAutoComplete = findViewById(R.id.addServiceCategory);
 
         // creating dummy data
         loadCategories();
         loadEventTypes();
+
+        setupCategoryAutoComplete();
 
         // time picker
         editSelectTime = findViewById(R.id.editSelectTime);
@@ -105,9 +110,13 @@ public class CreateServiceActivity extends BaseActivity {
         });
 
         // filling spinners with data
-        ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        categorySpinner.setAdapter(categoryAdapter);
+//        ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+//        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        categorySpinner.setAdapter(categoryAdapter);
+//
+//        ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
+//        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        eventTypeSpinner.setAdapter(eventTypeAdapter);
 
         ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
         eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -120,6 +129,25 @@ public class CreateServiceActivity extends BaseActivity {
         btnClose = findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> {
             finish();
+        });
+    }
+
+    private void setupCategoryAutoComplete() {
+        // Set up the adapter for AutoCompleteTextView
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<>(Arrays.asList("Category", "Food", "Music", "Media", "Venue")));
+        categoryAutoComplete.setAdapter(categoryAdapter);
+
+        // Allow user to input custom text
+        categoryAutoComplete.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                categoryAutoComplete.showDropDown();
+            }
+        });
+
+        // Handle the selected or entered item
+        categoryAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCategory = (String) parent.getItemAtPosition(position);
+            categoryAutoComplete.setText(selectedCategory);
         });
     }
 

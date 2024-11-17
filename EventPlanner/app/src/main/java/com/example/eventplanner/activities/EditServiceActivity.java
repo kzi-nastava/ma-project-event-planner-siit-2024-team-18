@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,7 +41,8 @@ public class EditServiceActivity extends BaseActivity {
     private Button btnSave;
     private ImageView btnClose, btnPickTime, btnSelectPictures, btnClearPictures;
     private Service service;
-    private Spinner editServiceCategory, editServiceEventType;
+    private Spinner editServiceEventType;
+    private Spinner editServiceCategory;
     private Slider sliderDuration;
     private TextView errorServiceName;
     private RadioGroup radioGroupReservationType;
@@ -60,7 +62,7 @@ public class EditServiceActivity extends BaseActivity {
         editServiceDescription = findViewById(R.id.editServiceDescription);
         editServicePrice = findViewById(R.id.editServicePrice);
         editServiceDiscount = findViewById(R.id.editServiceDiscount);
-        editServiceCategory = findViewById(R.id.editServiceCategory);
+        editServiceCategory = findViewById(R.id.categoryDisabled);
         editServiceEventType = findViewById(R.id.editServiceEventType);
         switchAvailability = findViewById(R.id.switchAvailability);
         selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
@@ -98,15 +100,14 @@ public class EditServiceActivity extends BaseActivity {
             sliderDuration.setValue(service.getDuration());
 
             // filling spinners with data
-            ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editServiceCategory.setAdapter(categoryAdapter);
+//            ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+//            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//            editServiceCategory.setAdapter(categoryAdapter);
 
             ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
             eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editServiceEventType.setAdapter(eventTypeAdapter);
 
-            setSpinnerSelection(editServiceCategory, service.getCategory());
             setSpinnerSelection(editServiceEventType, service.getEventType());
 
             // working with images
@@ -144,6 +145,14 @@ public class EditServiceActivity extends BaseActivity {
                     break;
                 }
             }
+
+            ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            editServiceCategory.setAdapter(categoryAdapter);
+
+            setSpinnerSelection(editServiceCategory, "Food");
+
+            editServiceCategory.setEnabled(false);
         }
 
         // closing activity

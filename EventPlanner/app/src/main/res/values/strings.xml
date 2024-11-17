@@ -54,6 +54,7 @@
     <string name="reservationDate">Reservation Date</string>
     <string name="cancellationDate">Cancellation Date</string>
     <string name="durationMinutes">Duration (minutes):</string>
+    <string name="engagementMinutes">Engagement (minutes):</string>
     <string name="reservationType">Reservation Type:</string>
     <string name="auto">Auto</string>
     <string name="manual">Manual</string>
