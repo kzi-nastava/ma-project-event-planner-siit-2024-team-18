@@ -5,26 +5,32 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ListView;
+
 import com.example.eventplanner.R;
+import com.example.eventplanner.filters.ServiceFilter;
 import com.example.eventplanner.fragments.FragmentFilter;
+import com.example.eventplanner.fragments.ServiceListFragment;
 import com.example.eventplanner.models.Service;
-import com.example.eventplanner.adapters.ServiceAdapter;
 import com.google.android.material.textfield.TextInputEditText;
 
 import android.view.inputmethod.InputMethodManager;
+
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AllServicesActivity extends BaseActivity {
-    private ListView listViewServices;
+
     private TextInputEditText searchEditText;
     private ImageView addServiceButton, btnBack, btnFilter;
     private FrameLayout btnSearch;
-    private ServiceAdapter serviceAdapter;
     private List<Service> servicesList;
+    private ServiceListFragment serviceListFragment;
+    private ServiceFilter serviceFilter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,40 +38,33 @@ public class AllServicesActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_all_services, findViewById(R.id.content_frame));
 
         // Initialize views
+        initializeViews();
+
+        // Load and display the list of services
+        loadServices();
+        initializeServicesFragment();
+
+        // Setup UI interactions
+        setupSearch();
+        setupAddServiceButton();
+        setupBackButton();
+        setupFilterButton();
+    }
+
+    private void initializeViews() {
         addServiceButton = findViewById(R.id.addService);
         searchEditText = findViewById(R.id.searchEditText);
-        listViewServices = findViewById(R.id.listViewServices);
         btnSearch = findViewById(R.id.btnSearch);
         btnBack = findViewById(R.id.btnBack);
         btnFilter = findViewById(R.id.btnFilter);
+    }
 
-        // Load dummy data
-        loadServices();
-
-        // Set up the list view adapter
-        serviceAdapter = new ServiceAdapter(this, servicesList);
-        listViewServices.setAdapter(serviceAdapter);
-
-        // Search functionality
-        btnSearch.setOnClickListener(v -> {
-            String query = searchEditText.getText().toString().trim();
-            serviceAdapter.getFilter().filter(query);
-            hideKeyboard(v);
-        });
-
-        // Create new service activity
-        addServiceButton.setOnClickListener(v -> {
-            Intent createIntent = new Intent(AllServicesActivity.this, CreateServiceActivity.class);
-            startActivity(createIntent);
-        });
-
-        btnBack.setOnClickListener(view -> finish());
-
-        // Open filter bottom sheet
-        btnFilter.setOnClickListener(view -> {
-            FragmentFilter filterFragment = new FragmentFilter();
-            filterFragment.show(getSupportFragmentManager(), "FilterBottomSheet");
-        });
+    private void initializeServicesFragment() {
+        serviceListFragment = ServiceListFragment.newInstance(new ArrayList<>(servicesList));
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.listViewServices, serviceListFragment);
+        fragmentTransaction.commit();
     }
 
     private void loadServices() {
@@ -75,8 +74,44 @@ public class AllServicesActivity extends BaseActivity {
         servicesList.add(new Service("3", "Photography", "Specifics", "Media", "Birthday", 150, 15, false, LocalDateTime.now(), LocalDateTime.now(), 60, "ReservationType"));
     }
 
+    private void setupSearch() {
+        btnSearch.setOnClickListener(v -> {
+            String query = searchEditText.getText().toString().trim();
+            if (serviceListFragment != null) {
+                this.filterServices(query);
+            }
+            hideKeyboard(v);
+        });
+    }
+
+    private void setupAddServiceButton() {
+        addServiceButton.setOnClickListener(v -> {
+            Intent createIntent = new Intent(AllServicesActivity.this, CreateServiceActivity.class);
+            startActivity(createIntent);
+        });
+    }
+
+    private void setupBackButton() {
+        btnBack.setOnClickListener(view -> finish());
+    }
+
+    private void setupFilterButton() {
+        btnFilter.setOnClickListener(view -> {
+            FragmentFilter filterFragment = new FragmentFilter();
+            filterFragment.show(getSupportFragmentManager(), "FilterBottomSheet");
+        });
+    }
+
     private void hideKeyboard(View view) {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
+    public void filterServices(String query) {
+        if (serviceFilter != null) {
+            serviceFilter.getFilter().filter(query);
+        }
     }
 }
