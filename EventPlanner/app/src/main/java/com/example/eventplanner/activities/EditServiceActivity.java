@@ -41,8 +41,7 @@ public class EditServiceActivity extends BaseActivity {
     private Button btnSave;
     private ImageView btnClose, btnPickTime, btnSelectPictures, btnClearPictures;
     private Service service;
-    private Spinner editServiceEventType;
-    private Spinner editServiceCategory;
+    private Spinner editServiceEventType, editServiceCategory;
     private Slider sliderDuration;
     private TextView errorServiceName;
     private RadioGroup radioGroupReservationType;
@@ -86,7 +85,7 @@ public class EditServiceActivity extends BaseActivity {
         btnPickTime.setOnClickListener(view -> showTimePicker());
 
         // retrieve data from intent
-        service = (Service) getIntent().getSerializableExtra("service");
+        service = (Service) getIntent().getParcelableExtra("service");
         position = getIntent().getIntExtra("position", -1);
 
         // populate fields
