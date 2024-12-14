@@ -1,6 +1,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingHorizontal="16dp"
@@ -130,17 +131,23 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/createServiceSpecifics" />
 
-            <Spinner
-                android:id="@+id/spinnerEventTypeCreate"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eventTypeInput"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_marginTop="16dp"
-                android:fontFamily="@font/raleway"
-                android:textColor="@color/darkText"
+                android:layout_height="wrap_content"
+                android:hint="Event Types"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addServiceCategory" />
+                app:layout_constraintTop_toBottomOf="@id/addServiceCategory">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextEventTypes"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:focusable="false"
+                    android:cursorVisible="false" />
+            </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/createServiceLocation"
@@ -150,7 +157,7 @@
                 app:boxStrokeColor="@color/darkText"
                 android:fontFamily="@font/raleway"
                 android:layout_marginTop="16dp"
-                app:layout_constraintTop_toBottomOf="@id/spinnerEventTypeCreate"
+                app:layout_constraintTop_toBottomOf="@id/eventTypeInput"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent">
 

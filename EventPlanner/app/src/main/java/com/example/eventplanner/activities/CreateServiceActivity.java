@@ -1,6 +1,6 @@
 package com.example.eventplanner.activities;
 
-import android.app.DatePickerDialog;
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -10,17 +10,13 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -28,6 +24,8 @@ import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.timepicker.MaterialTimePicker;
@@ -43,9 +41,8 @@ import java.util.Locale;
 public class CreateServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
-    private TextInputEditText serviceName, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
+    private TextInputEditText serviceName, eventTypes, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
     private ImageView btnClose, btnSelectPictures, btnClearPictures, btnWorkingHoursStart, btnWorkingHoursEnd;
-    private Spinner eventTypes;
     private TextView errorServiceName;
     private MaterialButton btnSaveNewService;
     private LinearLayout selectedImagesContainer;
@@ -55,6 +52,7 @@ public class CreateServiceActivity extends BaseActivity {
     private Slider duration, minEngagement, maxEngagement;
     private RadioGroup reservationType;
     private SwitchCompat isVisible, isAvailable;
+    private List<String> selectedEventTypeList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +70,7 @@ public class CreateServiceActivity extends BaseActivity {
         isVisible = findViewById(R.id.switchVisivility);
         isAvailable = findViewById(R.id.switchAvailability);
         category = findViewById(R.id.addServiceCategory);
-        eventTypes = findViewById(R.id.spinnerEventTypeCreate);
+        eventTypes = findViewById(R.id.editTextEventTypes);
         location = findViewById(R.id.inputServiceLocation);
         reservationType = findViewById(R.id.radioGroupReservationType);
         specifics = findViewById(R.id.inputServiceSpecifics);
@@ -95,6 +93,7 @@ public class CreateServiceActivity extends BaseActivity {
         loadEventTypes();
 
         setupCategoryAutoComplete();
+        setupEventTypesMultiSelect();
 
         // working with images
         btnSelectPictures.setOnClickListener(new View.OnClickListener() {
@@ -111,25 +110,10 @@ public class CreateServiceActivity extends BaseActivity {
             }
         });
 
-        // filling spinners with data
-//        ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-//        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        categorySpinner.setAdapter(categoryAdapter);
-//
-//        ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
-//        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        eventTypeSpinner.setAdapter(eventTypeAdapter);
-
-        ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listEventTypes);
-        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventTypes.setAdapter(eventTypeAdapter);
-
-
         btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
 
         // Show TimePickerDialog when clicking the clock icon for end time
         btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
-
 
         // save service
         btnSaveNewService.setOnClickListener(v -> saveNewService());
@@ -143,48 +127,84 @@ public class CreateServiceActivity extends BaseActivity {
 
     // Function to display Material TimePicker
     private void showTimePicker(TextInputEditText editText) {
-        // Get the current time as default values
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
-        // Create and show the TimePickerDialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(
                 this,
                 (TimePicker view, int hourOfDay, int minuteOfHour) -> {
-                    // Format and display the selected time
                     String selectedTime = String.format("%02d:%02d", hourOfDay, minuteOfHour);
                     editText.setText(selectedTime);
                 },
-                hour, minute, true // Use 24-hour format
+                hour, minute, true
         );
 
         timePickerDialog.show();
     }
 
-    // Functional interface for callback when time is picked
-    private interface TimePickedListener {
-        void onTimePicked(int hour, int minute);
-    }
-
     private void setupCategoryAutoComplete() {
-        // Set up the adapter for AutoCompleteTextView
         ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<>(Arrays.asList("Category", "Food", "Music", "Media", "Venue")));
         category.setAdapter(categoryAdapter);
 
-        // Allow user to input custom text
         category.setOnFocusChangeListener((v, hasFocus) -> {
             if (hasFocus) {
                 category.showDropDown();
             }
         });
 
-        // Handle the selected or entered item
         category.setOnItemClickListener((parent, view, position, id) -> {
             String selectedCategory = (String) parent.getItemAtPosition(position);
             category.setText(selectedCategory);
         });
     }
+
+    private void setupEventTypesMultiSelect() {
+        // Array of event type names
+        String[] eventTypeNames = new String[listEventTypes.size()];
+        boolean[] selectedItems = new boolean[listEventTypes.size()];
+        for (int i = 0; i < listEventTypes.size(); i++) {
+            eventTypeNames[i] = listEventTypes.get(i).getType();
+            selectedItems[i] = false; // No event type selected by default
+        }
+
+        eventTypes.setOnClickListener(v -> {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select Event Types");
+
+            // Set up multi-choice items
+            builder.setMultiChoiceItems(eventTypeNames, selectedItems, (dialog, which, isChecked) -> {
+                // Update selected items
+                selectedItems[which] = isChecked;
+            });
+
+            // Set up OK button to update the input field
+            builder.setPositiveButton("OK", (dialog, which) -> {
+                selectedEventTypeList.clear(); // Clear previous selections
+                for (int i = 0; i < selectedItems.length; i++) {
+                    if (selectedItems[i]) {
+                        selectedEventTypeList.add(eventTypeNames[i]);
+                    }
+                }
+                updateEventTypesInput();
+            });
+
+            // Set up Cancel button
+            builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+
+            builder.show();
+        });
+    }
+
+    private void updateEventTypesInput() {
+        // Join selected items into a comma-separated string
+        if (selectedEventTypeList.isEmpty()) {
+            eventTypes.setText(""); // No selection
+        } else {
+            eventTypes.setText(String.join(", ", selectedEventTypeList));
+        }
+    }
+
 
     private void clearSelectedImages() {
         imageUris.clear();
