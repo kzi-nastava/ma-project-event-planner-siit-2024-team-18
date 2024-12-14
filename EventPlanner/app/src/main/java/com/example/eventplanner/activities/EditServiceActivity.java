@@ -8,7 +8,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,12 +22,12 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Service;
-import com.example.eventplanner.models.ServiceCategory;
 import com.google.android.material.slider.Slider;
-import java.time.format.DateTimeFormatter;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -46,7 +45,7 @@ public class EditServiceActivity extends BaseActivity {
     private TextView errorServiceName;
     private RadioGroup radioGroupReservationType;
     private LinearLayout selectedImagesContainer;
-    private List<ServiceCategory> categories;
+    private List<Category> categories;
     private List<EventType> eventTypes;
     private int position;
 
@@ -107,7 +106,7 @@ public class EditServiceActivity extends BaseActivity {
             eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editServiceEventType.setAdapter(eventTypeAdapter);
 
-            setSpinnerSelection(editServiceEventType, service.getEventType());
+            setSpinnerSelection(editServiceEventType, service.getEventTypes()[0]);
 
             // working with images
             btnSelectPictures.setOnClickListener(new View.OnClickListener() {
@@ -125,16 +124,16 @@ public class EditServiceActivity extends BaseActivity {
             });
 
             // set dates
-            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-            editReservationDate.setText(service.getReservationDate() != null
-                    ? service.getReservationDate().toLocalDate().format(dateFormatter) : "");
-            editCancellationDateDate.setText(service.getCancellationDate() != null
-                    ? service.getCancellationDate().toLocalDate().format(dateFormatter) : "");
+//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//            editReservationDate.setText(service.getReservationDate() != null
+//                    ? service.getReservationDate().toLocalDate().format(dateFormatter) : "");
+//            editCancellationDateDate.setText(service.getCancellationDate() != null
+//                    ? service.getCancellationDate().toLocalDate().format(dateFormatter) : "");
 
             // set time
-            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-            String formattedTime = service.getReservationDate().toLocalTime().format(timeFormatter);
-            editReservationTime.setText(formattedTime);
+//            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+//            String formattedTime = service.getReservationDate().toLocalTime().format(timeFormatter);
+//            editReservationTime.setText(formattedTime);
 
             // set radio button
             for (int i = 0; i < radioGroupReservationType.getChildCount(); i++) {
@@ -145,7 +144,7 @@ public class EditServiceActivity extends BaseActivity {
                 }
             }
 
-            ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
+            ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
             editServiceCategory.setAdapter(categoryAdapter);
 
@@ -257,11 +256,11 @@ public class EditServiceActivity extends BaseActivity {
 
     private void loadCategories() {
         categories = new ArrayList<>();
-        categories.add(new ServiceCategory("Category"));
-        categories.add(new ServiceCategory("Food"));
-        categories.add(new ServiceCategory("Music"));
-        categories.add(new ServiceCategory("Media"));
-        categories.add(new ServiceCategory("Venue"));
+        categories.add(new Category("Category"));
+        categories.add(new Category("Food"));
+        categories.add(new Category("Music"));
+        categories.add(new Category("Media"));
+        categories.add(new Category("Venue"));
     }
 
     private void loadEventTypes() {

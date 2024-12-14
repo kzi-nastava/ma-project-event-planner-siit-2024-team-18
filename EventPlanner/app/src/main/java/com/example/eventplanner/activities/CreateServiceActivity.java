@@ -20,9 +20,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.ServiceCategory;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -43,7 +43,7 @@ public class CreateServiceActivity extends BaseActivity {
     private TextView errorServiceName;
     private MaterialButton btnSaveNewService;
     private LinearLayout selectedImagesContainer;
-    private List<ServiceCategory> categories;
+    private List<Category> categories;
     private List<EventType> eventTypes;
     private AutoCompleteTextView categoryAutoComplete;
 
@@ -232,11 +232,11 @@ public class CreateServiceActivity extends BaseActivity {
 
     private void loadCategories() {
         categories = new ArrayList<>();
-        categories.add(new ServiceCategory("Category"));
-        categories.add(new ServiceCategory("Food"));
-        categories.add(new ServiceCategory("Music"));
-        categories.add(new ServiceCategory("Media"));
-        categories.add(new ServiceCategory("Venue"));
+        categories.add(new Category("Category"));
+        categories.add(new Category("Food"));
+        categories.add(new Category("Music"));
+        categories.add(new Category("Media"));
+        categories.add(new Category("Venue"));
     }
 
     private void loadEventTypes() {

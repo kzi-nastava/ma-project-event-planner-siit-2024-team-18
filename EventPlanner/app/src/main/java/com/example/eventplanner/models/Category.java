@@ -1,9 +1,9 @@
 package com.example.eventplanner.models;
 
-public class ServiceCategory {
+public class Category {
     private String name;
 
-    public ServiceCategory(String name) {
+    public Category(String name) {
         this.name = name;
     }
 

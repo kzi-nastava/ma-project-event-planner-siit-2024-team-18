@@ -10,15 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import com.example.eventplanner.R;
+import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
-import com.example.eventplanner.models.ServiceCategory;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class FragmentFilter extends DialogFragment {
 
     private Spinner categorySpinner, eventTypeSpinner;
-    private List<ServiceCategory> categories;
+    private List<Category> categories;
     private List<EventType> eventTypes;
 
     @Nullable
@@ -34,7 +35,7 @@ public class FragmentFilter extends DialogFragment {
         loadEventTypes();
 
         // Set up adapters
-        ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categories);
         categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(categoryAdapter);
 
@@ -47,11 +48,11 @@ public class FragmentFilter extends DialogFragment {
 
     private void loadCategories() {
         categories = new ArrayList<>();
-        categories.add(new ServiceCategory("Category"));
-        categories.add(new ServiceCategory("Food"));
-        categories.add(new ServiceCategory("Music"));
-        categories.add(new ServiceCategory("Media"));
-        categories.add(new ServiceCategory("Venue"));
+        categories.add(new Category("Category"));
+        categories.add(new Category("Food"));
+        categories.add(new Category("Music"));
+        categories.add(new Category("Media"));
+        categories.add(new Category("Venue"));
     }
 
     private void loadEventTypes() {

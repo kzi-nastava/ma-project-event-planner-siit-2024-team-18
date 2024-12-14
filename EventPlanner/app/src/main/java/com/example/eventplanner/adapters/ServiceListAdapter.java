@@ -3,6 +3,7 @@ package com.example.eventplanner.adapters;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -51,7 +52,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         frameEditService.setOnClickListener(v -> {
             // open edit activity
             Intent editIntent = new Intent(getContext(), EditServiceActivity.class);
-            editIntent.putExtra("service", service);
+            editIntent.putExtra("service", (Parcelable) service);
             editIntent.putExtra("position", position);
             getContext().startActivity(editIntent);
         });
