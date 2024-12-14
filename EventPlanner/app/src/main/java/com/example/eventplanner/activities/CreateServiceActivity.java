@@ -10,21 +10,28 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.timepicker.MaterialTimePicker;
+import com.google.android.material.timepicker.TimeFormat;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -36,16 +43,18 @@ import java.util.Locale;
 public class CreateServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
-    private EditText createServiceName, createServiceDescription, createServicePrice, editSelectTime;
-    private ImageView btnClose, btnSelectPictures, btnPickReservationDate, btnClearPictures, btnPickTime;
-    private Spinner categorySpinner, eventTypeSpinner;
-    private TextInputEditText editReservationDate;
+    private TextInputEditText serviceName, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
+    private ImageView btnClose, btnSelectPictures, btnClearPictures, btnWorkingHoursStart, btnWorkingHoursEnd;
+    private Spinner eventTypes;
     private TextView errorServiceName;
     private MaterialButton btnSaveNewService;
     private LinearLayout selectedImagesContainer;
     private List<Category> categories;
-    private List<EventType> eventTypes;
-    private AutoCompleteTextView categoryAutoComplete;
+    private List<EventType> listEventTypes;
+    private AutoCompleteTextView category;
+    private Slider duration, minEngagement, maxEngagement;
+    private RadioGroup reservationType;
+    private SwitchCompat isVisible, isAvailable;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,46 +62,39 @@ public class CreateServiceActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_add_service, findViewById(R.id.content_frame));
 
         // initialize views
-        createServiceName = findViewById(R.id.createServiceName);
-        createServiceDescription = findViewById(R.id.createServiceDescription);
-        createServicePrice = findViewById(R.id.createServicePrice);
-        btnSaveNewService = findViewById(R.id.btnSaveNewService);
+        serviceName = findViewById(R.id.createServiceName);
+        serviceDescription = findViewById(R.id.createServiceDescription);
+        servicePrice = findViewById(R.id.createServicePrice);
+        discount = findViewById(R.id.createServiceDiscount);
         btnSelectPictures = findViewById(R.id.btnSelectPictures);
-        editReservationDate = findViewById(R.id.createReservationDate);
-        btnPickReservationDate = findViewById(R.id.btnPickReservationDate);
         selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
         btnClearPictures = findViewById(R.id.btnClearPictures);
-        eventTypeSpinner = findViewById(R.id.spinnerEventTypeCreate);
+        isVisible = findViewById(R.id.switchVisivility);
+        isAvailable = findViewById(R.id.switchAvailability);
+        category = findViewById(R.id.addServiceCategory);
+        eventTypes = findViewById(R.id.spinnerEventTypeCreate);
+        location = findViewById(R.id.inputServiceLocation);
+        reservationType = findViewById(R.id.radioGroupReservationType);
+        specifics = findViewById(R.id.inputServiceSpecifics);
+        duration = findViewById(R.id.sliderDuration);
+        minEngagement = findViewById(R.id.sliderFrom);
+        maxEngagement = findViewById(R.id.sliderTo);
+        reservationDeadline = findViewById(R.id.inputServiceReservationDeadline);
+        cancellationDeadline = findViewById(R.id.inputServiceCancellationDeadline);
+        workingHoursStart = findViewById(R.id.editStartTime);
+        btnWorkingHoursStart = findViewById(R.id.btnPickStartTime);
+        workingHoursEnd = findViewById(R.id.editEndTime);
+        btnWorkingHoursEnd = findViewById(R.id.btnPickEndTime);
+
         errorServiceName = findViewById(R.id.errorServiceName);
-        categoryAutoComplete = findViewById(R.id.addServiceCategory);
+
+        btnSaveNewService = findViewById(R.id.btnSaveNewService);
 
         // creating dummy data
         loadCategories();
         loadEventTypes();
 
         setupCategoryAutoComplete();
-
-        // time picker
-        editSelectTime = findViewById(R.id.editSelectTime);
-        btnPickTime = findViewById(R.id.btnPickTime);
-        btnPickTime.setOnClickListener(view -> showTimePicker());
-
-        // date picker
-        Calendar calendar = Calendar.getInstance();
-        DatePickerDialog.OnDateSetListener dateSetListener = (view, year, month, dayOfMonth) -> {
-            calendar.set(Calendar.YEAR, year);
-            calendar.set(Calendar.MONTH, month);
-            calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy", Locale.US);
-            editReservationDate.setText(sdf.format(calendar.getTime()));
-        };
-
-        btnPickReservationDate.setOnClickListener(v -> {
-            new DatePickerDialog(CreateServiceActivity.this, dateSetListener,
-                    calendar.get(Calendar.YEAR),
-                    calendar.get(Calendar.MONTH),
-                    calendar.get(Calendar.DAY_OF_MONTH)).show();
-        });
 
         // working with images
         btnSelectPictures.setOnClickListener(new View.OnClickListener() {
@@ -118,9 +120,16 @@ public class CreateServiceActivity extends BaseActivity {
 //        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        eventTypeSpinner.setAdapter(eventTypeAdapter);
 
-        ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
+        ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, listEventTypes);
         eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        eventTypeSpinner.setAdapter(eventTypeAdapter);
+        eventTypes.setAdapter(eventTypeAdapter);
+
+
+        btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
+
+        // Show TimePickerDialog when clicking the clock icon for end time
+        btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
+
 
         // save service
         btnSaveNewService.setOnClickListener(v -> saveNewService());
@@ -132,39 +141,49 @@ public class CreateServiceActivity extends BaseActivity {
         });
     }
 
-    private void setupCategoryAutoComplete() {
-        // Set up the adapter for AutoCompleteTextView
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<>(Arrays.asList("Category", "Food", "Music", "Media", "Venue")));
-        categoryAutoComplete.setAdapter(categoryAdapter);
-
-        // Allow user to input custom text
-        categoryAutoComplete.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus) {
-                categoryAutoComplete.showDropDown();
-            }
-        });
-
-        // Handle the selected or entered item
-        categoryAutoComplete.setOnItemClickListener((parent, view, position, id) -> {
-            String selectedCategory = (String) parent.getItemAtPosition(position);
-            categoryAutoComplete.setText(selectedCategory);
-        });
-    }
-
-    private void showTimePicker() {
+    // Function to display Material TimePicker
+    private void showTimePicker(TextInputEditText editText) {
+        // Get the current time as default values
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
 
+        // Create and show the TimePickerDialog
         TimePickerDialog timePickerDialog = new TimePickerDialog(
-            this,
-            (TimePicker view, int hourOfDay, int minuteOfHour) -> {
-                String selectedTime = String.format("%02d:%02d", hourOfDay, minuteOfHour);
-                editSelectTime.setText(selectedTime);
-            }, hour, minute, true
+                this,
+                (TimePicker view, int hourOfDay, int minuteOfHour) -> {
+                    // Format and display the selected time
+                    String selectedTime = String.format("%02d:%02d", hourOfDay, minuteOfHour);
+                    editText.setText(selectedTime);
+                },
+                hour, minute, true // Use 24-hour format
         );
 
         timePickerDialog.show();
+    }
+
+    // Functional interface for callback when time is picked
+    private interface TimePickedListener {
+        void onTimePicked(int hour, int minute);
+    }
+
+    private void setupCategoryAutoComplete() {
+        // Set up the adapter for AutoCompleteTextView
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, new ArrayList<>(Arrays.asList("Category", "Food", "Music", "Media", "Venue")));
+        category.setAdapter(categoryAdapter);
+
+        // Allow user to input custom text
+        category.setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                category.showDropDown();
+            }
+        });
+
+        // Handle the selected or entered item
+        category.setOnItemClickListener((parent, view, position, id) -> {
+            String selectedCategory = (String) parent.getItemAtPosition(position);
+            category.setText(selectedCategory);
+        });
     }
 
     private void clearSelectedImages() {
@@ -214,7 +233,7 @@ public class CreateServiceActivity extends BaseActivity {
     private void saveNewService() {
         boolean isValid = true;
 
-        if (TextUtils.isEmpty(createServiceName.getText())) {
+        if (TextUtils.isEmpty(serviceName.getText())) {
             errorServiceName.setVisibility(View.VISIBLE);
             isValid = false;
         } else {
@@ -240,11 +259,11 @@ public class CreateServiceActivity extends BaseActivity {
     }
 
     private void loadEventTypes() {
-        eventTypes = new ArrayList<>();
-        eventTypes.add(new EventType("Event Type"));
-        eventTypes.add(new EventType("Wedding"));
-        eventTypes.add(new EventType("Party"));
-        eventTypes.add(new EventType("Birthday"));
-        eventTypes.add(new EventType("Conference"));
+        listEventTypes = new ArrayList<>();
+        listEventTypes.add(new EventType("Event Type"));
+        listEventTypes.add(new EventType("Wedding"));
+        listEventTypes.add(new EventType("Party"));
+        listEventTypes.add(new EventType("Birthday"));
+        listEventTypes.add(new EventType("Conference"));
     }
 }

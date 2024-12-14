@@ -19,6 +19,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -69,10 +70,10 @@ public class AllServicesActivity extends BaseActivity {
 
     private void loadServices() {
         servicesList = new ArrayList<>();
-        servicesList.add(new Service("1","Catering","Delicious food and beverages tailored to your event.",500.0,10.0,new String[]{"catering1.jpg", "catering2.jpg"},true,true,"Food",new String[]{"Wedding", "Corporate"},"New York City","user123",false,"Active","Full-Service","Includes wait staff, setup, and cleanup.",120,50,200,30,7));
-        servicesList.add(new Service("2","DJ","Professional DJ with a wide selection of music.",300.0,5.0,new String[]{"dj1.jpg", "dj2.jpg"},true,true,"Music",new String[]{"Party", "Wedding"},"Los Angeles","user456",false,"Active","Hourly","Includes sound system and lighting setup.",180,20,100,15,5));
-        servicesList.add(new Service("3","Photography","Capture your special moments with our professional photographer.",250.0,15.0,new String[]{"photo1.jpg", "photo2.jpg"},true,false,"Media",new String[]{"Wedding", "Birthday"},"Chicago","user789",false,"Inactive","Package","Includes 100 edited photos and a photo album.",240,10,50,20,10));
-        servicesList.add(new Service("4","Event Planning","Expert planners to organize your event from start to finish.",1000.0,20.0,new String[]{"planning1.jpg", "planning2.jpg"},true,true,"Planning",new String[]{"Corporate", "Wedding", "Birthday"},"Houston","user101",false,"Active","Full-Service","Customized event planning tailored to your needs.",480,5,500,60,30));
+        servicesList.add(new Service("1","Catering","Delicious food and beverages tailored to your event.",500.0,10.0,new String[]{"catering1.jpg", "catering2.jpg"},true,true,"Food",new String[]{"Wedding", "Corporate"},"New York City","user123",false,"Active","Full-Service","Includes wait staff, setup, and cleanup.",120,50,200,30,7, LocalTime.now(), LocalTime.now()));
+        servicesList.add(new Service("2","DJ","Professional DJ with a wide selection of music.",300.0,5.0,new String[]{"dj1.jpg", "dj2.jpg"},true,true,"Music",new String[]{"Party", "Wedding"},"Los Angeles","user456",false,"Active","Hourly","Includes sound system and lighting setup.",180,20,100,15,5, LocalTime.now(), LocalTime.now()));
+        servicesList.add(new Service("3","Photography","Capture your special moments with our professional photographer.",250.0,15.0,new String[]{"photo1.jpg", "photo2.jpg"},true,false,"Media",new String[]{"Wedding", "Birthday"},"Chicago","user789",false,"Inactive","Package","Includes 100 edited photos and a photo album.",240,10,50,20,10, LocalTime.now(), LocalTime.now()));
+        servicesList.add(new Service("4","Event Planning","Expert planners to organize your event from start to finish.",1000.0,20.0,new String[]{"planning1.jpg", "planning2.jpg"},true,true,"Planning",new String[]{"Corporate", "Wedding", "Birthday"},"Houston","user101",false,"Active","Full-Service","Customized event planning tailored to your needs.",480,5,500,60,30, LocalTime.now(), LocalTime.now()));
     }
 
     private void setupSearch() {

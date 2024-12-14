@@ -4,6 +4,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import java.io.Serializable;
+import java.time.LocalTime;
 
 public class Service implements Parcelable, Serializable {
     private String id, name, specifics, description, category, reservationType, location, creator, status;
@@ -11,8 +12,9 @@ public class Service implements Parcelable, Serializable {
     private double price, discount;
     private boolean isVisible, isAvailable, isDeleted;
     private int duration, minEngagement, maxEngagement, reservationDeadline, cancellationDeadline;
+    private LocalTime workingHoursStart, workingHoursEnd;
 
-    public Service(String id, String name, String description, double price, double discount, String[] images, boolean isVisible, boolean isAvailable, String category, String[] eventTypes, String location, String creator, boolean isDeleted, String status, String reservationType, String specifics, int duration, int minEngagement, int maxEngagement, int reservationDeadline, int cancellationDeadline) {
+    public Service(String id, String name, String description, double price, double discount, String[] images, boolean isVisible, boolean isAvailable, String category, String[] eventTypes, String location, String creator, boolean isDeleted, String status, String reservationType, String specifics, int duration, int minEngagement, int maxEngagement, int reservationDeadline, int cancellationDeadline, LocalTime workingHoursStart, LocalTime workingHoursEnd) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -34,6 +36,8 @@ public class Service implements Parcelable, Serializable {
         this.maxEngagement = maxEngagement;
         this.reservationDeadline = reservationDeadline;
         this.cancellationDeadline = cancellationDeadline;
+        this.workingHoursStart = workingHoursStart;
+        this.workingHoursEnd = workingHoursEnd;
     }
 
     protected Service(Parcel in) {
@@ -184,6 +188,14 @@ public class Service implements Parcelable, Serializable {
 
     public int getCancellationDeadline() {
         return cancellationDeadline;
+    }
+
+    public LocalTime getWorkingHoursStart() {
+        return workingHoursStart;
+    }
+
+    public LocalTime getWorkingHoursEnd() {
+        return workingHoursEnd;
     }
 
 }
