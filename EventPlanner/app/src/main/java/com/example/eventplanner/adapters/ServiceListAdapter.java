@@ -1,7 +1,7 @@
 package com.example.eventplanner.adapters;
 
+import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Parcelable;
 import android.view.LayoutInflater;
@@ -15,17 +15,42 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.EditServiceActivity;
 import com.example.eventplanner.models.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceListAdapter extends ArrayAdapter<Service> {
+    private ArrayList<Service> aServices;
+    private Activity activity;
+    private FragmentManager fragmentManager;
 
-    public ServiceListAdapter(Context context, List<Service> services) {
-        super(context, 0, services);
+    public ServiceListAdapter(Activity context, FragmentManager fragmentManager, List<Service> services) {
+        super(context, R.layout.service_card, services);
+        aServices = (ArrayList<Service>) services;
+        activity = context;
+        fragmentManager = fragmentManager;
+    }
+
+    @Override
+    public int getCount() {
+        return aServices.size();
+    }
+
+    @Nullable
+    @Override
+    public Service getItem(int position) {
+        return aServices.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return position;
     }
 
     @NonNull
@@ -41,12 +66,13 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         TextView serviceDescription = convertView.findViewById(R.id.txtServiceDescription);
 
         serviceName.setText(service.getName());
-        serviceDescription.setText(R.string.lorem_ipsum);
+        serviceDescription.setText(service.getDescription());
 
         ImageView imgService = convertView.findViewById(R.id.imgService);
-        int imageResId = getServiceImage(service.getName());
-        imgService.setImageResource(imageResId);
-
+        String imageUrl = service.getImages()[0];
+        Glide.with(getContext())
+                .load(imageUrl)
+                .into(imgService);
 
         FrameLayout frameEditService = convertView.findViewById(R.id.editService);
         frameEditService.setOnClickListener(v -> {
@@ -71,22 +97,5 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         });
 
         return convertView;
-    }
-
-    private int getServiceImage(String serviceName) {
-        switch (serviceName.toLowerCase()) {
-            case "catering":
-                return R.drawable.catering;
-            case "dj":
-                return R.drawable.dj;
-            case "photography":
-                return R.drawable.photography;
-            case "decoration":
-                return R.drawable.decoration;
-            case "lighting":
-                return R.drawable.lighting;
-            default:
-                return R.drawable.default_service;
-        }
     }
 }

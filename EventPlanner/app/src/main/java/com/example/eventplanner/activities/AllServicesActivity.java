@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.filters.ServiceFilter;
 import com.example.eventplanner.fragments.FragmentFilter;
@@ -28,7 +29,6 @@ public class AllServicesActivity extends BaseActivity {
     private TextInputEditText searchEditText;
     private ImageView addServiceButton, btnBack, btnFilter;
     private FrameLayout btnSearch;
-    private List<Service> servicesList;
     private ServiceListFragment serviceListFragment;
     private ServiceFilter serviceFilter;
 
@@ -41,7 +41,6 @@ public class AllServicesActivity extends BaseActivity {
         initializeViews();
 
         // Load and display the list of services
-        loadServices();
         initializeServicesFragment();
 
         // Setup UI interactions
@@ -60,19 +59,7 @@ public class AllServicesActivity extends BaseActivity {
     }
 
     private void initializeServicesFragment() {
-        serviceListFragment = ServiceListFragment.newInstance(new ArrayList<>(servicesList));
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.listViewServices, serviceListFragment);
-        fragmentTransaction.commit();
-    }
-
-    private void loadServices() {
-        servicesList = new ArrayList<>();
-        servicesList.add(new Service("1","Catering","Delicious food and beverages tailored to your event.",500.0,10.0,new String[]{"catering1.jpg", "catering2.jpg"},true,true,"Food",new String[]{"Wedding", "Corporate"},"New York City","user123",false,"Active","Full-Service","Includes wait staff, setup, and cleanup.",120,1,2,30,7, LocalTime.now(), LocalTime.now()));
-        servicesList.add(new Service("2","DJ","Professional DJ with a wide selection of music.",300.0,5.0,new String[]{"dj1.jpg", "dj2.jpg"},true,true,"Music",new String[]{"Party", "Wedding"},"Los Angeles","user456",false,"Active","Hourly","Includes sound system and lighting setup.",120,1,3,15,5, LocalTime.now(), LocalTime.now()));
-        servicesList.add(new Service("3","Photography","Capture your special moments with our professional photographer.",250.0,15.0,new String[]{"photo1.jpg", "photo2.jpg"},true,false,"Media",new String[]{"Wedding", "Birthday"},"Chicago","user789",false,"Inactive","Package","Includes 100 edited photos and a photo album.",60,1,2,20,10, LocalTime.now(), LocalTime.now()));
-        servicesList.add(new Service("4","Event Planning","Expert planners to organize your event from start to finish.",1000.0,20.0,new String[]{"planning1.jpg", "planning2.jpg"},true,true,"Planning",new String[]{"Corporate", "Wedding", "Birthday"},"Houston","user101",false,"Active","Full-Service","Customized event planning tailored to your needs.",90,1,2,60,30, LocalTime.now(), LocalTime.now()));
+        FragmentTransition.to(ServiceListFragment.newInstance(), this, false, R.id.listViewServices);
     }
 
     private void setupSearch() {

@@ -7,14 +7,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.ServiceListViewModel;
 
 import java.util.ArrayList;
 
@@ -28,24 +31,11 @@ public class ServiceListFragment extends ListFragment {
     private int currentPage = 1;
     private int itemsPerPage = 6;
     private int totalPages;
+    private ServiceListViewModel viewModel;
 
-    public static ServiceListFragment newInstance(ArrayList<Service> services) {
+    public static ServiceListFragment newInstance() {
         ServiceListFragment fragment = new ServiceListFragment();
-        Bundle args = new Bundle();
-        args.putParcelableArrayList(ARG_PARAM, services);
-        fragment.setArguments(args);
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        if (getArguments() != null) {
-            services = getArguments().getParcelableArrayList(ARG_PARAM);
-            adapter = new ServiceListAdapter(getActivity(), services);
-            setListAdapter(adapter);
-        }
     }
 
     @Nullable
@@ -74,6 +64,33 @@ public class ServiceListFragment extends ListFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        viewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+
+        viewModel.getServices().observe(getViewLifecycleOwner(), services -> {
+            adapter = new ServiceListAdapter(getActivity(), getActivity().getSupportFragmentManager(), services);
+            setListAdapter(adapter);
+            adapter.notifyDataSetChanged();
+        });
+
+        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+            if (error != null) {
+                Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        viewModel.fetchServices();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        viewModel.fetchServices();
     }
 
     @Override

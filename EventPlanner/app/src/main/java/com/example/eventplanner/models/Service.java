@@ -3,13 +3,19 @@ package com.example.eventplanner.models;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.io.Serializable;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
 public class Service implements Parcelable, Serializable {
-    private String id, name, specifics, description, category, reservationType, location, creator, status;
+    @SerializedName("id")
+    @Expose
+    private String id;
+    private String name, specifics, description, category, reservationType, location, creator, status;
     private String[] images, eventTypes;
     private double price, discount;
     private boolean isVisible, isAvailable, isDeleted;
