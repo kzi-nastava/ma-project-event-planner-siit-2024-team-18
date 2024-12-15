@@ -5,6 +5,8 @@ import android.os.Parcelable;
 
 import java.io.Serializable;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 public class Service implements Parcelable, Serializable {
     private String id, name, specifics, description, category, reservationType, location, creator, status;
@@ -146,8 +148,8 @@ public class Service implements Parcelable, Serializable {
         return images;
     }
 
-    public String[] getEventTypes() {
-        return eventTypes;
+    public List<String> getEventTypes() {
+        return Arrays.asList(eventTypes);
     }
 
     public double getPrice() {

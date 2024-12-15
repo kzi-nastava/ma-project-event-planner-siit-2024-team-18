@@ -111,21 +111,18 @@ public class CreateServiceActivity extends BaseActivity {
         });
 
         btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
-
-        // Show TimePickerDialog when clicking the clock icon for end time
         btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
-
-        // save service
-        btnSaveNewService.setOnClickListener(v -> saveNewService());
 
         // closing activity
         btnClose = findViewById(R.id.btnClose);
         btnClose.setOnClickListener(v -> {
             finish();
         });
+
+        // save service
+        btnSaveNewService.setOnClickListener(v -> saveNewService());
     }
 
-    // Function to display Material TimePicker
     private void showTimePicker(TextInputEditText editText) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
@@ -160,25 +157,21 @@ public class CreateServiceActivity extends BaseActivity {
     }
 
     private void setupEventTypesMultiSelect() {
-        // Array of event type names
         String[] eventTypeNames = new String[listEventTypes.size()];
         boolean[] selectedItems = new boolean[listEventTypes.size()];
         for (int i = 0; i < listEventTypes.size(); i++) {
             eventTypeNames[i] = listEventTypes.get(i).getType();
-            selectedItems[i] = false; // No event type selected by default
+            selectedItems[i] = false;
         }
 
         eventTypes.setOnClickListener(v -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Select Event Types");
 
-            // Set up multi-choice items
             builder.setMultiChoiceItems(eventTypeNames, selectedItems, (dialog, which, isChecked) -> {
-                // Update selected items
                 selectedItems[which] = isChecked;
             });
 
-            // Set up OK button to update the input field
             builder.setPositiveButton("OK", (dialog, which) -> {
                 selectedEventTypeList.clear(); // Clear previous selections
                 for (int i = 0; i < selectedItems.length; i++) {
@@ -189,7 +182,6 @@ public class CreateServiceActivity extends BaseActivity {
                 updateEventTypesInput();
             });
 
-            // Set up Cancel button
             builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
             builder.show();
@@ -197,14 +189,12 @@ public class CreateServiceActivity extends BaseActivity {
     }
 
     private void updateEventTypesInput() {
-        // Join selected items into a comma-separated string
         if (selectedEventTypeList.isEmpty()) {
-            eventTypes.setText(""); // No selection
+            eventTypes.setText("");
         } else {
             eventTypes.setText(String.join(", ", selectedEventTypeList));
         }
     }
-
 
     private void clearSelectedImages() {
         imageUris.clear();

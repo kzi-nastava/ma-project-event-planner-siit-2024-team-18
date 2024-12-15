@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities;
 
+import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.net.Uri;
@@ -27,7 +28,9 @@ import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Service;
 import com.google.android.material.slider.Slider;
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -35,18 +38,19 @@ import java.util.List;
 public class EditServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
-    private EditText editServiceName, editServiceDescription, editServicePrice, editServiceSpecifics, editServiceDiscount, editReservationDate, editCancellationDateDate, editReservationTime;
-    private SwitchCompat switchAvailability;
-    private Button btnSave;
-    private ImageView btnClose, btnPickTime, btnSelectPictures, btnClearPictures;
-    private Service service;
-    private Spinner editServiceEventType, editServiceCategory;
-    private Slider sliderDuration;
+    private TextInputEditText serviceName, eventTypes, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
+    private ImageView btnClose, btnSelectPictures, btnClearPictures, btnWorkingHoursStart, btnWorkingHoursEnd;
     private TextView errorServiceName;
-    private RadioGroup radioGroupReservationType;
+    private Button btnSave;
+    private Service service;
+    private Spinner category;
+    private Slider duration, minEngagement, maxEngagement;
+    private RadioGroup reservationType;
     private LinearLayout selectedImagesContainer;
     private List<Category> categories;
-    private List<EventType> eventTypes;
+    private List<EventType> listEventTypes;
+    private SwitchCompat isVisible, isAvailable;
+    private List<String> selectedEventTypeList = new ArrayList<>();
     private int position;
 
     @Override
@@ -55,22 +59,32 @@ public class EditServiceActivity extends BaseActivity {
         getLayoutInflater().inflate(R.layout.activity_edit_service, findViewById(R.id.content_frame));
 
         // initialize views
-        editServiceName = findViewById(R.id.editServiceName);
-        editServiceSpecifics = findViewById(R.id.editServiceSpecifics);
-        editServiceDescription = findViewById(R.id.editServiceDescription);
-        editServicePrice = findViewById(R.id.editServicePrice);
-        editServiceDiscount = findViewById(R.id.editServiceDiscount);
-        editServiceCategory = findViewById(R.id.categoryDisabled);
-        editServiceEventType = findViewById(R.id.editServiceEventType);
-        switchAvailability = findViewById(R.id.switchAvailability);
-        selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
-        editReservationDate = findViewById(R.id.editReservationDate);
-        editCancellationDateDate = findViewById(R.id.editCancellationDate);
-        sliderDuration = findViewById(R.id.sliderDuration);
-        radioGroupReservationType = findViewById(R.id.radioGroupReservationType);
+        serviceName = findViewById(R.id.editServiceName);
+        serviceDescription = findViewById(R.id.editServiceDescription);
+        servicePrice = findViewById(R.id.editServicePrice);
+        discount = findViewById(R.id.editServiceDiscount);
         btnSelectPictures = findViewById(R.id.btnSelectPictures);
+        selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
         btnClearPictures = findViewById(R.id.btnClearPictures);
+        isVisible = findViewById(R.id.switchVisivility);
+        isAvailable = findViewById(R.id.switchAvailability);
+        category = findViewById(R.id.categoryDisabled);
+        eventTypes = findViewById(R.id.editTextEventTypes);
+        location = findViewById(R.id.inputServiceLocation);
+        reservationType = findViewById(R.id.radioGroupReservationType);
+        specifics = findViewById(R.id.editServiceSpecifics);
+        duration = findViewById(R.id.sliderDuration);
+        minEngagement = findViewById(R.id.sliderFrom);
+        maxEngagement = findViewById(R.id.sliderTo);
+        reservationDeadline = findViewById(R.id.inputServiceReservationDeadline);
+        cancellationDeadline = findViewById(R.id.inputServiceCancellationDeadline);
+        workingHoursStart = findViewById(R.id.editStartTime);
+        btnWorkingHoursStart = findViewById(R.id.btnPickStartTime);
+        workingHoursEnd = findViewById(R.id.editEndTime);
+        btnWorkingHoursEnd = findViewById(R.id.btnPickEndTime);
+
         errorServiceName = findViewById(R.id.errorServiceName);
+
         btnClose = findViewById(R.id.btnClose);
         btnSave = findViewById(R.id.btnSave);
 
@@ -78,35 +92,30 @@ public class EditServiceActivity extends BaseActivity {
         loadCategories();
         loadEventTypes();
 
-        // time picker
-        editReservationTime = findViewById(R.id.editSelectTime);
-        btnPickTime = findViewById(R.id.btnPickTime);
-        btnPickTime.setOnClickListener(view -> showTimePicker());
-
         // retrieve data from intent
         service = (Service) getIntent().getParcelableExtra("service");
         position = getIntent().getIntExtra("position", -1);
 
         // populate fields
         if (service != null) {
-            editServiceName.setText(service.getName());
-            editServiceSpecifics.setText(service.getSpecifics());
-            editServiceDescription.setText(R.string.lorem_ipsum);
-            editServicePrice.setText(String.valueOf(service.getPrice()));
-            editServiceDiscount.setText(String.valueOf(service.getDiscount()));
-            switchAvailability.setChecked(service.isAvailable());
-            sliderDuration.setValue(service.getDuration());
+            serviceName.setText(service.getName());
+            serviceDescription.setText(service.getDescription());
+            servicePrice.setText(String.valueOf(service.getPrice()));
+            discount.setText(String.valueOf(service.getDiscount()));
+            isVisible.setChecked(service.isVisible());
+            isAvailable.setChecked(service.isAvailable());
+            location.setText(service.getLocation());
+            specifics.setText(service.getSpecifics());
+            duration.setValue(service.getDuration());
+            minEngagement.setValue(service.getMinEngagement());
+            maxEngagement.setValue(service.getMaxEngagement());
+            reservationDeadline.setText(String.valueOf(service.getReservationDeadline()));
+            cancellationDeadline.setText(String.valueOf(service.getCancellationDeadline()));
 
-            // filling spinners with data
-//            ArrayAdapter<ServiceCategory> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-//            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//            editServiceCategory.setAdapter(categoryAdapter);
+            workingHoursStart.setText("09:00");
+            workingHoursEnd.setText("16:45");
 
-            ArrayAdapter<EventType> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, eventTypes);
-            eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editServiceEventType.setAdapter(eventTypeAdapter);
-
-            setSpinnerSelection(editServiceEventType, service.getEventTypes()[0]);
+            initializeEventTypes();
 
             // working with images
             btnSelectPictures.setOnClickListener(new View.OnClickListener() {
@@ -123,34 +132,25 @@ public class EditServiceActivity extends BaseActivity {
                 }
             });
 
-            // set dates
-//            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-//            editReservationDate.setText(service.getReservationDate() != null
-//                    ? service.getReservationDate().toLocalDate().format(dateFormatter) : "");
-//            editCancellationDateDate.setText(service.getCancellationDate() != null
-//                    ? service.getCancellationDate().toLocalDate().format(dateFormatter) : "");
-
-            // set time
-//            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-//            String formattedTime = service.getReservationDate().toLocalTime().format(timeFormatter);
-//            editReservationTime.setText(formattedTime);
-
             // set radio button
-            for (int i = 0; i < radioGroupReservationType.getChildCount(); i++) {
-                RadioButton radioButton = (RadioButton) radioGroupReservationType.getChildAt(i);
+            for (int i = 0; i < reservationType.getChildCount(); i++) {
+                RadioButton radioButton = (RadioButton) reservationType.getChildAt(i);
                 if (radioButton.getText().toString().equalsIgnoreCase(service.getReservationType())) {
                     radioButton.setChecked(true);
                     break;
                 }
             }
 
+            btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
+            btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
+
             ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
             categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            editServiceCategory.setAdapter(categoryAdapter);
+            category.setAdapter(categoryAdapter);
 
-            setSpinnerSelection(editServiceCategory, "Food");
+            setSpinnerSelection(category, service.getCategory());
 
-            editServiceCategory.setEnabled(false);
+            category.setEnabled(false);
         }
 
         // closing activity
@@ -174,7 +174,66 @@ public class EditServiceActivity extends BaseActivity {
         }
     }
 
-    private void showTimePicker() {
+    private void initializeEventTypes() {
+        // Step 1: Load all available event types
+        loadEventTypes(); // Populates listEventTypes
+
+        // Step 2: Get pre-selected event types
+        List<String> selectedEventTypes = service.getEventTypes();
+
+        // Step 3: Populate input field with pre-selected types
+        setEventTypesSelection(selectedEventTypes);
+
+        // Step 4: Set up the multi-select dialog
+        setupEventTypesMultiSelect(listEventTypes, selectedEventTypes);
+    }
+
+    private void setEventTypesSelection(List<String> selectedEventTypes) {
+        if (selectedEventTypes != null && !selectedEventTypes.isEmpty()) {
+            String selectedTypes = String.join(", ", selectedEventTypes);
+            eventTypes.setText(selectedTypes); // Update the input field
+        } else {
+            eventTypes.setText("No event types selected");
+        }
+    }
+
+    private void setupEventTypesMultiSelect(List<EventType> allEventTypes, List<String> selectedEventTypes) {
+        eventTypes.setOnClickListener(view -> {
+            // Convert event types to a string array
+            String[] eventTypeArray = allEventTypes.stream()
+                    .map(EventType::getType)
+                    .toArray(String[]::new);
+
+            // Boolean array to track selected items
+            boolean[] selectedItems = new boolean[eventTypeArray.length];
+
+            // Pre-check items that match selectedEventTypes
+            for (int i = 0; i < eventTypeArray.length; i++) {
+                selectedItems[i] = selectedEventTypes.contains(eventTypeArray[i]);
+            }
+
+            // Multi-select dialog
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle("Select Event Types")
+                    .setMultiChoiceItems(eventTypeArray, selectedItems, (dialog, which, isChecked) -> {
+                        if (isChecked) {
+                            if (!selectedEventTypes.contains(eventTypeArray[which])) {
+                                selectedEventTypes.add(eventTypeArray[which]); // Add to selected if not already present
+                            }
+                        } else {
+                            selectedEventTypes.remove(eventTypeArray[which]); // Remove from selected
+                        }
+                    })
+                    .setPositiveButton("OK", (dialog, which) -> {
+                        // Update the input field with selected items
+                        setEventTypesSelection(selectedEventTypes);
+                    })
+                    .setNegativeButton("Cancel", null)
+                    .show();
+        });
+    }
+
+    private void showTimePicker(TextInputEditText editText) {
         Calendar calendar = Calendar.getInstance();
         int hour = calendar.get(Calendar.HOUR_OF_DAY);
         int minute = calendar.get(Calendar.MINUTE);
@@ -183,8 +242,9 @@ public class EditServiceActivity extends BaseActivity {
                 this,
                 (TimePicker view, int hourOfDay, int minuteOfHour) -> {
                     String selectedTime = String.format("%02d:%02d", hourOfDay, minuteOfHour);
-                    editReservationTime.setText(selectedTime);
-                }, hour, minute, true
+                    editText.setText(selectedTime);
+                },
+                hour, minute, true
         );
 
         timePickerDialog.show();
@@ -238,7 +298,7 @@ public class EditServiceActivity extends BaseActivity {
 
         boolean isValid = true;
 
-        if (TextUtils.isEmpty(editServiceName.getText())) {
+        if (TextUtils.isEmpty(serviceName.getText())) {
             errorServiceName.setVisibility(View.VISIBLE);
             isValid = false;
         } else {
@@ -264,11 +324,11 @@ public class EditServiceActivity extends BaseActivity {
     }
 
     private void loadEventTypes() {
-        eventTypes = new ArrayList<>();
-        eventTypes.add(new EventType("Event Type"));
-        eventTypes.add(new EventType("Wedding"));
-        eventTypes.add(new EventType("Party"));
-        eventTypes.add(new EventType("Birthday"));
-        eventTypes.add(new EventType("Conference"));
+        listEventTypes = new ArrayList<>();
+        listEventTypes.add(new EventType("Event Type"));
+        listEventTypes.add(new EventType("Wedding"));
+        listEventTypes.add(new EventType("Party"));
+        listEventTypes.add(new EventType("Birthday"));
+        listEventTypes.add(new EventType("Conference"));
     }
 }
