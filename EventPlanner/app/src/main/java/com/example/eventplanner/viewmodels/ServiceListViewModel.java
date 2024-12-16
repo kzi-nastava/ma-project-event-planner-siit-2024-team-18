@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Service;
 

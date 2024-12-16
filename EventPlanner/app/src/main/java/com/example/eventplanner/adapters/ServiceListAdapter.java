@@ -70,7 +70,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
 
         ImageView imgService = convertView.findViewById(R.id.imgService);
         String imageUrl = service.getImages()[0];
-        Glide.with(getContext())
+        Glide.with(activity)
                 .load(imageUrl)
                 .into(imgService);
 
@@ -78,7 +78,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         frameEditService.setOnClickListener(v -> {
             // open edit activity
             Intent editIntent = new Intent(getContext(), EditServiceActivity.class);
-            editIntent.putExtra("service", (Parcelable) service);
+            editIntent.putExtra("serviceId", service.getId());
             editIntent.putExtra("position", position);
             getContext().startActivity(editIntent);
         });

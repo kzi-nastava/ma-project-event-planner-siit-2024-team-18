@@ -3,6 +3,7 @@ package com.example.eventplanner.activities;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -22,11 +23,18 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.EventTypeCardViewModel;
+import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
+import com.example.eventplanner.viewmodels.ServiceListViewModel;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -47,18 +55,67 @@ public class EditServiceActivity extends BaseActivity {
     private Slider duration, minEngagement, maxEngagement;
     private RadioGroup reservationType;
     private LinearLayout selectedImagesContainer;
-    private List<Category> categories;
     private List<EventType> listEventTypes;
     private SwitchCompat isVisible, isAvailable;
     private List<String> selectedEventTypeList = new ArrayList<>();
-    private int position;
+    private int serviceId, position;
+    private ServiceDetailsViewModel serviceViewModel;
+    private EventTypeCardViewModel eventTypeViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_service, findViewById(R.id.content_frame));
 
-        // initialize views
+        // Initialize views
+        initializeViews();
+
+        // Retrieve data from intent
+        serviceId = getIntent().getIntExtra("serviceId", -1);
+        position = getIntent().getIntExtra("position", -1);
+
+        loadViewModels();
+
+        // Set button listeners
+        setupListeners();
+    }
+
+    private void loadViewModels() {
+        eventTypeViewModel.fetchEventTypes();
+        serviceViewModel.fetchServiceById(serviceId);
+
+        // ViewModel setup
+        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
+            if (eventTypes != null) {
+                this.listEventTypes = eventTypes;
+            }
+        });
+
+        eventTypeViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        serviceViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceViewModel.getService().observe(this, service -> {
+            if (service != null) {
+                this.service = service;
+                populateFields();
+            }
+        });
+
+        serviceViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void initializeViews() {
+        serviceViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
         serviceName = findViewById(R.id.editServiceName);
         serviceDescription = findViewById(R.id.editServiceDescription);
         servicePrice = findViewById(R.id.editServicePrice);
@@ -82,150 +139,96 @@ public class EditServiceActivity extends BaseActivity {
         btnWorkingHoursStart = findViewById(R.id.btnPickStartTime);
         workingHoursEnd = findViewById(R.id.editEndTime);
         btnWorkingHoursEnd = findViewById(R.id.btnPickEndTime);
-
         errorServiceName = findViewById(R.id.errorServiceName);
-
         btnClose = findViewById(R.id.btnClose);
         btnSave = findViewById(R.id.btnSave);
+    }
 
-        // creating dummy data
-        loadCategories();
-        loadEventTypes();
+    private void populateFields() {
+        serviceName.setText(service.getName());
+        serviceDescription.setText(service.getDescription());
+        servicePrice.setText(String.valueOf(service.getPrice()));
+        discount.setText(String.valueOf(service.getDiscount()));
+        isVisible.setChecked(service.isVisible());
+        isAvailable.setChecked(service.isAvailable());
+        location.setText(service.getLocation());
+        loadExistingImages();
 
-        // retrieve data from intent
-        service = (Service) getIntent().getParcelableExtra("service");
-        position = getIntent().getIntExtra("position", -1);
-
-        // populate fields
-        if (service != null) {
-            serviceName.setText(service.getName());
-            serviceDescription.setText(service.getDescription());
-            servicePrice.setText(String.valueOf(service.getPrice()));
-            discount.setText(String.valueOf(service.getDiscount()));
-            isVisible.setChecked(service.isVisible());
-            isAvailable.setChecked(service.isAvailable());
-            location.setText(service.getLocation());
-            specifics.setText(service.getSpecifics());
-            duration.setValue(service.getDuration());
-            minEngagement.setValue(service.getMinEngagement());
-            maxEngagement.setValue(service.getMaxEngagement());
-            reservationDeadline.setText(String.valueOf(service.getReservationDeadline()));
-            cancellationDeadline.setText(String.valueOf(service.getCancellationDeadline()));
-
-            workingHoursStart.setText("09:00");
-            workingHoursEnd.setText("16:45");
-
-            initializeEventTypes();
-
-            // working with images
-            btnSelectPictures.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    openGallery();
-                }
-            });
-
-            btnClearPictures.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    clearSelectedImages();
-                }
-            });
-
-            // set radio button
-            for (int i = 0; i < reservationType.getChildCount(); i++) {
-                RadioButton radioButton = (RadioButton) reservationType.getChildAt(i);
-                if (radioButton.getText().toString().equalsIgnoreCase(service.getReservationType())) {
-                    radioButton.setChecked(true);
-                    break;
-                }
-            }
-
-            btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
-            btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
-
-            ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, categories);
-            categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-            category.setAdapter(categoryAdapter);
-
-            setSpinnerSelection(category, service.getCategory());
-
-            category.setEnabled(false);
+        if ("MANUAL".equalsIgnoreCase(service.getReservationType())) {
+            reservationType.check(R.id.radioButtonManual);
+        } else if ("AUTOMATIC".equalsIgnoreCase(service.getReservationType())) {
+            reservationType.check(R.id.radioButtonAutomatic);
         }
 
-        // closing activity
-        btnClose = findViewById(R.id.btnClose);
-        btnClose.setOnClickListener(v -> {
-            finish();
-        });
+        specifics.setText(service.getSpecifics());
+        if (service.getDuration() != 0) {
+            duration.setValue(service.getDuration());
+        } else {
+            minEngagement.setValue(service.getMinEngagement());
+            maxEngagement.setValue(service.getMaxEngagement());
+        }
+        reservationDeadline.setText(String.valueOf(service.getReservationDeadline()));
+        cancellationDeadline.setText(String.valueOf(service.getCancellationDeadline()));
 
+        workingHoursStart.setText(service.getWorkingHoursStart().substring(0, 5));
+        workingHoursEnd.setText(service.getWorkingHoursEnd().substring(0, 5));
+
+        initializeEventTypes();
+
+        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,new String[]{service.getCategory()});
+        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        category.setAdapter(categoryAdapter);
+        category.setEnabled(false);
+    }
+
+    private void setupListeners() {
+        btnSelectPictures.setOnClickListener(v -> openGallery());
+        btnClearPictures.setOnClickListener(v -> clearSelectedImages());
+        btnWorkingHoursStart.setOnClickListener(view -> showTimePicker(workingHoursStart));
+        btnWorkingHoursEnd.setOnClickListener(view -> showTimePicker(workingHoursEnd));
+        btnClose.setOnClickListener(v -> finish());
         btnSave.setOnClickListener(v -> saveEditedService());
     }
 
-    private void setSpinnerSelection(Spinner spinner, String value) {
-        ArrayAdapter<?> adapter = (ArrayAdapter<?>) spinner.getAdapter();
-        if (adapter != null) {
-            for (int i = 0; i < adapter.getCount(); i++) {
-                if (adapter.getItem(i).toString().equalsIgnoreCase(value)) {
-                    spinner.setSelection(i);
-                    break;
-                }
-            }
-        }
-    }
-
     private void initializeEventTypes() {
-        // Step 1: Load all available event types
-        loadEventTypes(); // Populates listEventTypes
-
-        // Step 2: Get pre-selected event types
-        List<String> selectedEventTypes = service.getEventTypes();
-
-        // Step 3: Populate input field with pre-selected types
+        List<String> selectedEventTypes = new ArrayList<>(service.getEventTypes());
         setEventTypesSelection(selectedEventTypes);
-
-        // Step 4: Set up the multi-select dialog
-        setupEventTypesMultiSelect(listEventTypes, selectedEventTypes);
+        setupEventTypesMultiSelect(selectedEventTypes);
     }
 
     private void setEventTypesSelection(List<String> selectedEventTypes) {
         if (selectedEventTypes != null && !selectedEventTypes.isEmpty()) {
             String selectedTypes = String.join(", ", selectedEventTypes);
-            eventTypes.setText(selectedTypes); // Update the input field
+            eventTypes.setText(selectedTypes);
         } else {
             eventTypes.setText("No event types selected");
         }
     }
 
-    private void setupEventTypesMultiSelect(List<EventType> allEventTypes, List<String> selectedEventTypes) {
+    private void setupEventTypesMultiSelect(List<String> selectedEventTypes) {
         eventTypes.setOnClickListener(view -> {
-            // Convert event types to a string array
-            String[] eventTypeArray = allEventTypes.stream()
-                    .map(EventType::getType)
+            String[] eventTypeArray = listEventTypes.stream()
+                    .map(EventType::getName)
                     .toArray(String[]::new);
 
-            // Boolean array to track selected items
             boolean[] selectedItems = new boolean[eventTypeArray.length];
 
-            // Pre-check items that match selectedEventTypes
             for (int i = 0; i < eventTypeArray.length; i++) {
                 selectedItems[i] = selectedEventTypes.contains(eventTypeArray[i]);
             }
 
-            // Multi-select dialog
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Select Event Types")
                     .setMultiChoiceItems(eventTypeArray, selectedItems, (dialog, which, isChecked) -> {
                         if (isChecked) {
                             if (!selectedEventTypes.contains(eventTypeArray[which])) {
-                                selectedEventTypes.add(eventTypeArray[which]); // Add to selected if not already present
+                                selectedEventTypes.add(eventTypeArray[which]);
                             }
                         } else {
-                            selectedEventTypes.remove(eventTypeArray[which]); // Remove from selected
+                            selectedEventTypes.remove(eventTypeArray[which]);
                         }
                     })
                     .setPositiveButton("OK", (dialog, which) -> {
-                        // Update the input field with selected items
                         setEventTypesSelection(selectedEventTypes);
                     })
                     .setNegativeButton("Cancel", null)
@@ -255,6 +258,34 @@ public class EditServiceActivity extends BaseActivity {
         selectedImagesContainer.removeAllViews();
     }
 
+    private void loadExistingImages() {
+        String[] existingImages = service.getImages();
+        if (existingImages != null) {
+            for (String imageUrl : existingImages) {
+                addImageToContainer(imageUrl, false);
+            }
+        }
+    }
+
+    private void addImageToContainer(String imageUrlOrUri, boolean isNewImage) {
+        ImageView imageView = new ImageView(this);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setPadding(8, 8, 8, 8);
+
+        if (isNewImage) {
+            Uri imageUri = Uri.parse(imageUrlOrUri);
+            imageView.setImageURI(imageUri);
+            imageUris.add(imageUri);
+        } else {
+            Glide.with(this)
+                    .load(imageUrlOrUri)
+                    .into(imageView);
+        }
+
+        selectedImagesContainer.addView(imageView);
+    }
+
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -267,37 +298,24 @@ public class EditServiceActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGES_REQUEST && resultCode == RESULT_OK && data != null) {
             if (data.getClipData() != null) {
-                // multiple images selected
                 int count = data.getClipData().getItemCount();
                 for (int i = 0; i < count; i++) {
                     Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                    imageUris.add(imageUri);
-                    addImageToContainer(imageUri);
+                    addImageToContainer(imageUri.toString(), true);
                 }
             } else if (data.getData() != null) {
-                // single image selected
                 Uri imageUri = data.getData();
-                imageUris.add(imageUri);
-                addImageToContainer(imageUri);
+                addImageToContainer(imageUri.toString(), true);
             }
         }
-    }
-
-    private void addImageToContainer(Uri imageUri) {
-        ImageView imageView = new ImageView(this);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setPadding(8, 8, 8, 8);
-        imageView.setImageURI(imageUri);
-        selectedImagesContainer.addView(imageView);
     }
 
     // not implemented completely
     // TODO: merge reservation date and time together
     private void saveEditedService() {
-
         boolean isValid = true;
 
+        // Validate service name
         if (TextUtils.isEmpty(serviceName.getText())) {
             errorServiceName.setVisibility(View.VISIBLE);
             isValid = false;
@@ -306,29 +324,76 @@ public class EditServiceActivity extends BaseActivity {
         }
 
         if (isValid) {
+            // Retrieve selected Reservation Type
+            int selectedId = reservationType.getCheckedRadioButtonId();
+            String selectedReservationType = null;
+
+            if (selectedId == R.id.radioButtonManual) {
+                selectedReservationType = "MANUAL";
+            } else if (selectedId == R.id.radioButtonAutomatic) {
+                selectedReservationType = "AUTOMATIC";
+            }
+
+            // Set reservation type to the service object (if applicable)
+            service.setReservationType(selectedReservationType);
+
+            // Combine images (new + existing)
+            List<String> allImagePaths = new ArrayList<>();
+
+            // Add new image URIs
+            for (Uri uri : imageUris) {
+                allImagePaths.add(uri.toString());
+            }
+
+            // Add existing image URLs
+            String[] existingImages = service.getImages();
+            if (existingImages != null) {
+                allImagePaths.addAll(List.of(existingImages));
+            }
+
+            // Update the service's images
+            service.setImages(allImagePaths.toArray(new String[0]));
+
+            // Save other service details (this part might involve updating your ViewModel or API)
+            service.setName(serviceName.getText().toString());
+            service.setDescription(serviceDescription.getText().toString());
+            service.setPrice(Double.parseDouble(servicePrice.getText().toString()));
+            service.setDiscount(Double.parseDouble(discount.getText().toString()));
+            service.setVisible(isVisible.isChecked());
+            service.setAvailable(isAvailable.isChecked());
+            service.setLocation(location.getText().toString());
+
+            if (!TextUtils.isEmpty(specifics.getText())) {
+                service.setSpecifics(specifics.getText().toString());
+            }
+
+            if (duration.getValue() > 0) {
+                service.setDuration((int) duration.getValue());
+            } else {
+                service.setMinEngagement((int) minEngagement.getValue());
+                service.setMaxEngagement((int) maxEngagement.getValue());
+            }
+
+            if (!TextUtils.isEmpty(reservationDeadline.getText())) {
+                service.setReservationDeadline(Integer.parseInt(reservationDeadline.getText().toString()));
+            }
+
+            if (!TextUtils.isEmpty(cancellationDeadline.getText())) {
+                service.setCancellationDeadline(Integer.parseInt(cancellationDeadline.getText().toString()));
+            }
+
+            service.setWorkingHoursStart(workingHoursStart.getText().toString());
+            service.setWorkingHoursEnd(workingHoursEnd.getText().toString());
+
+            // Save the service via ViewModel or API
+//            serviceViewModel.updateService(service);
+
             Toast.makeText(this, "Service Updated Successfully", Toast.LENGTH_SHORT).show();
 
+            // Navigate back to the list of all services
             Intent intent = new Intent(EditServiceActivity.this, AllServicesActivity.class);
             startActivity(intent);
             finish();
         }
-    }
-
-    private void loadCategories() {
-        categories = new ArrayList<>();
-        categories.add(new Category("Category"));
-        categories.add(new Category("Food"));
-        categories.add(new Category("Music"));
-        categories.add(new Category("Media"));
-        categories.add(new Category("Venue"));
-    }
-
-    private void loadEventTypes() {
-        listEventTypes = new ArrayList<>();
-        listEventTypes.add(new EventType("Event Type"));
-        listEventTypes.add(new EventType("Wedding"));
-        listEventTypes.add(new EventType("Party"));
-        listEventTypes.add(new EventType("Birthday"));
-        listEventTypes.add(new EventType("Conference"));
     }
 }

@@ -57,11 +57,6 @@ public class FragmentFilter extends DialogFragment {
 
     private void loadEventTypes() {
         eventTypes = new ArrayList<>();
-        eventTypes.add(new EventType("Event Type"));
-        eventTypes.add(new EventType("Wedding"));
-        eventTypes.add(new EventType("Party"));
-        eventTypes.add(new EventType("Birthday"));
-        eventTypes.add(new EventType("Conference"));
     }
 
     @Override

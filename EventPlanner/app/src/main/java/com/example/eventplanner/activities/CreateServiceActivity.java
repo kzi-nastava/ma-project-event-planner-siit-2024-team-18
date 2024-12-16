@@ -160,7 +160,7 @@ public class CreateServiceActivity extends BaseActivity {
         String[] eventTypeNames = new String[listEventTypes.size()];
         boolean[] selectedItems = new boolean[listEventTypes.size()];
         for (int i = 0; i < listEventTypes.size(); i++) {
-            eventTypeNames[i] = listEventTypes.get(i).getType();
+            eventTypeNames[i] = listEventTypes.get(i).getName();
             selectedItems[i] = false;
         }
 
@@ -270,10 +270,5 @@ public class CreateServiceActivity extends BaseActivity {
 
     private void loadEventTypes() {
         listEventTypes = new ArrayList<>();
-        listEventTypes.add(new EventType("Event Type"));
-        listEventTypes.add(new EventType("Wedding"));
-        listEventTypes.add(new EventType("Party"));
-        listEventTypes.add(new EventType("Birthday"));
-        listEventTypes.add(new EventType("Conference"));
     }
 }

@@ -7,22 +7,20 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 
 public class Service implements Parcelable, Serializable {
     @SerializedName("id")
     @Expose
-    private String id;
-    private String name, specifics, description, category, reservationType, location, creator, status;
+    private int id;
+    private String name, specifics, description, category, reservationType, location, creator, status, workingHoursStart, workingHoursEnd;
     private String[] images, eventTypes;
     private double price, discount;
     private boolean isVisible, isAvailable, isDeleted;
     private int duration, minEngagement, maxEngagement, reservationDeadline, cancellationDeadline;
-    private LocalTime workingHoursStart, workingHoursEnd;
 
-    public Service(String id, String name, String description, double price, double discount, String[] images, boolean isVisible, boolean isAvailable, String category, String[] eventTypes, String location, String creator, boolean isDeleted, String status, String reservationType, String specifics, int duration, int minEngagement, int maxEngagement, int reservationDeadline, int cancellationDeadline, LocalTime workingHoursStart, LocalTime workingHoursEnd) {
+    public Service(int id, String name, String description, double price, double discount, String[] images, boolean isVisible, boolean isAvailable, String category, String[] eventTypes, String location, String creator, boolean isDeleted, String status, String reservationType, String specifics, int duration, int minEngagement, int maxEngagement, int reservationDeadline, int cancellationDeadline, String workingHoursStart, String workingHoursEnd) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -49,7 +47,7 @@ public class Service implements Parcelable, Serializable {
     }
 
     protected Service(Parcel in) {
-        id = in.readString();
+        id = in.readInt();
         name = in.readString();
         description = in.readString();
         price = in.readDouble();
@@ -91,7 +89,7 @@ public class Service implements Parcelable, Serializable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
+        dest.writeInt(id);
         dest.writeString(name);
         dest.writeString(description);
         dest.writeDouble(price);
@@ -114,7 +112,7 @@ public class Service implements Parcelable, Serializable {
         dest.writeInt(cancellationDeadline);
     }
 
-    public String getId() {
+    public int getId() {
         return id;
     }
 
@@ -198,12 +196,99 @@ public class Service implements Parcelable, Serializable {
         return cancellationDeadline;
     }
 
-    public LocalTime getWorkingHoursStart() {
+    public String getWorkingHoursStart() {
         return workingHoursStart;
     }
 
-    public LocalTime getWorkingHoursEnd() {
+    public String getWorkingHoursEnd() {
         return workingHoursEnd;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setSpecifics(String specifics) {
+        this.specifics = specifics;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
+    public void setReservationType(String reservationType) {
+        this.reservationType = reservationType;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public void setCreator(String creator) {
+        this.creator = creator;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setWorkingHoursStart(String workingHoursStart) {
+        this.workingHoursStart = workingHoursStart;
+    }
+
+    public void setWorkingHoursEnd(String workingHoursEnd) {
+        this.workingHoursEnd = workingHoursEnd;
+    }
+
+    public void setImages(String[] images) {
+        this.images = images;
+    }
+
+    public void setEventTypes(String[] eventTypes) {
+        this.eventTypes = eventTypes;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public void setDiscount(double discount) {
+        this.discount = discount;
+    }
+
+    public void setVisible(boolean visible) {
+        isVisible = visible;
+    }
+
+    public void setAvailable(boolean available) {
+        isAvailable = available;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void setMinEngagement(int minEngagement) {
+        this.minEngagement = minEngagement;
+    }
+
+    public void setMaxEngagement(int maxEngagement) {
+        this.maxEngagement = maxEngagement;
+    }
+
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
+    }
+
+    public void setCancellationDeadline(int cancellationDeadline) {
+        this.cancellationDeadline = cancellationDeadline;
+    }
 }

@@ -424,7 +424,7 @@
                     android:orientation="horizontal">
 
                     <RadioButton
-                        android:id="@+id/radioAuto"
+                        android:id="@+id/radioButtonAutomatic"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
@@ -433,7 +433,7 @@
                         android:textColor="@color/darkText" />
 
                     <RadioButton
-                        android:id="@+id/radioManual"
+                        android:id="@+id/radioButtonManual"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/raleway"

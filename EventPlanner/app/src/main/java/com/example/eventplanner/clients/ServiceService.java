@@ -27,27 +27,27 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("service/{id}")
-    Call<Service> getById(@Path("id") Long id);
+    @GET("services/{id}")
+    Call<Service> getById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("service/")
+    @POST("services/")
     Call<Service> add(@Body Service service);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @DELETE("service/{id}")
-    Call<ResponseBody> deleteById(@Path("id") Long id);
+    @DELETE("services/{id}")
+    Call<ResponseBody> deleteById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @PUT("service/")
+    @PUT("services/")
     Call<Service> edit(@Body Service service);
 }
