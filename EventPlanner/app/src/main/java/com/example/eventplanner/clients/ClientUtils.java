@@ -34,4 +34,5 @@ public class ClientUtils {
 
     public static ServiceService serviceService = retrofit.create(ServiceService.class);
     public static EventTypeService eventTypeService = retrofit.create(EventTypeService.class);
+    public static CategoryService categoryService = retrofit.create(CategoryService.class);
 }

@@ -46,6 +46,8 @@ public class Service implements Parcelable, Serializable {
         this.workingHoursEnd = workingHoursEnd;
     }
 
+    public Service() {}
+
     protected Service(Parcel in) {
         id = in.readInt();
         name = in.readString();

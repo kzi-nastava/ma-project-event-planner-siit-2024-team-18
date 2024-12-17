@@ -34,7 +34,7 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("services/")
+    @POST("services/create")
     Call<Service> add(@Body Service service);
 
     @Headers({
@@ -48,6 +48,6 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @PUT("services/")
-    Call<Service> edit(@Body Service service);
+    @PUT("services/edit/{id}")
+    Call<Service> edit(@Path("id") int id, @Body Service service);
 }

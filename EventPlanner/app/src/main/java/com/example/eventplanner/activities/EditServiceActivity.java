@@ -46,6 +46,7 @@ import java.util.List;
 public class EditServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
+    private List<EventType> listEventTypes;
     private TextInputEditText serviceName, eventTypes, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
     private ImageView btnClose, btnSelectPictures, btnClearPictures, btnWorkingHoursStart, btnWorkingHoursEnd;
     private TextView errorServiceName;
@@ -55,9 +56,7 @@ public class EditServiceActivity extends BaseActivity {
     private Slider duration, minEngagement, maxEngagement;
     private RadioGroup reservationType;
     private LinearLayout selectedImagesContainer;
-    private List<EventType> listEventTypes;
     private SwitchCompat isVisible, isAvailable;
-    private List<String> selectedEventTypeList = new ArrayList<>();
     private int serviceId, position;
     private ServiceDetailsViewModel serviceViewModel;
     private EventTypeCardViewModel eventTypeViewModel;

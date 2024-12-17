@@ -80,7 +80,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inputServiceName">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceName">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/createServiceDescription"
@@ -90,6 +90,17 @@
                     android:hint="@string/serviceDescription"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceDescription" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/createServiceSpecifics"
@@ -101,7 +112,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inputServiceDescription">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceDescription">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputServiceSpecifics"
@@ -111,6 +122,17 @@
                     android:hint="@string/serviceSpecifics"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceSpecifics"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createServiceSpecifics" />
 
             <AutoCompleteTextView
                 android:id="@+id/addServiceCategory"
@@ -127,7 +149,18 @@
                 android:textColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createServiceSpecifics" />
+                app:layout_constraintTop_toBottomOf="@id/errorServiceSpecifics" />
+
+            <TextView
+                android:id="@+id/errorServiceCategory"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addServiceCategory" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/eventTypeInput"
@@ -137,7 +170,7 @@
                 android:hint="Event Types"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/addServiceCategory">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceCategory">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/editTextEventTypes"
@@ -146,6 +179,17 @@
                     android:cursorVisible="false"
                     android:focusable="false" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceEventTypes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/eventTypeInput" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/createServiceLocation"
@@ -157,7 +201,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/eventTypeInput">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceEventTypes">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputServiceLocation"
@@ -167,6 +211,17 @@
                     android:hint="Location"
                     android:inputType="text" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createServiceLocation" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/createServiceReservationDeadline"
@@ -178,7 +233,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createServiceLocation">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceLocation">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputServiceReservationDeadline"
@@ -186,8 +241,19 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/raleway"
                     android:hint="Reservation Deadline"
-                    android:inputType="text" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceReservationDeadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createServiceReservationDeadline" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/createServiceCancellationDeadline"
@@ -199,7 +265,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createServiceReservationDeadline">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceReservationDeadline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/inputServiceCancellationDeadline"
@@ -207,8 +273,19 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/raleway"
                     android:hint="Cancellation Deadline"
-                    android:inputType="text" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceCancellationDeadline"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createServiceCancellationDeadline" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputServicePrice"
@@ -220,7 +297,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/createServiceCancellationDeadline">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceCancellationDeadline">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/createServicePrice"
@@ -228,8 +305,19 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/raleway"
                     android:hint="@string/servicePrice"
-                    android:inputType="text" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServicePrice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputServicePrice" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/inputServiceDiscount"
@@ -241,7 +329,7 @@
                 app:boxStrokeColor="@color/darkText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/inputServicePrice">
+                app:layout_constraintTop_toBottomOf="@id/errorServicePrice">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/createServiceDiscount"
@@ -249,8 +337,19 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/raleway"
                     android:hint="@string/serviceDiscount"
-                    android:inputType="text" />
+                    android:inputType="number" />
             </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorServiceDiscount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputServiceDiscount" />
 
             <LinearLayout
                 android:id="@+id/imagesLinearLayout"
@@ -258,7 +357,7 @@
                 android:layout_height="107dp"
                 android:baselineAligned="false"
                 android:orientation="horizontal"
-                app:layout_constraintTop_toBottomOf="@id/inputServiceDiscount">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceDiscount">
 
                 <HorizontalScrollView
                     android:layout_width="0dp"
@@ -299,6 +398,17 @@
             </LinearLayout>
 
             <TextView
+                android:id="@+id/errorServiceImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imagesLinearLayout" />
+
+            <TextView
                 android:id="@+id/txtDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -306,7 +416,7 @@
                 android:fontFamily="@font/raleway"
                 android:text="@string/durationMinutes"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/imagesLinearLayout" />
+                app:layout_constraintTop_toBottomOf="@id/errorServiceImages" />
 
             <com.google.android.material.slider.Slider
                 android:id="@+id/sliderDuration"
@@ -442,6 +552,17 @@
                 </RadioGroup>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/errorServiceReservationType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/reservationType" />
+
             <LinearLayout
                 android:id="@+id/timeSelectLinearLayout"
                 android:layout_width="match_parent"
@@ -449,7 +570,7 @@
                 android:orientation="vertical"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/reservationType">
+                app:layout_constraintTop_toBottomOf="@id/errorServiceReservationType">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -484,6 +605,17 @@
                         android:src="@drawable/clock" />
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/errorServiceStartTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/required"
+                    android:textColor="@color/alert"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputStartTime" />
+
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -517,6 +649,17 @@
                         android:contentDescription="@string/description"
                         android:src="@drawable/clock" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/errorServiceEndTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/required"
+                    android:textColor="@color/alert"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputEndTime" />
             </LinearLayout>
 
             <com.google.android.material.button.MaterialButton

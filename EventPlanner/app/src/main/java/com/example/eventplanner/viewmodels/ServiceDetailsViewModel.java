@@ -14,20 +14,20 @@ import retrofit2.Response;
 
 public class ServiceDetailsViewModel extends ViewModel {
     private final MutableLiveData<Service> serviceLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> deleteSuccess = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
-
-    public LiveData<Service> getService() {
-        return serviceLiveData;
+    private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+    public LiveData<Boolean> getSuccess() {
+        return success;
     }
-
-    public LiveData<Boolean> getDeleteSuccess() {
-        return deleteSuccess;
-    }
-
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
+
+    public void setService(Service service) {
+        serviceLiveData.setValue(service);
+    }
+
+    public LiveData<Service> getService() {return serviceLiveData;}
 
     public void fetchServiceById(int ServiceId) {
         Call<Service> call = ClientUtils.serviceService.getById(ServiceId);
@@ -48,20 +48,39 @@ public class ServiceDetailsViewModel extends ViewModel {
         });
     }
 
-    public void deleteServiceById(int ServiceId) {
-        Call<ResponseBody> call = ClientUtils.serviceService.deleteById(ServiceId);
-        call.enqueue(new Callback<ResponseBody>() {
+    public void addNewService(Service newService) {
+        Call<Service> call = ClientUtils.serviceService.add(newService);
+        call.enqueue(new Callback<Service>() {
             @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+            public void onResponse(Call<Service> call, Response<Service> response) {
                 if (response.isSuccessful()) {
-                    deleteSuccess.postValue(true);
+                    success.postValue(true);
                 } else {
-                    errorMessage.postValue("Failed to delete Service. Code: " + response.code());
+                    errorMessage.postValue("Failed to add service. Code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
+            public void onFailure(Call<Service> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void editService(int id, Service editService) {
+        Call<Service> call = ClientUtils.serviceService.edit(id, editService);
+        call.enqueue(new Callback<Service>() {
+            @Override
+            public void onResponse(Call<Service> call, Response<Service> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to edit service. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Service> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });
