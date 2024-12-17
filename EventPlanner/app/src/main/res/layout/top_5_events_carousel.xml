@@ -23,8 +23,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clipToPadding="false"
-        android:paddingStart="60dp"
-        android:paddingEnd="60dp"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
         android:orientation="horizontal"
         android:scrollbars="none" />
+
+    <LinearLayout
+        android:id="@+id/paginationDotsContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"/>
+
+    <TextView
+        android:id="@+id/noEventsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/there_are_no_events_currently"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/darkText" />
+
+    <TextView
+        android:id="@+id/loadingEventsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_events"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/darkText" />
 </LinearLayout>

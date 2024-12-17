@@ -43,7 +43,7 @@
             android:autofillHints=""
             android:background="@android:color/white"
             android:fontFamily="@font/raleway"
-            android:hint="@string/search_hint"
+            android:hint="@string/search_products_services"
             android:inputType="text"
             android:padding="8dp"
             android:textColor="@color/darkText"

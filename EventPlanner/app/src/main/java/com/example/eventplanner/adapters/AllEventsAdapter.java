@@ -13,22 +13,23 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.activities.EventDetailsActivity;
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.Event;
+import com.example.eventplanner.models.EventCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
     private final Context context;
-    private final List<Event> eventList;
-    private List<Event> eventListFiltered;
+    private List<EventCard> eventList;
+    private List<EventCard> eventListFiltered;
 
-    public AllEventsAdapter(Context context, List<Event> eventList) {
+    public AllEventsAdapter(Context context, List<EventCard> events) {
         this.context = context;
-        this.eventList = new ArrayList<>(eventList);
-        this.eventListFiltered = new ArrayList<>(eventList);
+        this.eventList = new ArrayList<>(events);
+        this.eventListFiltered = new ArrayList<>(events);
     }
 
     @NonNull
@@ -40,18 +41,20 @@ public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Event event = eventListFiltered.get(position);
+        EventCard event = eventListFiltered.get(position);
         EventViewHolder eventHolder = (EventViewHolder) holder;
-        eventHolder.eventTitle.setText(event.getTitle());
+        eventHolder.eventTitle.setText(event.getName());
         eventHolder.eventDescription.setText(event.getDescription());
-        eventHolder.eventImage.setImageResource(event.getImageResourceId());
 
-        // Set a click listener for the item
+        Glide.with(context)
+                .load(event.getCardImage())
+                .into(eventHolder.eventImage);
+
         eventHolder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventDetailsActivity.class);
-            intent.putExtra("eventTitle", event.getTitle());
+            intent.putExtra("eventTitle", event.getName());
             intent.putExtra("eventDescription", event.getDescription());
-            intent.putExtra("eventImage", event.getImageResourceId());
+            intent.putExtra("eventImage", event.getCardImage());
             context.startActivity(intent);
         });
     }
@@ -59,6 +62,16 @@ public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public int getItemCount() {
         return eventListFiltered.size();
+    }
+
+    public void updateEventList(List<EventCard> events) {
+        if (events != null) {
+            this.eventList.clear();
+            this.eventList.addAll(events);
+            this.eventListFiltered.clear();
+            this.eventListFiltered.addAll(events);
+            notifyDataSetChanged();
+        }
     }
 
     public static class EventViewHolder extends RecyclerView.ViewHolder {
@@ -78,13 +91,13 @@ public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<Event> filteredList = new ArrayList<>();
+                List<EventCard> filteredList = new ArrayList<>();
                 if (constraint == null || constraint.length() == 0) {
                     filteredList.addAll(eventList);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
-                    for (Event event : eventList) {
-                        if (event.getTitle().toLowerCase().contains(filterPattern)) {
+                    for (EventCard event : eventList) {
+                        if (event.getName().toLowerCase().contains(filterPattern)) {
                             filteredList.add(event);
                         }
                     }
@@ -101,12 +114,5 @@ public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 notifyDataSetChanged();
             }
         };
-    }
-
-    public void updateEventList(List<Event> newEventList) {
-        eventList.clear();
-        eventList.addAll(newEventList);
-        eventListFiltered = new ArrayList<>(eventList);
-        notifyDataSetChanged();
     }
 }

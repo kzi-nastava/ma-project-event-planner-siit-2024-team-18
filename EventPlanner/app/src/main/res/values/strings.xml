@@ -109,19 +109,31 @@
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="johndoe_gmail_com">johndoe@gmail.com</string>
     <string name="john_doe">John Doe</string>
+    <string name="there_are_no_events_currently">There are no events currently.</string>
+    <string name="loading_events">Loading Events...</string>
+    <string name="search_products_services">Search Products/Services</string>
     <string-array name="sort_options">
-        <item>Select sort</item>
         <item>Ascending</item>
         <item>Descending</item>
-        <item>Sort by Date</item>
-        <item>Sort by Name</item>
-        <!-- Add more sorting options -->
     </string-array>
     <string-array name="filter_options">
-        <item>Select filter</item>
-        <item>All</item>
-        <item>Upcoming</item>
-        <item>Past</item>
-        <!-- Add more filtering options -->
+        <item>Name</item>
+        <item>Description</item>
+        <item>City</item>
+        <item>Country</item>
+        <item>Max participants</item>
+        <item>Budget</item>
+        <item>Event Type</item>
+        <item>Creator Name</item>
+    </string-array>
+    <string-array name="filter_values">
+        <item>name</item>
+        <item>description</item>
+        <item>city</item>
+        <item>country</item>
+        <item>maxParticipants</item>
+        <item>budget</item>
+        <item>eventType</item>
+        <item>organizerFirstName</item>
     </string-array>
 </resources>

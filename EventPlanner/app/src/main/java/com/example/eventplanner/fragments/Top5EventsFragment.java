@@ -4,57 +4,62 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.Top5EventsAdapter;
-import com.example.eventplanner.models.Event;
+import com.example.eventplanner.databinding.Top5EventsCarouselBinding;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 public class Top5EventsFragment extends Fragment {
 
-    private RecyclerView top5EventsRecyclerView;
-    private List<Event> top5EventsList;
+    private Top5EventsAdapter adapter;
+    private Top5EventsCarouselBinding binding;
+    private Top5EventsViewModel viewModel;
+    private List<ImageView> dots;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        top5EventsList = new ArrayList<>();
-        top5EventsList.add(new Event("Event 1", "Description for Event 1", R.drawable.event_placeholder));
-        top5EventsList.add(new Event("Event 2", "Description for Event 2", R.drawable.event_placeholder2));
-        top5EventsList.add(new Event("Event 3", "Description for Event 3", R.drawable.event_placeholder));
-        top5EventsList.add(new Event("Event 4", "Description for Event 4", R.drawable.event_placeholder3));
-        top5EventsList.add(new Event("Event 5", "Description for Event 5", R.drawable.event_placeholder3));
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        binding = Top5EventsCarouselBinding.inflate(inflater, container, false);
+        return binding.getRoot();
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.top_5_events_carousel, container, false);
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        top5EventsRecyclerView = view.findViewById(R.id.top_5_events_recycler_view);
-        top5EventsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        viewModel = new ViewModelProvider(this).get(Top5EventsViewModel.class);
 
-        Top5EventsAdapter top5EventsAdapter = new Top5EventsAdapter(getContext(), top5EventsList);
-        top5EventsRecyclerView.setAdapter(top5EventsAdapter);
+        if (binding != null) {
+            setupRecyclerView();
+        }
+
+        observeViewModel();
+
+        viewModel.fetchTop5Events();
+    }
+
+    private void setupRecyclerView() {
+        adapter = new Top5EventsAdapter(getContext(), new ArrayList<>());
+
+        binding.top5EventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.top5EventsRecyclerView.setAdapter(adapter);
 
         LinearSnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(top5EventsRecyclerView);
+        snapHelper.attachToRecyclerView(binding.top5EventsRecyclerView);
 
-        top5EventsAdapter.setSnapHelper(snapHelper);
-        top5EventsAdapter.setRecyclerView(top5EventsRecyclerView);
-
-        top5EventsRecyclerView.post(() -> top5EventsRecyclerView.scrollToPosition(0));
-
-        top5EventsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.top5EventsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -62,19 +67,66 @@ public class Top5EventsFragment extends Fragment {
                 View centerView = snapHelper.findSnapView(recyclerView.getLayoutManager());
                 if (centerView != null) {
                     int centerPosition = Objects.requireNonNull(recyclerView.getLayoutManager()).getPosition(centerView);
-
-                    for (int i = 0; i < recyclerView.getChildCount(); i++) {
-                        View child = recyclerView.getChildAt(i);
-                        if (child != null) {
-                            float scaleFactor = (recyclerView.getChildAdapterPosition(child) == centerPosition) ? 1.0f : 0.8f;
-                            child.setScaleX(scaleFactor);
-                            child.setScaleY(scaleFactor);
-                        }
-                    }
+                    updatePaginationDots(centerPosition);
                 }
             }
         });
+    }
 
-        return view;
+    private void setupPaginationDots(int size) {
+        dots = new ArrayList<>();
+        binding.paginationDotsContainer.removeAllViews();
+
+        for (int i = 0; i < size; i++) {
+            ImageView dot = new ImageView(getContext());
+            dot.setImageResource(R.drawable.inactive_dot);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            params.setMargins(8, 0, 8, 0);
+            dot.setLayoutParams(params);
+            binding.paginationDotsContainer.addView(dot);
+            dots.add(dot);
+        }
+
+        if (!dots.isEmpty()) {
+            dots.get(0).setImageResource(R.drawable.active_dot);
+        }
+    }
+
+    private void updatePaginationDots(int activePosition) {
+        for (int i = 0; i < dots.size(); i++) {
+            if (i == activePosition) {
+                dots.get(i).setImageResource(R.drawable.active_dot);
+            } else {
+                dots.get(i).setImageResource(R.drawable.inactive_dot);
+            }
+        }
+    }
+
+    private void observeViewModel() {
+        viewModel.getTop5Events().observe(getViewLifecycleOwner(), events -> {
+            if (events != null && !events.isEmpty()) {
+                binding.noEventsMessage.setVisibility(View.GONE);
+                binding.top5EventsRecyclerView.setVisibility(View.VISIBLE);
+                adapter.updateEventList(events);
+
+                setupPaginationDots(events.size());
+            } else {
+                binding.noEventsMessage.setVisibility(View.VISIBLE);
+                binding.top5EventsRecyclerView.setVisibility(View.GONE);
+            }
+        });
+
+        viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
+            binding.loadingEventsMessage.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+        });
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        binding = null;
     }
 }

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 
 public class EventDetailsActivity extends BaseActivity {
@@ -16,12 +17,20 @@ public class EventDetailsActivity extends BaseActivity {
         TextView eventTitle = findViewById(R.id.event_title);
         TextView eventDescription = findViewById(R.id.event_description);
 
+        // Get data passed from AllEventsAdapter
         String title = getIntent().getStringExtra("eventTitle");
         String description = getIntent().getStringExtra("eventDescription");
-        int imageResource = getIntent().getIntExtra("eventImage", R.drawable.event_placeholder);
+        String imageUrl = getIntent().getStringExtra("eventImage");
 
-        eventImage.setImageResource(imageResource);
+        // Set the event details
         eventTitle.setText(title);
         eventDescription.setText(description);
+
+        // Load the image using Glide
+        Glide.with(this)
+                .load(imageUrl)
+                .placeholder(R.drawable.event_placeholder) // Optional: show a placeholder while loading
+                .error(R.drawable.event_placeholder)       // Optional: show placeholder if loading fails
+                .into(eventImage);
     }
 }
