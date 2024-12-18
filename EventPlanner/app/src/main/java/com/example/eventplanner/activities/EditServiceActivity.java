@@ -46,10 +46,11 @@ import java.util.List;
 public class EditServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
-    private List<EventType> listEventTypes;
+    private List<EventType> listEventTypes = new ArrayList<>();
+    List<String> selectedEventTypes = new ArrayList<>();
     private TextInputEditText serviceName, eventTypes, serviceDescription, servicePrice, discount, location, specifics, reservationDeadline, cancellationDeadline, workingHoursStart, workingHoursEnd;
     private ImageView btnClose, btnSelectPictures, btnClearPictures, btnWorkingHoursStart, btnWorkingHoursEnd;
-    private TextView errorServiceName;
+    private TextView errorServiceName, errorServiceDescription, errorServiceSpecifics, errorServiceCategory, errorServiceEventTypes, errorServiceLocation, errorServiceReservationDeadline, errorServiceCancellationDeadline, errorServicePrice, errorServiceDiscount, errorServiceImages, errorServiceReservationType, errorServiceStartTime, errorServiceEndTime;
     private Button btnSave;
     private Service service;
     private Spinner category;
@@ -58,7 +59,7 @@ public class EditServiceActivity extends BaseActivity {
     private LinearLayout selectedImagesContainer;
     private SwitchCompat isVisible, isAvailable;
     private int serviceId, position;
-    private ServiceDetailsViewModel serviceViewModel;
+    private ServiceDetailsViewModel serviceDetailsViewModel;
     private EventTypeCardViewModel eventTypeViewModel;
 
     @Override
@@ -66,22 +67,18 @@ public class EditServiceActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_edit_service, findViewById(R.id.content_frame));
 
-        // Initialize views
         initializeViews();
 
-        // Retrieve data from intent
         serviceId = getIntent().getIntExtra("serviceId", -1);
         position = getIntent().getIntExtra("position", -1);
 
         loadViewModels();
-
-        // Set button listeners
         setupListeners();
     }
 
     private void loadViewModels() {
         eventTypeViewModel.fetchEventTypes();
-        serviceViewModel.fetchServiceById(serviceId);
+        serviceDetailsViewModel.fetchServiceById(serviceId);
 
         // ViewModel setup
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
@@ -97,15 +94,22 @@ public class EditServiceActivity extends BaseActivity {
             }
         });
 
-        serviceViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
-        serviceViewModel.getService().observe(this, service -> {
+        serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.getService().observe(this, service -> {
             if (service != null) {
                 this.service = service;
                 populateFields();
             }
         });
 
-        serviceViewModel.getErrorMessage().observe(this, error -> {
+        serviceDetailsViewModel.getSuccess().observe(this, success -> {
+            if (success) {
+                Toast.makeText(this, "Service Updated Successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        serviceDetailsViewModel.getErrorMessage().observe(this, error -> {
             if (error != null) {
                 Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
             }
@@ -113,34 +117,53 @@ public class EditServiceActivity extends BaseActivity {
     }
 
     private void initializeViews() {
-        serviceViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+
         serviceName = findViewById(R.id.editServiceName);
         serviceDescription = findViewById(R.id.editServiceDescription);
         servicePrice = findViewById(R.id.editServicePrice);
         discount = findViewById(R.id.editServiceDiscount);
-        btnSelectPictures = findViewById(R.id.btnSelectPictures);
-        selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
-        btnClearPictures = findViewById(R.id.btnClearPictures);
-        isVisible = findViewById(R.id.switchVisivility);
-        isAvailable = findViewById(R.id.switchAvailability);
-        category = findViewById(R.id.categoryDisabled);
-        eventTypes = findViewById(R.id.editTextEventTypes);
         location = findViewById(R.id.inputServiceLocation);
-        reservationType = findViewById(R.id.radioGroupReservationType);
         specifics = findViewById(R.id.editServiceSpecifics);
-        duration = findViewById(R.id.sliderDuration);
-        minEngagement = findViewById(R.id.sliderFrom);
-        maxEngagement = findViewById(R.id.sliderTo);
         reservationDeadline = findViewById(R.id.inputServiceReservationDeadline);
         cancellationDeadline = findViewById(R.id.inputServiceCancellationDeadline);
         workingHoursStart = findViewById(R.id.editStartTime);
-        btnWorkingHoursStart = findViewById(R.id.btnPickStartTime);
         workingHoursEnd = findViewById(R.id.editEndTime);
+        category = findViewById(R.id.categoryDisabled);
+        eventTypes = findViewById(R.id.editTextEventTypes);
+
+        btnSelectPictures = findViewById(R.id.btnSelectPictures);
+        btnClearPictures = findViewById(R.id.btnClearPictures);
+        btnWorkingHoursStart = findViewById(R.id.btnPickStartTime);
         btnWorkingHoursEnd = findViewById(R.id.btnPickEndTime);
-        errorServiceName = findViewById(R.id.errorServiceName);
         btnClose = findViewById(R.id.btnClose);
         btnSave = findViewById(R.id.btnSave);
+
+        selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
+
+        errorServiceName = findViewById(R.id.errorServiceName);
+        errorServiceDescription = findViewById(R.id.errorServiceDescription);
+        errorServiceSpecifics = findViewById(R.id.errorServiceSpecifics);
+        errorServiceCategory = findViewById(R.id.errorServiceCategory);
+        errorServiceEventTypes = findViewById(R.id.errorServiceEventTypes);
+        errorServiceLocation = findViewById(R.id.errorServiceLocation);
+        errorServiceReservationDeadline = findViewById(R.id.errorServiceReservationDeadline);
+        errorServiceCancellationDeadline = findViewById(R.id.errorServiceCancellationDeadline);
+        errorServicePrice = findViewById(R.id.errorServicePrice);
+        errorServiceDiscount = findViewById(R.id.errorServiceDiscount);
+        errorServiceImages = findViewById(R.id.errorServiceImages);
+        errorServiceReservationType = findViewById(R.id.errorServiceReservationType);
+        errorServiceStartTime = findViewById(R.id.errorServiceStartTime);
+        errorServiceEndTime = findViewById(R.id.errorServiceEndTime);
+
+        duration = findViewById(R.id.sliderDuration);
+        minEngagement = findViewById(R.id.sliderFrom);
+        maxEngagement = findViewById(R.id.sliderTo);
+
+        reservationType = findViewById(R.id.radioGroupReservationType);
+        isVisible = findViewById(R.id.switchVisivility);
+        isAvailable = findViewById(R.id.switchAvailability);
     }
 
     private void populateFields() {
@@ -154,9 +177,9 @@ public class EditServiceActivity extends BaseActivity {
         loadExistingImages();
 
         if ("MANUAL".equalsIgnoreCase(service.getReservationType())) {
-            reservationType.check(R.id.radioButtonManual);
+            reservationType.check(R.id.radioAuto);
         } else if ("AUTOMATIC".equalsIgnoreCase(service.getReservationType())) {
-            reservationType.check(R.id.radioButtonAutomatic);
+            reservationType.check(R.id.radioManual);
         }
 
         specifics.setText(service.getSpecifics());
@@ -190,7 +213,7 @@ public class EditServiceActivity extends BaseActivity {
     }
 
     private void initializeEventTypes() {
-        List<String> selectedEventTypes = new ArrayList<>(service.getEventTypes());
+        selectedEventTypes = new ArrayList<>(service.getEventTypes());
         setEventTypesSelection(selectedEventTypes);
         setupEventTypesMultiSelect(selectedEventTypes);
     }
@@ -261,7 +284,9 @@ public class EditServiceActivity extends BaseActivity {
         String[] existingImages = service.getImages();
         if (existingImages != null) {
             for (String imageUrl : existingImages) {
-                addImageToContainer(imageUrl, false);
+                Uri imageUri = Uri.parse(imageUrl);
+                imageUris.add(imageUri);
+                addImageToContainer(imageUri.toString(), false);
             }
         }
     }
@@ -309,90 +334,126 @@ public class EditServiceActivity extends BaseActivity {
         }
     }
 
-    // not implemented completely
-    // TODO: merge reservation date and time together
     private void saveEditedService() {
+        if (!validateInputs()) {
+            Toast.makeText(this, "Invalid Input Detected!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        serviceDetailsViewModel.editService(serviceId, updateService());
+    }
+
+    private boolean validateInputs() {
         boolean isValid = true;
 
-        // Validate service name
-        if (TextUtils.isEmpty(serviceName.getText())) {
-            errorServiceName.setVisibility(View.VISIBLE);
+        if (!validateField(serviceName, errorServiceName)) {
+            isValid = false;
+        }
+
+        if (!validateField(serviceDescription, errorServiceDescription)) {
+            isValid = false;
+        }
+
+        if (!validateField(specifics, errorServiceSpecifics)) {
+            isValid = false;
+        }
+
+        if (selectedEventTypes.isEmpty()) {
+            errorServiceEventTypes.setVisibility(View.VISIBLE);
             isValid = false;
         } else {
-            errorServiceName.setVisibility(View.GONE);
+            errorServiceEventTypes.setVisibility(View.GONE);
         }
 
-        if (isValid) {
-            // Retrieve selected Reservation Type
-            int selectedId = reservationType.getCheckedRadioButtonId();
-            String selectedReservationType = null;
-
-            if (selectedId == R.id.radioButtonManual) {
-                selectedReservationType = "MANUAL";
-            } else if (selectedId == R.id.radioButtonAutomatic) {
-                selectedReservationType = "AUTOMATIC";
-            }
-
-            // Set reservation type to the service object (if applicable)
-            service.setReservationType(selectedReservationType);
-
-            // Combine images (new + existing)
-            List<String> allImagePaths = new ArrayList<>();
-
-            // Add new image URIs
-            for (Uri uri : imageUris) {
-                allImagePaths.add(uri.toString());
-            }
-
-            // Add existing image URLs
-            String[] existingImages = service.getImages();
-            if (existingImages != null) {
-                allImagePaths.addAll(List.of(existingImages));
-            }
-
-            // Update the service's images
-            service.setImages(allImagePaths.toArray(new String[0]));
-
-            // Save other service details (this part might involve updating your ViewModel or API)
-            service.setName(serviceName.getText().toString());
-            service.setDescription(serviceDescription.getText().toString());
-            service.setPrice(Double.parseDouble(servicePrice.getText().toString()));
-            service.setDiscount(Double.parseDouble(discount.getText().toString()));
-            service.setVisible(isVisible.isChecked());
-            service.setAvailable(isAvailable.isChecked());
-            service.setLocation(location.getText().toString());
-
-            if (!TextUtils.isEmpty(specifics.getText())) {
-                service.setSpecifics(specifics.getText().toString());
-            }
-
-            if (duration.getValue() > 0) {
-                service.setDuration((int) duration.getValue());
-            } else {
-                service.setMinEngagement((int) minEngagement.getValue());
-                service.setMaxEngagement((int) maxEngagement.getValue());
-            }
-
-            if (!TextUtils.isEmpty(reservationDeadline.getText())) {
-                service.setReservationDeadline(Integer.parseInt(reservationDeadline.getText().toString()));
-            }
-
-            if (!TextUtils.isEmpty(cancellationDeadline.getText())) {
-                service.setCancellationDeadline(Integer.parseInt(cancellationDeadline.getText().toString()));
-            }
-
-            service.setWorkingHoursStart(workingHoursStart.getText().toString());
-            service.setWorkingHoursEnd(workingHoursEnd.getText().toString());
-
-            // Save the service via ViewModel or API
-//            serviceViewModel.updateService(service);
-
-            Toast.makeText(this, "Service Updated Successfully", Toast.LENGTH_SHORT).show();
-
-            // Navigate back to the list of all services
-            Intent intent = new Intent(EditServiceActivity.this, AllServicesActivity.class);
-            startActivity(intent);
-            finish();
+        if (!validateField(location, errorServiceLocation)) {
+            isValid = false;
         }
+
+        if (!validateField(reservationDeadline, errorServiceReservationDeadline)) {
+            isValid = false;
+        }
+
+        if (!validateField(cancellationDeadline, errorServiceCancellationDeadline)) {
+            isValid = false;
+        }
+
+        if (!validateField(servicePrice, errorServicePrice)) {
+            isValid = false;
+        }
+
+        if (!validateField(discount, errorServiceDiscount)) {
+            isValid = false;
+        }
+
+        if (imageUris.isEmpty()) {
+            errorServiceImages.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            errorServiceImages.setVisibility(View.GONE);
+        }
+
+        if (getSelectedReservationType() == null) {
+            errorServiceReservationType.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            errorServiceReservationType.setVisibility(View.GONE);
+        }
+
+        if (!validateField(workingHoursStart, errorServiceStartTime)) {
+            isValid = false;
+        }
+
+        if (!validateField(workingHoursEnd, errorServiceEndTime)) {
+            isValid = false;
+        }
+
+        return isValid;
+    }
+
+    private boolean validateField(EditText field, View errorView) {
+        boolean isValid = !TextUtils.isEmpty(field.getText());
+        errorView.setVisibility(isValid ? View.GONE : View.VISIBLE);
+        return isValid;
+    }
+
+    private String getSelectedReservationType() {
+        int selectedId = reservationType.getCheckedRadioButtonId();
+        if (selectedId == R.id.radioManual) {
+            return "MANUAL";
+        } else if (selectedId == R.id.radioAuto) {
+            return "AUTOMATIC";
+        }
+        return null;
+    }
+
+    private Service updateService() {
+        service.setName(serviceName.getText().toString());
+        service.setDescription(serviceDescription.getText().toString());
+        service.setSpecifics(specifics.getText().toString());
+        service.setCategory(category.getSelectedItem().toString());
+        service.setEventTypes(selectedEventTypes.toArray(new String[0]));
+        service.setLocation(location.getText().toString());
+        service.setReservationDeadline(Integer.parseInt(reservationDeadline.getText().toString()));
+        service.setCancellationDeadline(Integer.parseInt(cancellationDeadline.getText().toString()));
+        service.setPrice(Double.parseDouble(servicePrice.getText().toString()));
+        service.setDiscount(Double.parseDouble(discount.getText().toString()));
+
+        List<String> allImagePaths = new ArrayList<>();
+        imageUris.forEach(uri -> allImagePaths.add(uri.toString()));
+        if (service.getImages() != null) {
+            allImagePaths.addAll(List.of(service.getImages()));
+        }
+        service.setImages(allImagePaths.toArray(new String[0]));
+
+        service.setDuration((int) duration.getValue());
+        service.setMinEngagement((int) minEngagement.getValue());
+        service.setMaxEngagement((int) maxEngagement.getValue());
+        service.setVisible(isVisible.isChecked());
+        service.setAvailable(isAvailable.isChecked());
+        service.setReservationType(getSelectedReservationType());
+        service.setWorkingHoursStart(workingHoursStart.getText().toString());
+        service.setWorkingHoursEnd(workingHoursEnd.getText().toString());
+
+        return service;
     }
 }

@@ -72,6 +72,7 @@ public class CreateServiceActivity extends BaseActivity {
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+
         serviceName = findViewById(R.id.createServiceName);
         serviceDescription = findViewById(R.id.createServiceDescription);
         servicePrice = findViewById(R.id.createServicePrice);
@@ -153,7 +154,7 @@ public class CreateServiceActivity extends BaseActivity {
 
         serviceDetailsViewModel.getSuccess().observe(this, success -> {
             if (success) {
-                Toast.makeText(this, "Service Updated Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Service Created Successfully", Toast.LENGTH_SHORT).show();
                 finish();
             }
         });
