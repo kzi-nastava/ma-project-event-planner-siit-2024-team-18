@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.homepage;
 
 import android.app.DatePickerDialog;
 import android.os.Bundle;
@@ -75,7 +75,7 @@ public class AllEventsFragment extends Fragment {
                 R.array.filter_options,
                 android.R.layout.simple_spinner_item
         );
-        filterAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        filterAdapter.setDropDownViewResource(R.layout.spinner_item);
         binding.filterSpinner.setAdapter(filterAdapter);
 
         binding.filterSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -94,7 +94,7 @@ public class AllEventsFragment extends Fragment {
                 R.array.sort_options,
                 android.R.layout.simple_spinner_item
         );
-        sortAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sortAdapter.setDropDownViewResource(R.layout.spinner_item);
         binding.sortSpinner.setAdapter(sortAdapter);
 
         binding.sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {

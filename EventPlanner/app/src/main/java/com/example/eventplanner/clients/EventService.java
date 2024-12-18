@@ -1,13 +1,12 @@
 package com.example.eventplanner.clients;
 
-import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.PagedResponse;
 
 import java.time.LocalDate;
 import java.util.Collection;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;

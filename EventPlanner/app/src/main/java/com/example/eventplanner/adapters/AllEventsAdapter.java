@@ -14,7 +14,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.activities.EventDetailsActivity;
+import com.example.eventplanner.activities.details.EventDetailsActivity;
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.EventCard;
 
@@ -52,9 +52,7 @@ public class AllEventsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         eventHolder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, EventDetailsActivity.class);
-            intent.putExtra("eventTitle", event.getName());
-            intent.putExtra("eventDescription", event.getDescription());
-            intent.putExtra("eventImage", event.getCardImage());
+            intent.putExtra("eventId", event.getId());
             context.startActivity(intent);
         });
     }

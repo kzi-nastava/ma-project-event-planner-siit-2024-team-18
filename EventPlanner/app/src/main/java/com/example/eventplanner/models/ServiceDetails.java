@@ -11,7 +11,7 @@ import com.google.gson.annotations.SerializedName;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ProductDetailsDTO implements Parcelable, Serializable {
+public class ServiceDetails implements Parcelable, Serializable {
 
     @SerializedName("id")
     @Expose
@@ -49,14 +49,42 @@ public class ProductDetailsDTO implements Parcelable, Serializable {
     @Expose
     private String status;
 
-    @SerializedName("isBought")
+    @SerializedName("isDeleted")
     @Expose
-    private boolean isBought;
+    private boolean isDeleted;
 
-    public ProductDetailsDTO() {
+    @SerializedName("specifics")
+    @Expose
+    private String specifics;
+
+    @SerializedName("duration")
+    @Expose
+    private int duration;
+
+    @SerializedName("minEngagement")
+    @Expose
+    private int minEngagement;
+
+    @SerializedName("maxEngagement")
+    @Expose
+    private int maxEngagement;
+
+    @SerializedName("reservationDeadline")
+    @Expose
+    private int reservationDeadline;
+
+    @SerializedName("cancellationDeadline")
+    @Expose
+    private int cancellationDeadline;
+
+    @SerializedName("reservationType")
+    @Expose
+    private String reservationType;
+
+    public ServiceDetails() {
     }
 
-    protected ProductDetailsDTO(Parcel in) {
+    protected ServiceDetails(Parcel in) {
         id = in.readInt();
         name = in.readString();
         description = in.readString();
@@ -66,21 +94,29 @@ public class ProductDetailsDTO implements Parcelable, Serializable {
         isVisible = in.readByte() != 0;
         isAvailable = in.readByte() != 0;
         status = in.readString();
-        isBought = in.readByte() != 0;
+        isDeleted = in.readByte() != 0;
+        specifics = in.readString();
+        duration = in.readInt();
+        minEngagement = in.readInt();
+        maxEngagement = in.readInt();
+        reservationDeadline = in.readInt();
+        cancellationDeadline = in.readInt();
+        reservationType = in.readString();
     }
 
-    public static final Creator<ProductDetailsDTO> CREATOR = new Creator<ProductDetailsDTO>() {
+    public static final Creator<ServiceDetails> CREATOR = new Creator<ServiceDetails>() {
         @Override
-        public ProductDetailsDTO createFromParcel(Parcel in) {
-            return new ProductDetailsDTO(in);
+        public ServiceDetails createFromParcel(Parcel in) {
+            return new ServiceDetails(in);
         }
 
         @Override
-        public ProductDetailsDTO[] newArray(int size) {
-            return new ProductDetailsDTO[size];
+        public ServiceDetails[] newArray(int size) {
+            return new ServiceDetails[size];
         }
     };
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -153,18 +189,74 @@ public class ProductDetailsDTO implements Parcelable, Serializable {
         this.status = status;
     }
 
-    public boolean isBought() {
-        return isBought;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setBought(boolean bought) {
-        isBought = bought;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public String getSpecifics() {
+        return specifics;
+    }
+
+    public void setSpecifics(String specifics) {
+        this.specifics = specifics;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public int getMinEngagement() {
+        return minEngagement;
+    }
+
+    public void setMinEngagement(int minEngagement) {
+        this.minEngagement = minEngagement;
+    }
+
+    public int getMaxEngagement() {
+        return maxEngagement;
+    }
+
+    public void setMaxEngagement(int maxEngagement) {
+        this.maxEngagement = maxEngagement;
+    }
+
+    public int getReservationDeadline() {
+        return reservationDeadline;
+    }
+
+    public void setReservationDeadline(int reservationDeadline) {
+        this.reservationDeadline = reservationDeadline;
+    }
+
+    public int getCancellationDeadline() {
+        return cancellationDeadline;
+    }
+
+    public void setCancellationDeadline(int cancellationDeadline) {
+        this.cancellationDeadline = cancellationDeadline;
+    }
+
+    public String getReservationType() {
+        return reservationType;
+    }
+
+    public void setReservationType(String reservationType) {
+        this.reservationType = reservationType;
     }
 
     @NonNull
     @Override
     public String toString() {
-        return "ProductDetailsDTO{" +
+        return "ServiceDetailsDTO{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
@@ -174,7 +266,14 @@ public class ProductDetailsDTO implements Parcelable, Serializable {
                 ", isVisible=" + isVisible +
                 ", isAvailable=" + isAvailable +
                 ", status='" + status + '\'' +
-                ", isBought=" + isBought +
+                ", isDeleted=" + isDeleted +
+                ", specifics='" + specifics + '\'' +
+                ", duration=" + duration +
+                ", minEngagement=" + minEngagement +
+                ", maxEngagement=" + maxEngagement +
+                ", reservationDeadline=" + reservationDeadline +
+                ", cancellationDeadline=" + cancellationDeadline +
+                ", reservationType='" + reservationType + '\'' +
                 '}';
     }
 
@@ -194,6 +293,13 @@ public class ProductDetailsDTO implements Parcelable, Serializable {
         dest.writeByte((byte) (isVisible ? 1 : 0));
         dest.writeByte((byte) (isAvailable ? 1 : 0));
         dest.writeString(status);
-        dest.writeByte((byte) (isBought ? 1 : 0));
+        dest.writeByte((byte) (isDeleted ? 1 : 0));
+        dest.writeString(specifics);
+        dest.writeInt(duration);
+        dest.writeInt(minEngagement);
+        dest.writeInt(maxEngagement);
+        dest.writeInt(reservationDeadline);
+        dest.writeInt(cancellationDeadline);
+        dest.writeString(reservationType);
     }
 }

@@ -1,6 +1,7 @@
 package com.example.eventplanner.clients;
 
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.models.ServiceDetails;
 
 import java.util.ArrayList;
 
@@ -27,8 +28,8 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("services/{id}")
-    Call<Service> getById(@Path("id") int id);
+    @GET("services/details/{id}")
+    Call<ServiceDetails> getById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",

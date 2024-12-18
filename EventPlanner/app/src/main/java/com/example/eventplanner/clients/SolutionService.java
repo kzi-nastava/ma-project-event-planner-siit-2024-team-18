@@ -17,16 +17,16 @@ public interface SolutionService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("api/solutions/top-solutions")
+    @GET("solutions/top-solutions")
     Call<List<SolutionCard>> getTopSolutions();
 
-    @GET("api/solutions/{id}")
+    @GET("solutions/{id}")
     Call<SolutionCard> getSolutionById(@Path("id") int id);
 
-    @GET("api/solutions/isProduct/{id}")
+    @GET("solutions/isProduct/{id}")
     Call<Boolean> isSolutionProduct(@Path("id") int id);
 
-    @GET("api/solutions")
+    @GET("solutions")
     Call<PagedResponse<SolutionCard>> searchAndFilterSolutions(
             @Query("keyword") String keyword,
             @Query("city") String city,

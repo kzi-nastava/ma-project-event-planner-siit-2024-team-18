@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.fragments.homepage;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,23 +15,23 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.adapters.Top5EventsAdapter;
-import com.example.eventplanner.databinding.Top5EventsCarouselBinding;
+import com.example.eventplanner.adapters.Top5SolutionsAdapter;
+import com.example.eventplanner.databinding.Top5SolutionsCarouselBinding;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class Top5EventsFragment extends Fragment {
+public class Top5SolutionsFragment extends Fragment {
 
-    private Top5EventsAdapter adapter;
-    private Top5EventsCarouselBinding binding;
-    private Top5EventsViewModel viewModel;
+    private Top5SolutionsAdapter adapter;
+    private Top5SolutionsCarouselBinding binding;
+    private Top5SolutionsViewModel viewModel;
     private List<ImageView> dots;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = Top5EventsCarouselBinding.inflate(inflater, container, false);
+        binding = Top5SolutionsCarouselBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
@@ -39,7 +39,7 @@ public class Top5EventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(this).get(Top5EventsViewModel.class);
+        viewModel = new ViewModelProvider(this).get(Top5SolutionsViewModel.class);
 
         if (binding != null) {
             setupRecyclerView();
@@ -47,19 +47,19 @@ public class Top5EventsFragment extends Fragment {
 
         observeViewModel();
 
-        viewModel.fetchTop5Events();
+        viewModel.fetchTop5Solutions();
     }
 
     private void setupRecyclerView() {
-        adapter = new Top5EventsAdapter(getContext(), new ArrayList<>());
+        adapter = new Top5SolutionsAdapter(getContext(), new ArrayList<>());
 
-        binding.top5EventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        binding.top5EventsRecyclerView.setAdapter(adapter);
+        binding.top5SolutionsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        binding.top5SolutionsRecyclerView.setAdapter(adapter);
 
         LinearSnapHelper snapHelper = new LinearSnapHelper();
-        snapHelper.attachToRecyclerView(binding.top5EventsRecyclerView);
+        snapHelper.attachToRecyclerView(binding.top5SolutionsRecyclerView);
 
-        binding.top5EventsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+        binding.top5SolutionsRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -106,21 +106,21 @@ public class Top5EventsFragment extends Fragment {
     }
 
     private void observeViewModel() {
-        viewModel.getTop5Events().observe(getViewLifecycleOwner(), events -> {
-            if (events != null && !events.isEmpty()) {
-                binding.noEventsMessage.setVisibility(View.GONE);
-                binding.top5EventsRecyclerView.setVisibility(View.VISIBLE);
-                adapter.updateEventList(events);
+        viewModel.getTop5Solutions().observe(getViewLifecycleOwner(), solutions -> {
+            if (solutions != null && !solutions.isEmpty()) {
+                binding.noSolutionsMessage.setVisibility(View.GONE);
+                binding.top5SolutionsRecyclerView.setVisibility(View.VISIBLE);
+                adapter.updateSolutionList(solutions);
 
-                setupPaginationDots(events.size());
+                setupPaginationDots(solutions.size());
             } else {
-                binding.noEventsMessage.setVisibility(View.VISIBLE);
-                binding.top5EventsRecyclerView.setVisibility(View.GONE);
+                binding.noSolutionsMessage.setVisibility(View.VISIBLE);
+                binding.top5SolutionsRecyclerView.setVisibility(View.GONE);
             }
         });
 
         viewModel.isLoading().observe(getViewLifecycleOwner(), isLoading -> {
-            binding.loadingEventsMessage.setVisibility(isLoading ? View.VISIBLE : View.GONE);
+            binding.loadingSolutionsMessage.setVisibility(isLoading ? View.VISIBLE : View.GONE);
         });
     }
 

@@ -5,28 +5,32 @@
     android:padding="16dp">
 
     <ImageView
-        android:id="@+id/product_service_image"
+        android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:contentDescription="@string/product_service_image"
-        android:scaleType="centerCrop"
-        android:src="@drawable/product_service_placeholder" />
+        android:scaleType="centerCrop" />
 
     <TextView
-        android:id="@+id/product_service_title"
+        android:id="@+id/product_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/product_service_title"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:paddingTop="16dp"
-        android:paddingBottom="8dp" />
+        android:paddingTop="8dp" />
 
     <TextView
-        android:id="@+id/product_service_description"
+        android:id="@+id/product_price"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/product_service_description"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:paddingTop="8dp" />
+
+    <TextView
+        android:id="@+id/product_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:textSize="16sp"
-        android:paddingBottom="16dp" />
+        android:paddingTop="8dp" />
 </LinearLayout>
