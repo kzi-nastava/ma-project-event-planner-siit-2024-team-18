@@ -26,26 +26,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceListAdapter extends ArrayAdapter<Service> {
-    private ArrayList<Service> aServices;
+    private ArrayList<Service> services;
     private Activity activity;
     private FragmentManager fragmentManager;
 
     public ServiceListAdapter(Activity context, FragmentManager fragmentManager, List<Service> services) {
         super(context, R.layout.service_card, services);
-        aServices = (ArrayList<Service>) services;
-        activity = context;
-        fragmentManager = fragmentManager;
+        this.services = new ArrayList<>();
+        this.activity = context;
+        this.fragmentManager = fragmentManager;
     }
 
     @Override
     public int getCount() {
-        return aServices.size();
+        return services.size();
     }
 
     @Nullable
     @Override
     public Service getItem(int position) {
-        return aServices.get(position);
+        return services.get(position);
     }
 
     @Override
@@ -97,5 +97,13 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         });
 
         return convertView;
+    }
+
+    public void updateServicesList(List<Service> services) {
+        if (services != null) {
+            this.services.clear();
+            this.services.addAll(services);
+            notifyDataSetChanged();
+        }
     }
 }

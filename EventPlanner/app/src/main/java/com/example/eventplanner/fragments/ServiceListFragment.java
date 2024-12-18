@@ -1,7 +1,6 @@
 package com.example.eventplanner.fragments;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,49 +18,27 @@ import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.ServiceListViewModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class ServiceListFragment extends ListFragment {
 
     private ServiceListAdapter adapter;
-    private static final String ARG_PARAM = "services";
-    private ArrayList<Service> services;
-    private TextView tvCurrentPage;
+    private TextView currentPage;
     private ImageView btnPreviousPage, btnNextPage;
-    private int currentPage = 1;
-    private int itemsPerPage = 6;
-    private int totalPages;
-    private ServiceListViewModel viewModel;
+    private ServiceListViewModel serviceListViewModel;
 
     public static ServiceListFragment newInstance() {
-        ServiceListFragment fragment = new ServiceListFragment();
-        return fragment;
+        return new ServiceListFragment();
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view =  inflater.inflate(R.layout.fragment_service_list, container, false);
+        View view = inflater.inflate(R.layout.fragment_service_list, container, false);
 
-        tvCurrentPage = getActivity().findViewById(R.id.tvCurrentPage);
+        currentPage = getActivity().findViewById(R.id.currentPage);
         btnPreviousPage = getActivity().findViewById(R.id.btnPreviousPage);
         btnNextPage = getActivity().findViewById(R.id.btnNextPage);
-
-        tvCurrentPage.setText(String.valueOf(currentPage));
-
-        btnPreviousPage.setOnClickListener(v -> {
-            if (currentPage > 1) {
-                currentPage--;
-                updatePagination();
-            }
-        });
-
-        btnNextPage.setOnClickListener(v -> {
-            if (currentPage < totalPages) {
-                currentPage++;
-                updatePagination();
-            }
-        });
 
         return view;
     }
@@ -70,45 +47,52 @@ public class ServiceListFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        viewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
 
-        viewModel.getServices().observe(getViewLifecycleOwner(), services -> {
-            adapter = new ServiceListAdapter(getActivity(), getActivity().getSupportFragmentManager(), services);
-            setListAdapter(adapter);
-            adapter.notifyDataSetChanged();
+        adapter = new ServiceListAdapter(getActivity(), getActivity().getSupportFragmentManager(), null);
+        setListAdapter(adapter);
+
+        serviceListViewModel.getServices().observe(getViewLifecycleOwner(), services -> {
+            if (services != null) {
+                adapter.updateServicesList(services);
+            }
         });
 
-        viewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
+
+        serviceListViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
 
-        viewModel.fetchServices();
+        setupPagination();
+        fetchServices();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        viewModel.fetchServices();
+        serviceListViewModel.fetchServices();
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        onDestroy();
+    private void setupPagination() {
+        btnPreviousPage.setOnClickListener(v -> {
+            if (serviceListViewModel.getCurrentPage() > 1) {
+                serviceListViewModel.setCurrentPage(serviceListViewModel.getCurrentPage() - 1);
+                fetchServices();
+            }
+        });
+
+        btnNextPage.setOnClickListener(v -> {
+            if (serviceListViewModel.getCurrentPage() < serviceListViewModel.getTotalPages()) {
+                serviceListViewModel.setCurrentPage(serviceListViewModel.getCurrentPage() + 1);
+                fetchServices();
+            }
+        });
     }
 
-    private void updatePagination() {
-        tvCurrentPage.setText(String.valueOf(currentPage));
-        adapter.clear();
-        adapter.addAll(getCurrentPageData());
-        adapter.notifyDataSetChanged();
-    }
-
-    private ArrayList<Service> getCurrentPageData() {
-        int startIndex = (currentPage - 1) * itemsPerPage;
-        int endIndex = Math.min(startIndex + itemsPerPage, services.size());
-        return new ArrayList<>(services.subList(startIndex, endIndex));
+    private void fetchServices() {
+        currentPage.setText(String.valueOf(serviceListViewModel.getCurrentPage()));
+        serviceListViewModel.fetchServices();
     }
 }

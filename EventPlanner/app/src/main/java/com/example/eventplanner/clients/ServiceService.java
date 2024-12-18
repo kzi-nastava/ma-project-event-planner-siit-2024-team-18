@@ -1,5 +1,6 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
 
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ServiceService {
 
@@ -22,6 +24,22 @@ public interface ServiceService {
     })
     @GET("services")
     Call<ArrayList<Service>> getAll();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("services/search")
+    Call<PagedResponse<Service>> searchAndFilter(
+            @Query("name") String name,
+            @Query("category") String category,
+            @Query("eventType") String eventType,
+            @Query("isAvailable") String isAvailable,
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("minPrice") double minPrice,
+            @Query("maxPrice") double maxPrice
+    );
 
     @Headers({
             "User-Agent: Mobile-Android",
