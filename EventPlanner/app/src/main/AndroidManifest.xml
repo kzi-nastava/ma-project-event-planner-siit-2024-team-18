@@ -2,8 +2,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
+        android:usesCleartextTraffic="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
         android:icon="@mipmap/logo"
@@ -25,10 +29,13 @@
             android:name=".activities.EditServiceActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.EventDetailsActivity"
+            android:name=".activities.details.EventDetailsActivity"
             android:exported="false" />
         <activity
-            android:name=".activities.ProductServiceDetailsActivity"
+            android:name=".activities.details.ProductDetailsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.details.ServiceDetailsActivity"
             android:exported="false" />
         <activity
             android:name=".activities.RegisterActivity"

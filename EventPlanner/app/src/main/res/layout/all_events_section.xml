@@ -128,6 +128,26 @@
         android:layout_marginTop="16dp"
         android:gravity="center" />
 
+    <TextView
+        android:id="@+id/noEventsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/there_are_no_events_currently"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/lightText" />
+
+    <TextView
+        android:id="@+id/loadingEventsMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/loading_events"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:visibility="gone"
+        android:textColor="@color/lightText" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -149,7 +169,7 @@
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/current_page_button"
-            android:layout_width="60dp"
+            android:layout_width="80dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
             android:layout_marginEnd="30dp"
@@ -157,7 +177,7 @@
             android:contentDescription="@string/current_page_button"
             android:fontFamily="@font/raleway"
             android:gravity="center"
-            android:padding="16dp"
+            android:padding="24dp"
             android:text="@string/_1"
             android:textColor="@color/darkText" />
 

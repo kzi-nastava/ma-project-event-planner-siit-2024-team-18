@@ -5,36 +5,31 @@ import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.Event;
-import com.example.eventplanner.activities.EventDetailsActivity;
+import com.example.eventplanner.activities.details.EventDetailsActivity;
+import com.example.eventplanner.models.EventCard;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
-public class Top5EventsAdapter extends RecyclerView.Adapter<Top5EventsAdapter.Top5EventsViewHolder> {
+public class Top5EventsAdapter extends RecyclerView.Adapter<Top5EventsAdapter.Top5EventsViewHolder> implements Filterable {
     private final Context context;
-    private final List<Event> eventList;
-    private RecyclerView recyclerView;
-    private SnapHelper snapHelper;
+    private List<EventCard> eventList;
+    private List<EventCard> eventListFiltered;
 
-    public Top5EventsAdapter(Context context, List<Event> eventList) {
+    public Top5EventsAdapter(Context context, List<EventCard> eventList) {
         this.context = context;
-        this.eventList = eventList;
-    }
-
-    public void setRecyclerView(RecyclerView recyclerView) {
-        this.recyclerView = recyclerView;
-    }
-
-    public void setSnapHelper(SnapHelper snapHelper) {
-        this.snapHelper = snapHelper;
+        this.eventList = new ArrayList<>(eventList);
+        this.eventListFiltered = new ArrayList<>(eventList);
     }
 
     @NonNull
@@ -46,39 +41,54 @@ public class Top5EventsAdapter extends RecyclerView.Adapter<Top5EventsAdapter.To
 
     @Override
     public void onBindViewHolder(@NonNull Top5EventsViewHolder holder, int position) {
-        Event event = eventList.get(position);
-        holder.title.setText(event.getTitle());
+        EventCard event = eventListFiltered.get(position);
+        holder.title.setText(event.getName());
         holder.description.setText(event.getDescription());
-        holder.image.setImageResource(event.getImageResourceId());
 
-        View snapView = snapHelper.findSnapView(recyclerView.getLayoutManager());
-        if (snapView != null) {
-            int centerPosition = Objects.requireNonNull(recyclerView.getLayoutManager()).getPosition(snapView);
-
-            float scaleFactor = (position == centerPosition) ? 1.0f : 0.8f;
-            holder.itemView.setScaleX(scaleFactor);
-            holder.itemView.setScaleY(scaleFactor);
-        }
+        Glide.with(context)
+                .load(event.getCardImage())
+                .into(holder.image);
 
         holder.itemView.setOnClickListener(v -> {
-            View currentSnapView = snapHelper.findSnapView(recyclerView.getLayoutManager());
-            int currentCenterPosition = currentSnapView != null ? Objects.requireNonNull(recyclerView.getLayoutManager()).getPosition(currentSnapView) : -1;
-
-            if (position == currentCenterPosition) {
-                Intent intent = new Intent(context, EventDetailsActivity.class);
-                intent.putExtra("eventTitle", event.getTitle());
-                intent.putExtra("eventDescription", event.getDescription());
-                intent.putExtra("eventImage", event.getImageResourceId());
-                context.startActivity(intent);
-            } else {
-                recyclerView.smoothScrollToPosition(position);
-            }
+            Intent intent = new Intent(context, EventDetailsActivity.class);
+            intent.putExtra("eventId", event.getId());
+            context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return eventList.size();
+        return eventListFiltered.size();
+    }
+
+    @Override
+    public Filter getFilter() {
+        return new Filter() {
+            @Override
+            protected FilterResults performFiltering(CharSequence constraint) {
+                List<EventCard> filteredList = new ArrayList<>();
+                if (constraint == null || constraint.length() == 0) {
+                    filteredList.addAll(eventList);
+                } else {
+                    String filterPattern = constraint.toString().toLowerCase().trim();
+                    for (EventCard event : eventList) {
+                        if (event.getName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(event);
+                        }
+                    }
+                }
+                FilterResults results = new FilterResults();
+                results.values = filteredList;
+                return results;
+            }
+
+            @Override
+            protected void publishResults(CharSequence constraint, FilterResults results) {
+                eventListFiltered.clear();
+                eventListFiltered.addAll((List) results.values);
+                notifyDataSetChanged();
+            }
+        };
     }
 
     static class Top5EventsViewHolder extends RecyclerView.ViewHolder {
@@ -90,6 +100,16 @@ public class Top5EventsAdapter extends RecyclerView.Adapter<Top5EventsAdapter.To
             image = itemView.findViewById(R.id.carousel_item_image);
             title = itemView.findViewById(R.id.carousel_item_title);
             description = itemView.findViewById(R.id.carousel_item_description);
+        }
+    }
+
+    public void updateEventList(List<EventCard> events) {
+        if (events != null) {
+            this.eventList.clear();
+            this.eventList.addAll(events);
+            this.eventListFiltered.clear();
+            this.eventListFiltered.addAll(events);
+            notifyDataSetChanged();
         }
     }
 }
