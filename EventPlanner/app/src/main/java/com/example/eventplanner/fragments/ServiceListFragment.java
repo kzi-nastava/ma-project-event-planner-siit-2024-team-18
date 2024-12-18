@@ -13,7 +13,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ServiceListAdapter;
 import com.example.eventplanner.viewmodels.ServiceListViewModel;
@@ -46,7 +45,7 @@ public class ServiceListFragment extends ListFragment {
 
         serviceListViewModel = new ViewModelProvider(requireActivity()).get(ServiceListViewModel.class);
 
-        adapter = new ServiceListAdapter(requireActivity(), getActivity().getSupportFragmentManager(), serviceListViewModel);
+        adapter = new ServiceListAdapter(requireActivity(), serviceListViewModel);
         setListAdapter(adapter);
 
         serviceListViewModel.getServices().observe(getViewLifecycleOwner(), services -> {

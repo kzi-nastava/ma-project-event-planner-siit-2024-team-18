@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.FragmentManager;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
@@ -28,15 +27,31 @@ import java.util.List;
 public class ServiceListAdapter extends ArrayAdapter<Service> {
     private ArrayList<Service> services;
     private Activity activity;
-    private FragmentManager fragmentManager;
     private ServiceListViewModel serviceListViewModel;
-
-    public ServiceListAdapter(Activity context, FragmentManager fragmentManager, ServiceListViewModel serviceListViewModel) {
+    private TextView serviceName, serviceDescription;
+    private ImageView imgService;
+    private FrameLayout frameEditService, frameDeleteService;
+    public ServiceListAdapter(Activity context, ServiceListViewModel serviceListViewModel) {
         super(context, R.layout.service_card);
         this.services = new ArrayList<>();
         this.activity = context;
-        this.fragmentManager = fragmentManager;
         this.serviceListViewModel = serviceListViewModel;
+    }
+
+    @NonNull
+    @Override
+    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        if (convertView == null) {
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.service_card, parent, false);
+        }
+
+        Service service = getItem(position);
+
+        initializeViews(convertView);
+        populateFields(service);
+        setupListeners(service, position);
+
+        return convertView;
     }
 
     @Override
@@ -55,38 +70,33 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         return position;
     }
 
-    @NonNull
-    @Override
-    public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.service_card, parent, false);
-        }
+    private void initializeViews(View convertView) {
+        serviceName = convertView.findViewById(R.id.txtServiceName);
+        serviceDescription = convertView.findViewById(R.id.txtServiceDescription);
+        imgService = convertView.findViewById(R.id.imgService);
+        frameEditService = convertView.findViewById(R.id.editService);
+        frameDeleteService = convertView.findViewById(R.id.deleteService);
+    }
 
-        Service service = getItem(position);
-
-        TextView serviceName = convertView.findViewById(R.id.txtServiceName);
-        TextView serviceDescription = convertView.findViewById(R.id.txtServiceDescription);
-
+    private void populateFields(Service service) {
         serviceName.setText(service.getName());
         serviceDescription.setText(service.getDescription());
 
-        ImageView imgService = convertView.findViewById(R.id.imgService);
         String imageUrl = service.getImages()[0];
         Glide.with(activity)
                 .load(imageUrl)
                 .into(imgService);
 
-        FrameLayout frameEditService = convertView.findViewById(R.id.editService);
+    }
+
+    private void setupListeners(Service service, int position) {
         frameEditService.setOnClickListener(v -> {
-            // open edit activity
             Intent editIntent = new Intent(getContext(), EditServiceActivity.class);
             editIntent.putExtra("serviceId", service.getId());
             editIntent.putExtra("position", position);
             getContext().startActivity(editIntent);
         });
 
-        // delete confirmation dialog
-        FrameLayout frameDeleteService = convertView.findViewById(R.id.deleteService);
         frameDeleteService.setOnClickListener(v -> {
             new AlertDialog.Builder(v.getContext())
                     .setTitle("Confirm Deletion")
@@ -98,8 +108,6 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                     .show();
         });
-
-        return convertView;
     }
 
     public void updateServicesList(List<Service> services) {
