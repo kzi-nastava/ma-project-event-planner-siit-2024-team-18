@@ -2,55 +2,54 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
-import com.example.eventplanner.filters.ServiceFilter;
-import com.example.eventplanner.fragments.FragmentFilter;
+import com.example.eventplanner.fragments.FilterApplyListener;
+import com.example.eventplanner.fragments.ServiceFilter;
 import com.example.eventplanner.fragments.ServiceListFragment;
-import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.ServiceListViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
 import android.view.inputmethod.InputMethodManager;
 
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.lifecycle.ViewModelProvider;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
-
-public class AllServicesActivity extends BaseActivity {
+public class AllServicesActivity extends BaseActivity implements FilterApplyListener {
 
     private TextInputEditText searchEditText;
     private ImageView addServiceButton, btnBack, btnFilter;
     private FrameLayout btnSearch;
     private ServiceListFragment serviceListFragment;
-    private ServiceFilter serviceFilter;
+    private ServiceListViewModel serviceListViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_all_services, findViewById(R.id.content_frame));
 
-        // Initialize views
         initializeViews();
-
-        // Load and display the list of services
         initializeServicesFragment();
+        setupUIInteractions();
+    }
 
-        // Setup UI interactions
-        setupSearch();
-        setupAddServiceButton();
-        setupBackButton();
-        setupFilterButton();
+    @Override
+    public void onFilterApplied(String category, String eventType, int minPrice, int maxPrice, String isAvailable) {
+        serviceListViewModel.setCategoryFilter(category);
+        serviceListViewModel.setEventTypeFilter(eventType);
+        serviceListViewModel.setPriceRange(minPrice, maxPrice);
+        serviceListViewModel.setAvailabilityFilter(isAvailable);
+        serviceListViewModel.fetchServices();
     }
 
     private void initializeViews() {
+        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
         addServiceButton = findViewById(R.id.addService);
         searchEditText = findViewById(R.id.searchEditText);
         btnSearch = findViewById(R.id.btnSearch);
@@ -58,17 +57,44 @@ public class AllServicesActivity extends BaseActivity {
         btnFilter = findViewById(R.id.btnFilter);
     }
 
+    private void setupUIInteractions() {
+        setupSearch();
+        setupAddServiceButton();
+        setupBackButton();
+        setupFilterButton();
+    }
+
     private void initializeServicesFragment() {
-        FragmentTransition.to(ServiceListFragment.newInstance(), this, false, R.id.listViewServices);
+        serviceListFragment = ServiceListFragment.newInstance();
+        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+
+        FragmentTransition.to(serviceListFragment, this, false, R.id.listViewServices);
     }
 
     private void setupSearch() {
         btnSearch.setOnClickListener(v -> {
             String query = searchEditText.getText().toString().trim();
-            if (serviceListFragment != null) {
-                this.filterServices(query);
-            }
             hideKeyboard(v);
+            serviceListViewModel.setNameFilter(query);
+            serviceListViewModel.fetchServices();
+        });
+
+        searchEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.toString().trim().isEmpty()) {
+                    serviceListViewModel.setNameFilter("");
+                    serviceListViewModel.fetchServices();
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
         });
     }
 
@@ -85,8 +111,7 @@ public class AllServicesActivity extends BaseActivity {
 
     private void setupFilterButton() {
         btnFilter.setOnClickListener(view -> {
-            FragmentFilter filterFragment = new FragmentFilter();
-            filterFragment.show(getSupportFragmentManager(), "FilterBottomSheet");
+            new ServiceFilter().show(getSupportFragmentManager(), "FilterBottomSheet");
         });
     }
 
@@ -94,12 +119,6 @@ public class AllServicesActivity extends BaseActivity {
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
-    public void filterServices(String query) {
-        if (serviceFilter != null) {
-            serviceFilter.getFilter().filter(query);
         }
     }
 }

@@ -13,15 +13,12 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ServiceListAdapter;
-import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.ServiceListViewModel;
 
-import java.util.List;
-
 public class ServiceListFragment extends ListFragment {
-
     private ServiceListAdapter adapter;
     private TextView currentPage;
     private ImageView btnPreviousPage, btnNextPage;
@@ -47,9 +44,9 @@ public class ServiceListFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+        serviceListViewModel = new ViewModelProvider(requireActivity()).get(ServiceListViewModel.class);
 
-        adapter = new ServiceListAdapter(getActivity(), getActivity().getSupportFragmentManager(), null);
+        adapter = new ServiceListAdapter(requireActivity(), getActivity().getSupportFragmentManager(), serviceListViewModel);
         setListAdapter(adapter);
 
         serviceListViewModel.getServices().observe(getViewLifecycleOwner(), services -> {
@@ -57,7 +54,6 @@ public class ServiceListFragment extends ListFragment {
                 adapter.updateServicesList(services);
             }
         });
-
 
         serviceListViewModel.getErrorMessage().observe(getViewLifecycleOwner(), error -> {
             if (error != null) {

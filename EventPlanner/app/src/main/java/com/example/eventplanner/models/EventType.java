@@ -10,11 +10,8 @@ public class EventType {
     private String name, description;
     private String[] categories;
 
-    public EventType(int id, String name, String description, String[] categories) {
-        this.id = id;
+    public EventType(String name) {
         this.name = name;
-        this.description = description;
-        this.categories = categories;
     }
 
     public int getId() {
@@ -31,5 +28,10 @@ public class EventType {
 
     public String[] getCategories() {
         return categories;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

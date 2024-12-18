@@ -59,8 +59,8 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @DELETE("services/{id}")
-    Call<ResponseBody> deleteById(@Path("id") int id);
+    @DELETE("services/delete/{id}")
+    Call<Void> deleteById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",

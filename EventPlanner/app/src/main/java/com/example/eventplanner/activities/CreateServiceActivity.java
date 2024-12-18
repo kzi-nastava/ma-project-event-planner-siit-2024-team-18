@@ -123,7 +123,6 @@ public class CreateServiceActivity extends BaseActivity {
         eventTypeViewModel.fetchEventTypes();
         categoryViewModel.fetchCategories();
 
-        // ViewModel setup
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
         eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
             if (eventTypes != null) {

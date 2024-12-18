@@ -3,7 +3,6 @@ package com.example.eventplanner.adapters;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.os.Parcelable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.EditServiceActivity;
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.ServiceListViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,12 +29,14 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
     private ArrayList<Service> services;
     private Activity activity;
     private FragmentManager fragmentManager;
+    private ServiceListViewModel serviceListViewModel;
 
-    public ServiceListAdapter(Activity context, FragmentManager fragmentManager, List<Service> services) {
-        super(context, R.layout.service_card, services);
+    public ServiceListAdapter(Activity context, FragmentManager fragmentManager, ServiceListViewModel serviceListViewModel) {
+        super(context, R.layout.service_card);
         this.services = new ArrayList<>();
         this.activity = context;
         this.fragmentManager = fragmentManager;
+        this.serviceListViewModel = serviceListViewModel;
     }
 
     @Override
@@ -90,6 +92,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
                     .setTitle("Confirm Deletion")
                     .setMessage("Are you sure you want to delete this service?")
                     .setPositiveButton("Yes", (dialog, which) -> {
+                        serviceListViewModel.deleteServiceById(service.getId());
                         Toast.makeText(v.getContext(), "Service deleted", Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
