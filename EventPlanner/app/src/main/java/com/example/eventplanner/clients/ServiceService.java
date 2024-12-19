@@ -2,7 +2,6 @@ package com.example.eventplanner.clients;
 
 import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
-import com.example.eventplanner.models.ServiceDetails;
 
 import java.util.ArrayList;
 
@@ -46,7 +45,7 @@ public interface ServiceService {
             "Content-Type:application/json"
     })
     @GET("services/details/{id}")
-    Call<ServiceDetails> getDetailsById(@Path("id") int id);
+    Call<Service> getDetailsById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",
