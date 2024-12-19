@@ -2,10 +2,10 @@ package com.example.eventplanner.clients;
 
 import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.models.ServiceDetails;
 
 import java.util.ArrayList;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -40,6 +40,13 @@ public interface ServiceService {
             @Query("minPrice") double minPrice,
             @Query("maxPrice") double maxPrice
     );
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("services/details/{id}")
+    Call<ServiceDetails> getDetailsById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",

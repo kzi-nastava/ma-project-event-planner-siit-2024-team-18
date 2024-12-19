@@ -9,23 +9,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="180dp"
+        android:layout_height="300dp"
         android:background="@color/secondary"
         android:orientation="vertical">
 
         <ImageView
             android:id="@+id/product_service_image"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="150dp"
             android:contentDescription="@string/product_service_image_description"
             android:scaleType="centerCrop"
             android:src="@drawable/product_service_placeholder" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="99dp"
+            android:layout_height="138dp"
             android:orientation="vertical"
-            android:padding="10dp">
+            android:padding="10dp"
+            android:layout_marginTop="10dp">
 
             <TextView
                 android:id="@+id/product_service_title"

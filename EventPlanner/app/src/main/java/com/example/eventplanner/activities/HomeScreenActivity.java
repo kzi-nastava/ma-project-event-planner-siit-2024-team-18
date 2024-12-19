@@ -4,10 +4,10 @@ import android.os.Bundle;
 import androidx.fragment.app.Fragment;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.fragments.Top5EventsFragment;
-import com.example.eventplanner.fragments.Top5ProductsServicesFragment;
-import com.example.eventplanner.fragments.AllEventsFragment;
-import com.example.eventplanner.fragments.AllProductsServicesFragment;
+import com.example.eventplanner.fragments.homepage.Top5EventsFragment;
+import com.example.eventplanner.fragments.homepage.Top5SolutionsFragment;
+import com.example.eventplanner.fragments.homepage.AllEventsFragment;
+import com.example.eventplanner.fragments.homepage.AllProductsServicesFragment;
 
 public class HomeScreenActivity extends BaseActivity {
 
@@ -19,7 +19,7 @@ public class HomeScreenActivity extends BaseActivity {
 
         Fragment top5EventsFragment = new Top5EventsFragment();
         Fragment allEventsFragment = new AllEventsFragment();
-        Fragment top5ProductsServicesFragment = new Top5ProductsServicesFragment();
+        Fragment top5ProductsServicesFragment = new Top5SolutionsFragment();
         Fragment allProductsServicesFragment = new AllProductsServicesFragment();
 
         getSupportFragmentManager().beginTransaction()
