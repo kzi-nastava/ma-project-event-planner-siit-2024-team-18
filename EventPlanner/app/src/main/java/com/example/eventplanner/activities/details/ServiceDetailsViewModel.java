@@ -35,7 +35,7 @@ public class ServiceDetailsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<ServiceDetails> call = ClientUtils.serviceService.getById(serviceId);
+        Call<ServiceDetails> call = ClientUtils.serviceService.getDetailsById(serviceId);
         call.enqueue(new Callback<ServiceDetails>() {
             @Override
             public void onResponse(Call<ServiceDetails> call, Response<ServiceDetails> response) {

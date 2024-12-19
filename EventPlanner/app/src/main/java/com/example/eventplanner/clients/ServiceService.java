@@ -1,11 +1,11 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.models.ServiceDetails;
 
 import java.util.ArrayList;
 
-import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
@@ -14,6 +14,7 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ServiceService {
 
@@ -28,27 +29,50 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("services/details/{id}")
-    Call<ServiceDetails> getById(@Path("id") int id);
+    @GET("services/search")
+    Call<PagedResponse<Service>> searchAndFilter(
+            @Query("name") String name,
+            @Query("category") String category,
+            @Query("eventType") String eventType,
+            @Query("isAvailable") String isAvailable,
+            @Query("page") int page,
+            @Query("size") int size,
+            @Query("minPrice") double minPrice,
+            @Query("maxPrice") double maxPrice
+    );
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("services/")
+    @GET("services/details/{id}")
+    Call<ServiceDetails> getDetailsById(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("services/{id}")
+    Call<Service> getById(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @POST("services/create")
     Call<Service> add(@Body Service service);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @DELETE("services/{id}")
-    Call<ResponseBody> deleteById(@Path("id") int id);
+    @DELETE("services/delete/{id}")
+    Call<Void> deleteById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @PUT("services/")
-    Call<Service> edit(@Body Service service);
+    @PUT("services/edit/{id}")
+    Call<Service> edit(@Path("id") int id, @Body Service service);
 }
