@@ -1,11 +1,16 @@
 package com.example.eventplanner.activities.details;
 
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,39 +27,56 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceDetailsActivity extends BaseActivity {
+    private Service service;
     private ServiceDetailsViewModel serviceDetailsViewModel;
     private ViewPager2 serviceImageSlider;
     private LinearLayout sliderDotsContainer;
-    private TextView serviceTitle, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice;
-    private Button favoriteButton;
+    private TextView serviceName, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice, serviceNumberOfReviews, serviceSpecifics, serviceCategory, serviceEventTypes, serviceDuration, serviceEngagement, serviceReservationDeadline, serviceCancellationDeadline;
+    private ImageView favoriteButton, commentsButton;
+    private Button visitProviderButton, bookServiceButton;
     private List<ImageView> dots;
+    private RatingBar serviceRating;
     boolean isFavorite = false;
+    private int serviceId;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_service_details, findViewById(R.id.content_frame));
 
-        serviceImageSlider = findViewById(R.id.service_image_slider);
-        sliderDotsContainer = findViewById(R.id.slider_dots_container);
-        serviceTitle = findViewById(R.id.service_name);
-        serviceDiscountedPrice = findViewById(R.id.service_discounted_price);
-        serviceDescription = findViewById(R.id.service_description);
-        serviceAvailability = findViewById(R.id.service_availability);
-        favoriteButton = findViewById(R.id.favorite_button);
-        serviceOriginalPrice = findViewById(R.id.service_original_price);
-
-        int serviceId = getIntent().getIntExtra("solutionId", -1);
-
-        if (serviceId != -1) {
-            setupViewModel();
-            serviceDetailsViewModel.fetchServiceById(serviceId);
-        } else {
-            Toast.makeText(this, "Invalid Service ID", Toast.LENGTH_SHORT).show();
-        }
+        serviceId = getIntent().getIntExtra("solutionId", -1);
+        initializeViews();
+        loadViewModel();
+        setupListeners();
     }
 
-    private void setupViewModel() {
+    private void initializeViews() {
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+
+        favoriteButton = findViewById(R.id.favorite_button);
+        serviceImageSlider = findViewById(R.id.service_image_slider);
+        sliderDotsContainer = findViewById(R.id.slider_dots_container);
+        serviceName = findViewById(R.id.service_name);
+        serviceAvailability = findViewById(R.id.service_availability);
+        serviceRating = findViewById(R.id.service_rating);
+        serviceNumberOfReviews = findViewById(R.id.service_reviews);
+        commentsButton = findViewById(R.id.comments);
+        serviceDescription = findViewById(R.id.service_description);
+        serviceSpecifics = findViewById(R.id.service_specifics);
+        serviceCategory = findViewById(R.id.service_category);
+        serviceEventTypes = findViewById(R.id.service_eventTypes);
+        serviceDuration = findViewById(R.id.service_duration);
+        serviceEngagement = findViewById(R.id.service_engagement);
+        serviceReservationDeadline = findViewById(R.id.service_reservation_deadline);
+        serviceCancellationDeadline = findViewById(R.id.service_cancellation_deadline);
+        serviceOriginalPrice = findViewById(R.id.service_original_price);
+        serviceDiscountedPrice = findViewById(R.id.service_discounted_price);
+        visitProviderButton = findViewById(R.id.visit_provider);
+        bookServiceButton = findViewById(R.id.book_service);
+    }
+
+    private void loadViewModel() {
+        serviceDetailsViewModel.fetchServiceById(serviceId);
 
         serviceDetailsViewModel.getService().observe(this, this::displayServiceDetails);
 
@@ -67,53 +89,90 @@ public class ServiceDetailsActivity extends BaseActivity {
 
     private void displayServiceDetails(Service service) {
         if (service != null) {
-            serviceTitle.setText(service.getName());
-            serviceDescription.setText(service.getDescription());
+            this.service = service;
+
+            if (isFavorite) {
+                favoriteButton.setImageResource(R.drawable.liked);
+            } else {
+                favoriteButton.setImageResource(R.drawable.heart);
+            }
+
+            if (service.getImages() != null && service.getImages().length != 0) {
+                setupImageSlider();
+            }
+
+            serviceName.setText(service.getName());
+            if (service.isAvailable()) {
+                serviceAvailability.setText("(Available)");
+            } else {
+                serviceAvailability.setText("(Unavailable)");
+            }
+
+            // TODO: update logic
+            serviceRating.setRating(4);
+            serviceNumberOfReviews.setText("(42 Reviews)");
+
+            SpannableString spannableDescription = new SpannableString(String.format("Description: %s", service.getDescription()));
+            spannableDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceDescription.setText(spannableDescription);
+
+            SpannableString spannableSpecifics = new SpannableString(String.format("Specifics: %s", service.getSpecifics()));
+            spannableSpecifics.setSpan(new StyleSpan(Typeface.BOLD), 0, 10, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceSpecifics.setText(spannableSpecifics);
+
+            SpannableString spannableCategory = new SpannableString(String.format("Category: %s", service.getCategory()));
+            spannableCategory.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceCategory.setText(spannableCategory);
+
+            SpannableString spannableEventTypes = new SpannableString(String.format("Event Types: %s", String.join(", ", service.getEventTypes())));
+            spannableEventTypes.setSpan(new StyleSpan(Typeface.BOLD), 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceEventTypes.setText(spannableEventTypes);
+
+            if (service.getMaxEngagement() <= 1) {
+                SpannableString spannableDuration = new SpannableString(String.format("Duration: %d minutes", service.getDuration()));
+                spannableDuration.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                serviceDuration.setText(spannableDuration);
+                serviceDuration.setVisibility(View.VISIBLE);
+            } else {
+                SpannableString spannableEngagement = new SpannableString(String.format("Engagement: %d - %d hours", service.getMinEngagement(), service.getMaxEngagement()));
+                spannableEngagement.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                serviceEngagement.setText(spannableEngagement);
+                serviceEngagement.setVisibility(View.VISIBLE);
+            }
+            SpannableString spannableReservationDeadline = new SpannableString(String.format("Reservation Deadline: %d days", service.getReservationDeadline()));
+            spannableReservationDeadline.setSpan(new StyleSpan(Typeface.BOLD), 0, 21, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceReservationDeadline.setText(spannableReservationDeadline);
+
+            SpannableString spannableCancellationDeadline = new SpannableString(String.format("Cancellation Deadline: %d days", service.getCancellationDeadline()));
+            spannableCancellationDeadline.setSpan(new StyleSpan(Typeface.BOLD), 0, 22, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceCancellationDeadline.setText(spannableCancellationDeadline);
 
             if (service.getDiscount() > 0) {
-                double discountedPrice = service.getPrice() * (1 - service.getDiscount() / 100.0);
-
-                serviceOriginalPrice.setText(String.format("$%.2f", service.getPrice()));
-                serviceOriginalPrice.setPaintFlags(serviceOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-
-                serviceDiscountedPrice.setText(String.format("$%.2f", discountedPrice));
-                serviceDiscountedPrice.setVisibility(View.VISIBLE);
+                setupDiscount();
             } else {
                 serviceOriginalPrice.setText(String.format("$%.2f", service.getPrice()));
                 serviceDiscountedPrice.setVisibility(View.GONE);
             }
-
-            if (isFavorite) {
-                favoriteButton.setText("Remove from Favorites");
-            } else {
-                favoriteButton.setText("Mark as Favorite");
-            }
-
-            favoriteButton.setVisibility(View.VISIBLE);
-            favoriteButton.setOnClickListener(v -> toggleFavorite());
-
-            if (service.getImages() != null && service.getImages().length != 0) {
-                String[] images = service.getImages();
-                ImageSliderAdapter adapter = new ImageSliderAdapter(this, images);
-                serviceImageSlider.setAdapter(adapter);
-
-                setupPaginationDots(images.length);
-
-                serviceImageSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
-                    @Override
-                    public void onPageSelected(int position) {
-                        super.onPageSelected(position);
-                        updatePaginationDots(position);
-                    }
-                });
-            }
         }
+    }
+
+    private void setupListeners() {
+        favoriteButton.setOnClickListener(v -> toggleFavorite());
+        commentsButton.setOnClickListener(v -> openComments());
+        visitProviderButton.setOnClickListener(v -> visitProvider());
+        bookServiceButton.setOnClickListener(v -> bookService());
     }
 
     private void toggleFavorite() {
         isFavorite = !isFavorite;
-        favoriteButton.setText(isFavorite ? "Mark as Favorite" : "Remove from Favorites");
+        favoriteButton.setImageResource(isFavorite ? R.drawable.liked : R.drawable.heart);
     }
+
+    private void openComments() {}
+
+    private void visitProvider() {}
+
+    private void bookService() {}
 
     private void setupPaginationDots(int size) {
         dots = new ArrayList<>();
@@ -145,5 +204,35 @@ public class ServiceDetailsActivity extends BaseActivity {
                 dots.get(i).setImageResource(R.drawable.inactive_dot);
             }
         }
+    }
+
+    private void setupImageSlider() {
+        String[] images = service.getImages();
+        ImageSliderAdapter adapter = new ImageSliderAdapter(this, images);
+        serviceImageSlider.setAdapter(adapter);
+
+        setupPaginationDots(images.length);
+
+        serviceImageSlider.registerOnPageChangeCallback(new ViewPager2.OnPageChangeCallback() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                updatePaginationDots(position);
+            }
+        });
+    }
+
+    private void setupDiscount() {
+        double discountedPrice = service.getPrice() * (1 - service.getDiscount() / 100.0);
+
+        serviceOriginalPrice.setText(String.format("$%.2f", service.getPrice()));
+        serviceOriginalPrice.setPaintFlags(serviceOriginalPrice.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+
+        if (discountedPrice <= 0) {
+            serviceDiscountedPrice.setText("FREE");
+        } else {
+            serviceDiscountedPrice.setText(String.format("$%.2f", discountedPrice));
+        }
+        serviceDiscountedPrice.setVisibility(View.VISIBLE);
     }
 }
