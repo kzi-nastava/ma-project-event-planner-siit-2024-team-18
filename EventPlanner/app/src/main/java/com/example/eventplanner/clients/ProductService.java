@@ -1,6 +1,6 @@
 package com.example.eventplanner.clients;
 
-import com.example.eventplanner.models.ProductDetails;
+import com.example.eventplanner.models.Product;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -17,7 +17,7 @@ public interface ProductService {
             "Content-Type:application/json"
     })
     @GET("products/details/{id}")
-    Call<ProductDetails> getProductDetails(@Path("id") int id);
+    Call<Product> getProductDetails(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",

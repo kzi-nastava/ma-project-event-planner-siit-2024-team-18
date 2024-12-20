@@ -31,7 +31,7 @@ public class ServiceDetailsActivity extends BaseActivity {
     private ServiceDetailsViewModel serviceDetailsViewModel;
     private ViewPager2 serviceImageSlider;
     private LinearLayout sliderDotsContainer;
-    private TextView serviceName, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice, serviceNumberOfReviews, serviceSpecifics, serviceCategory, serviceEventTypes, serviceDuration, serviceEngagement, serviceReservationDeadline, serviceCancellationDeadline;
+    private TextView serviceName, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice, serviceNumberOfReviews, serviceSpecifics, serviceCategory, serviceEventTypes, serviceDuration, serviceEngagement, serviceReservationDeadline, serviceCancellationDeadline, serviceWorkingHours, serviceLocation;
     private ImageView favoriteButton, commentsButton;
     private Button visitProviderButton, bookServiceButton;
     private List<ImageView> dots;
@@ -46,7 +46,7 @@ public class ServiceDetailsActivity extends BaseActivity {
 
         serviceId = getIntent().getIntExtra("solutionId", -1);
         initializeViews();
-        loadViewModel();
+        setupViewModel();
         setupListeners();
     }
 
@@ -65,17 +65,19 @@ public class ServiceDetailsActivity extends BaseActivity {
         serviceSpecifics = findViewById(R.id.service_specifics);
         serviceCategory = findViewById(R.id.service_category);
         serviceEventTypes = findViewById(R.id.service_eventTypes);
+        serviceLocation = findViewById(R.id.service_location);
         serviceDuration = findViewById(R.id.service_duration);
         serviceEngagement = findViewById(R.id.service_engagement);
         serviceReservationDeadline = findViewById(R.id.service_reservation_deadline);
         serviceCancellationDeadline = findViewById(R.id.service_cancellation_deadline);
+        serviceWorkingHours = findViewById(R.id.service_working_hours);
         serviceOriginalPrice = findViewById(R.id.service_original_price);
         serviceDiscountedPrice = findViewById(R.id.service_discounted_price);
         visitProviderButton = findViewById(R.id.visit_provider);
         bookServiceButton = findViewById(R.id.book_service);
     }
 
-    private void loadViewModel() {
+    private void setupViewModel() {
         serviceDetailsViewModel.fetchServiceById(serviceId);
 
         serviceDetailsViewModel.getService().observe(this, this::displayServiceDetails);
@@ -128,6 +130,10 @@ public class ServiceDetailsActivity extends BaseActivity {
             spannableEventTypes.setSpan(new StyleSpan(Typeface.BOLD), 0, 12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             serviceEventTypes.setText(spannableEventTypes);
 
+            SpannableString spannableLocation = new SpannableString(String.format("Location: %s", service.getLocation()));
+            spannableLocation.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceLocation.setText(spannableLocation);
+
             if (service.getMaxEngagement() <= 1) {
                 SpannableString spannableDuration = new SpannableString(String.format("Duration: %d minutes", service.getDuration()));
                 spannableDuration.setSpan(new StyleSpan(Typeface.BOLD), 0, 9, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -146,6 +152,10 @@ public class ServiceDetailsActivity extends BaseActivity {
             SpannableString spannableCancellationDeadline = new SpannableString(String.format("Cancellation Deadline: %d days", service.getCancellationDeadline()));
             spannableCancellationDeadline.setSpan(new StyleSpan(Typeface.BOLD), 0, 22, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             serviceCancellationDeadline.setText(spannableCancellationDeadline);
+
+            SpannableString spannableWorkingHours = new SpannableString(String.format("Working Hours: %s - %s", service.getWorkingHoursStart(), service.getWorkingHoursEnd()));
+            spannableWorkingHours.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            serviceWorkingHours.setText(spannableWorkingHours);
 
             if (service.getDiscount() > 0) {
                 setupDiscount();

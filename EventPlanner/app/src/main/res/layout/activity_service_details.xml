@@ -34,7 +34,7 @@
             <androidx.viewpager2.widget.ViewPager2
                 android:id="@+id/service_image_slider"
                 android:layout_width="match_parent"
-                android:layout_height="230dp" />
+                android:layout_height="250dp" />
 
             <LinearLayout
                 android:id="@+id/slider_dots_container"
@@ -166,6 +166,19 @@
                     android:layout_marginVertical="8dp" />
 
                 <TextView
+                    android:id="@+id/service_location"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Location"
+                    android:textSize="18sp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginVertical="8dp" />
+
+                <TextView
                     android:id="@+id/service_duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -203,6 +216,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="Cancellation Deadline"
+                    android:textSize="18sp"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@android:color/darker_gray"
+                    android:layout_marginVertical="8dp" />
+
+                <TextView
+                    android:id="@+id/service_working_hours"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Working Hours"
                     android:textSize="18sp"/>
 
                 <View
