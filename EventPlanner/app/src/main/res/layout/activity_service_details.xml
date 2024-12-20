@@ -50,5 +50,13 @@
             android:layout_height="wrap_content"
             android:textSize="16sp"
             android:paddingTop="8dp" />
+
+        <Button
+            android:id="@+id/book_service_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/book_a_service"
+            android:paddingTop="16dp"
+            android:textSize="18sp" />
     </LinearLayout>
 </ScrollView>

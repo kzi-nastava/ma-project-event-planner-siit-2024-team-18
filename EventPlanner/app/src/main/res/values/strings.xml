@@ -115,6 +115,20 @@
     <string name="search_products_services">Search Products/Services</string>
     <string name="there_are_no_products_services_currently">There are no Products/Services currently.</string>
     <string name="loading_products_services">Loading Products/Services...</string>
+    <string name="current_reservations">Current Reservations</string>
+    <string name="there_are_no_reservations_currently">There are no reservations currently.</string>
+    <string name="loading_reservations">Loading Reservations...</string>
+    <string name="chat_with_service_provider">Chat with Service Provider</string>
+    <string name="book_a_service">Book a Service</string>
+    <string name="to_time">To Time</string>
+    <string name="from_time">From Time</string>
+    <string name="select_time">Select Time</string>
+    <string name="select_date">Select Date</string>
+    <string name="pick_a_date">Pick a Date</string>
+    <string name="select_event">Select Event</string>
+    <string name="close">Close</string>
+    <string name="logo">Logo</string>
+    <string name="service_reservation">Service Reservation</string>
     <string-array name="sort_options">
         <item>Ascending</item>
         <item>Descending</item>

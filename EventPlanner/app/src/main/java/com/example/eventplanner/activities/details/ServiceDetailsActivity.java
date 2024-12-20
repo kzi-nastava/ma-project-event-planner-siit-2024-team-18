@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.details;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.models.ServiceDetails;
 
 public class ServiceDetailsActivity extends BaseActivity {
@@ -18,6 +20,7 @@ public class ServiceDetailsActivity extends BaseActivity {
 
     private ImageView serviceImage;
     private TextView serviceTitle, servicePrice, serviceDescription;
+    private Button bookServiceButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +31,15 @@ public class ServiceDetailsActivity extends BaseActivity {
         serviceTitle = findViewById(R.id.service_title);
         servicePrice = findViewById(R.id.service_price);
         serviceDescription = findViewById(R.id.service_description);
+        bookServiceButton = findViewById(R.id.book_service_button);
 
         int serviceId = getIntent().getIntExtra("solutionId", -1);
 
         if (serviceId != -1) {
             setupViewModel();
             serviceDetailsViewModel.fetchServiceDetailsById(serviceId);
+
+            bookServiceButton.setOnClickListener(v -> navigateToServiceReservation(serviceId));
         } else {
             Toast.makeText(this, "Invalid Service ID", Toast.LENGTH_SHORT).show();
         }
@@ -70,5 +76,18 @@ public class ServiceDetailsActivity extends BaseActivity {
                 serviceImage.setImageResource(R.drawable.product_service_placeholder);
             }
         }
+    }
+
+    private void navigateToServiceReservation(int serviceId) {
+        ServiceReservationFragment fragment = new ServiceReservationFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("serviceId", serviceId);
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

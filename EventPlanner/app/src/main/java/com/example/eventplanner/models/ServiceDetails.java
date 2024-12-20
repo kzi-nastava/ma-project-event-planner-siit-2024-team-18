@@ -59,7 +59,7 @@ public class ServiceDetails implements Parcelable, Serializable {
 
     @SerializedName("duration")
     @Expose
-    private int duration;
+    private Integer duration;
 
     @SerializedName("minEngagement")
     @Expose
@@ -116,7 +116,6 @@ public class ServiceDetails implements Parcelable, Serializable {
         }
     };
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -205,11 +204,11 @@ public class ServiceDetails implements Parcelable, Serializable {
         this.specifics = specifics;
     }
 
-    public int getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
