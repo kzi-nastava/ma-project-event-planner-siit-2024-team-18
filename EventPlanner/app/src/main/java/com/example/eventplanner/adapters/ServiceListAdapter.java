@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -18,6 +19,7 @@ import androidx.annotation.Nullable;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.EditServiceActivity;
+import com.example.eventplanner.activities.details.ServiceDetailsActivity;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.ServiceListViewModel;
 
@@ -25,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceListAdapter extends ArrayAdapter<Service> {
+    private LinearLayout serviceCard;
     private ArrayList<Service> services;
     private Activity activity;
     private ServiceListViewModel serviceListViewModel;
@@ -71,6 +74,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
     }
 
     private void initializeViews(View convertView) {
+        serviceCard = convertView.findViewById(R.id.serviceCard);
         serviceName = convertView.findViewById(R.id.txtServiceName);
         serviceDescription = convertView.findViewById(R.id.txtServiceDescription);
         imgService = convertView.findViewById(R.id.imgService);
@@ -107,6 +111,12 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
                     })
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                     .show();
+        });
+
+        serviceCard.setOnClickListener(v -> {
+            Intent detailIntent = new Intent(activity, ServiceDetailsActivity.class);
+            detailIntent.putExtra("solutionId", service.getId());
+            activity.startActivity(detailIntent);
         });
     }
 

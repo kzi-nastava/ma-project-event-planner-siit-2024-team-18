@@ -7,4 +7,7 @@
     <style name="NavigationDrawerTextStyle">
         <item name="android:fontFamily">@font/raleway</item>
     </style>
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:statusBarColor">@color/primary</item>
+    </style>
 </resources>
