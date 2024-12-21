@@ -4,15 +4,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Button;
-import android.widget.Filter;
 
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.eventplanner.R;
 import com.google.android.material.navigation.NavigationView;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -62,6 +61,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (currentActivity != AllServicesActivity.class) {
                     Intent servicesIntent = new Intent(BaseActivity.this, AllServicesActivity.class);
                     startActivity(servicesIntent);
+                }
+            } else if (id == R.id.nav_categories) {
+                if (currentActivity != CategoriesActivity.class) {
+                    Intent categoriesIntent = new Intent(BaseActivity.this, CategoriesActivity.class);
+                    startActivity(categoriesIntent);
                 }
             }
 
