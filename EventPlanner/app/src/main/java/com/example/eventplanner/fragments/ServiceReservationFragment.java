@@ -145,8 +145,8 @@ public class ServiceReservationFragment extends Fragment {
     }
 
     private void showTimePickerDialog(boolean isFromTime) {
-        if (!isFromTime && viewModel.getServiceDetailsLiveData().getValue() != null &&
-                viewModel.getServiceDetailsLiveData().getValue().getDuration() != 0) {
+        if (!isFromTime && viewModel.getServiceLiveData().getValue() != null &&
+                viewModel.getServiceLiveData().getValue().getDuration() != 0) {
             Toast.makeText(getContext(), "To time is auto-calculated and cannot be modified.", Toast.LENGTH_SHORT).show();
             return;
         }

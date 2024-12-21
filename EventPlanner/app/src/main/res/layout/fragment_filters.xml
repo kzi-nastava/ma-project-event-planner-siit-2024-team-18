@@ -21,12 +21,12 @@
         android:hint="Select Event Type" />
 
     <androidx.appcompat.widget.SwitchCompat
-        android:id="@+id/switchAvailability"
+        android:id="@+id/availabilitySwitch"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:textSize="16dp"
         android:paddingStart="10dp"
-        android:text="Public Event" />
+        android:text="Available" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -34,7 +34,7 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
         <EditText
-            android:id="@+id/etMinPrice"
+            android:id="@+id/minPriceEditText"
             android:layout_width="0dp"
             android:layout_weight="1"
             android:inputType="numberDecimal"
@@ -42,17 +42,34 @@
             android:layout_height="50dp"/>
 
         <EditText
-            android:id="@+id/etMaxPrice"
+            android:id="@+id/maxPriceEditText"
             android:layout_width="0dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:inputType="numberDecimal"
             android:hint="Max Price"
-            android:layout_height="50dp"/>
+            android:inputType="numberDecimal" />
     </LinearLayout>
 
-    <EditText
-        android:id="@+id/etCreatorName"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Creator Name" />
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/resetButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dp"
+            android:layout_weight="1"
+            android:text="Reset" />
+
+        <Button
+            android:id="@+id/applyButton"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_weight="1"
+            android:text="Apply" />
+    </LinearLayout>
+
 </LinearLayout>

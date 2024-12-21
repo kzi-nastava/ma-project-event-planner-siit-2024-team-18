@@ -1,23 +1,22 @@
-package com.example.eventplanner.activities.details;
+package com.example.eventplanner.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.eventplanner.clients.ClientUtils;
-import com.example.eventplanner.models.ProductDetails;
+import com.example.eventplanner.models.Product;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ProductDetailsViewModel extends ViewModel {
-
-    private final MutableLiveData<ProductDetails> productDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Product> productDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
-    public LiveData<ProductDetails> getProductDetails() {
+    public LiveData<Product> getProductDetails() {
         return productDetailsLiveData;
     }
 
@@ -35,10 +34,10 @@ public class ProductDetailsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<ProductDetails> call = ClientUtils.productService.getProductDetails(productId);
-        call.enqueue(new Callback<ProductDetails>() {
+        Call<Product> call = ClientUtils.productService.getProductDetails(productId);
+        call.enqueue(new Callback<Product>() {
             @Override
-            public void onResponse(Call<ProductDetails> call, Response<ProductDetails> response) {
+            public void onResponse(Call<Product> call, Response<Product> response) {
                 loading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
                     productDetailsLiveData.setValue(response.body());
@@ -48,7 +47,7 @@ public class ProductDetailsViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<ProductDetails> call, Throwable t) {
+            public void onFailure(Call<Product> call, Throwable t) {
                 loading.setValue(false);
                 errorMessage.setValue("Network error");
             }

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.EventCard;
 import com.example.eventplanner.models.ReservationDetails;
-import com.example.eventplanner.models.ServiceDetails;
+import com.example.eventplanner.models.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -29,11 +29,11 @@ public class ServiceReservationViewModel extends ViewModel {
     private final MutableLiveData<Collection<EventCard>> events = new MutableLiveData<>();
     private int serviceId;
 
-    private final MutableLiveData<ServiceDetails> serviceDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Service> ServiceLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
 
-    public LiveData<ServiceDetails> getServiceDetailsLiveData() {
-        return serviceDetailsLiveData;
+    public LiveData<Service> getServiceLiveData() {
+        return ServiceLiveData;
     }
 
     public LiveData<Collection<ReservationDetails>> getReservations() {
@@ -140,20 +140,20 @@ public class ServiceReservationViewModel extends ViewModel {
 
     public void fetchServiceById(int serviceId) {
         loading.setValue(true);
-        Call<ServiceDetails> call = ClientUtils.serviceService.getById(serviceId);
-        call.enqueue(new Callback<ServiceDetails>() {
+        Call<Service> call = ClientUtils.serviceService.getById(serviceId);
+        call.enqueue(new Callback<Service>() {
             @Override
-            public void onResponse(Call<ServiceDetails> call, Response<ServiceDetails> response) {
+            public void onResponse(Call<Service> call, Response<Service> response) {
                 loading.setValue(false);
                 if (response.isSuccessful() && response.body() != null) {
-                    serviceDetailsLiveData.setValue(response.body());
+                    ServiceLiveData.setValue(response.body());
                 } else {
                     errorMessage.setValue("Error fetching service details: " + response.message());
                 }
             }
 
             @Override
-            public void onFailure(Call<ServiceDetails> call, Throwable t) {
+            public void onFailure(Call<Service> call, Throwable t) {
                 loading.setValue(false);
                 errorMessage.setValue("Network error");
             }
@@ -161,9 +161,9 @@ public class ServiceReservationViewModel extends ViewModel {
     }
 
     public LocalTime calculateToTime(LocalTime fromTime) {
-        ServiceDetails serviceDetails = serviceDetailsLiveData.getValue();
-        if (serviceDetails != null && serviceDetails.getDuration() != 0) {
-            return fromTime.plusHours(serviceDetails.getDuration());
+        Service Service = ServiceLiveData.getValue();
+        if (Service != null && Service.getDuration() != 0) {
+            return fromTime.plusMinutes(Service.getDuration());
         }
         return null;
     }

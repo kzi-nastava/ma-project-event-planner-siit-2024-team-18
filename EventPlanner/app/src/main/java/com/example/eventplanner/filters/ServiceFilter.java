@@ -29,7 +29,7 @@ public class ServiceFilter extends Filter implements Filterable {
             for (Service service : services) {
                 if (service.getName().toLowerCase().contains(filterString) ||
                         service.getCategory().toLowerCase().contains(filterString) ||
-                        service.getEventType().toLowerCase().contains(filterString)) {
+                        service.getEventTypes().contains(filterString)) {
                     filteredList.add(service);
                 }
             }
