@@ -1,20 +1,23 @@
 package com.example.eventplanner.activities;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
+import com.example.eventplanner.dialogs.AddCategoryDialog;
 import com.example.eventplanner.fragments.CategoryListFragment;
+import com.example.eventplanner.models.Category;
 import com.example.eventplanner.viewmodels.CategoryCardViewModel;
 
 public class CategoriesActivity extends BaseActivity {
     private ImageView addCategoryButton, btnBack;
     private CategoryCardViewModel categoryViewModel;
     private CategoryListFragment categoryListFragment;
+    private TextView reviewCategories;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,6 +32,7 @@ public class CategoriesActivity extends BaseActivity {
     private void initializeViews() {
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
         addCategoryButton = findViewById(R.id.addCategory);
+        reviewCategories = findViewById(R.id.reviewCategories);
         btnBack = findViewById(R.id.btnBack);
     }
 
@@ -42,16 +46,22 @@ public class CategoriesActivity extends BaseActivity {
     private void setupListeners() {
         setupAddCategoryButton();
         setupBackButton();
+        setupReviewCategories();
     }
 
     private void setupAddCategoryButton() {
         addCategoryButton.setOnClickListener(v -> {
-            Intent createIntent = new Intent(CategoriesActivity.this, CreateServiceActivity.class);
-            startActivity(createIntent);
+            AddCategoryDialog.show(this, (name, description) -> {
+                categoryViewModel.addCategory(new Category(name, description));
+            });
         });
     }
 
     private void setupBackButton() {
         btnBack.setOnClickListener(view -> finish());
+    }
+
+    private void setupReviewCategories() {
+        reviewCategories.setOnClickListener(view -> finish());
     }
 }

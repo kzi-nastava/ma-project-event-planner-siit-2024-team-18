@@ -16,13 +16,16 @@ import retrofit2.Response;
 public class CategoryCardViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Category>> categoriesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     public LiveData<ArrayList<Category>> getCategories() {
         return categoriesLiveData;
     }
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
-
+    public LiveData<Boolean> getSuccess() {
+        return success;
+    }
     public void fetchCategories() {
         Call<ArrayList<Category>> call = ClientUtils.categoryService.getAll();
         call.enqueue(new Callback<ArrayList<Category>>() {
@@ -37,6 +40,25 @@ public class CategoryCardViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<ArrayList<Category>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void addCategory(Category category) {
+        Call<Category> call = ClientUtils.categoryService.add(category);
+        call.enqueue(new Callback<Category>() {
+            @Override
+            public void onResponse(Call<Category> call, Response<Category> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to add category. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Category> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });

@@ -9,8 +9,9 @@ public class Category {
     private int id;
     private String name, description;
 
-    public Category(String name) {
+    public Category(String name, String description) {
         this.name = name;
+        this.description = description;
     }
 
     @Override
