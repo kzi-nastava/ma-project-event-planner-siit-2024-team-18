@@ -8,6 +8,7 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -19,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
@@ -170,7 +172,7 @@ public class ServiceDetailsActivity extends BaseActivity {
         favoriteButton.setOnClickListener(v -> toggleFavorite());
         commentsButton.setOnClickListener(v -> openComments());
         visitProviderButton.setOnClickListener(v -> visitProvider());
-        bookServiceButton.setOnClickListener(v -> bookService());
+        bookServiceButton.setOnClickListener(v -> navigateToServiceReservation(this.service.getId()));
     }
 
     private void toggleFavorite() {
@@ -181,8 +183,6 @@ public class ServiceDetailsActivity extends BaseActivity {
     private void openComments() {}
 
     private void visitProvider() {}
-
-    private void bookService() {}
 
     private void setupPaginationDots(int size) {
         dots = new ArrayList<>();
@@ -244,5 +244,18 @@ public class ServiceDetailsActivity extends BaseActivity {
             serviceDiscountedPrice.setText(String.format("$%.2f", discountedPrice));
         }
         serviceDiscountedPrice.setVisibility(View.VISIBLE);
+    }
+
+    private void navigateToServiceReservation(int serviceId) {
+        ServiceReservationFragment fragment = new ServiceReservationFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("serviceId", serviceId);
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }

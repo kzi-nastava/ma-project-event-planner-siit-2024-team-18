@@ -1,0 +1,51 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp"
+    android:background="@drawable/gray_gradient_background"
+    android:elevation="4dp"
+    android:layout_marginTop="10dp"
+    android:layout_marginStart="8dp"
+    android:layout_marginEnd="8dp"
+    android:clipToPadding="false"
+    android:layout_gravity="center">
+
+    <TextView
+        android:id="@+id/date_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/from_date"
+        android:textSize="14sp"
+        android:textColor="#EBEBEB"
+        android:fontFamily="@font/raleway"
+        android:paddingBottom="4dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:id="@+id/time_from_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/from_time"
+            android:textSize="14sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingEnd="8dp" />
+
+        <TextView
+            android:id="@+id/time_to_text_view"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/to_time"
+            android:textSize="14sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway" />
+    </LinearLayout>
+</LinearLayout>
