@@ -63,4 +63,42 @@ public class CategoryCardViewModel extends ViewModel {
             }
         });
     }
+
+    public void editCategory(int id, Category category) {
+        Call<Category> call = ClientUtils.categoryService.edit(id, category);
+        call.enqueue(new Callback<Category>() {
+            @Override
+            public void onResponse(Call<Category> call, Response<Category> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to edit category. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Category> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void deleteCategoryById(int id) {
+        Call<Void> call = ClientUtils.categoryService.deleteById(id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    fetchCategories();
+                } else {
+                    errorMessage.postValue("Failed to delete category. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue("Failed to delete category: " + t.getMessage());
+            }
+        });
+    }
 }

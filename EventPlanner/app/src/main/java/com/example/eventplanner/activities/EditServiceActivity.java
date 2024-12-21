@@ -58,7 +58,7 @@ public class EditServiceActivity extends BaseActivity {
     private RadioGroup reservationType;
     private LinearLayout selectedImagesContainer;
     private SwitchCompat isVisible, isAvailable;
-    private int serviceId, position;
+    private int serviceId;
     private ServiceDetailsViewModel serviceDetailsViewModel;
     private EventTypeCardViewModel eventTypeViewModel;
 
@@ -70,7 +70,6 @@ public class EditServiceActivity extends BaseActivity {
         initializeViews();
 
         serviceId = getIntent().getIntExtra("serviceId", -1);
-        position = getIntent().getIntExtra("position", -1);
 
         loadViewModels();
         setupListeners();

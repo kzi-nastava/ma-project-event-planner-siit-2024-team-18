@@ -52,7 +52,7 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
 
         initializeViews(convertView);
         populateFields(service);
-        setupListeners(service, position);
+        setupListeners(service);
 
         return convertView;
     }
@@ -93,11 +93,10 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
 
     }
 
-    private void setupListeners(Service service, int position) {
+    private void setupListeners(Service service) {
         frameEditService.setOnClickListener(v -> {
             Intent editIntent = new Intent(getContext(), EditServiceActivity.class);
             editIntent.putExtra("serviceId", service.getId());
-            editIntent.putExtra("position", position);
             getContext().startActivity(editIntent);
         });
 

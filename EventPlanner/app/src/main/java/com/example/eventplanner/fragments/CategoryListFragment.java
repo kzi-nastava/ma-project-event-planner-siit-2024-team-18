@@ -44,7 +44,6 @@ public class CategoryListFragment extends ListFragment {
         categoriesViewModel.getCategories().observe(getViewLifecycleOwner(), categories -> {
             if (categories != null) {
                 adapter.updateCategoriesList(categories);
-                Log.d("CategoryListFragment", "Categories updated: " + categories.size());
             }
         });
 
