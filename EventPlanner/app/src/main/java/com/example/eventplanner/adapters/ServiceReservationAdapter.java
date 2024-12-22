@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.ReservationDetails;
+import com.example.eventplanner.models.Reservation;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -20,15 +20,14 @@ import java.util.List;
 public class ServiceReservationAdapter extends RecyclerView.Adapter<ServiceReservationAdapter.ReservationViewHolder> {
 
     private final Context context;
-    private final List<ReservationDetails> reservations = new ArrayList<>();
-    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("hh:mm a");
+    private final List<Reservation> reservations = new ArrayList<>();
+    private final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm a");
 
     public ServiceReservationAdapter(Context context) {
         this.context = context;
     }
 
-    public void updateReservations(Collection<ReservationDetails> newReservations) {
+    public void updateReservations(Collection<Reservation> newReservations) {
         reservations.clear();
         reservations.addAll(newReservations);
         notifyDataSetChanged();
@@ -43,11 +42,11 @@ public class ServiceReservationAdapter extends RecyclerView.Adapter<ServiceReser
 
     @Override
     public void onBindViewHolder(@NonNull ReservationViewHolder holder, int position) {
-        ReservationDetails reservation = reservations.get(position);
+        Reservation reservation = reservations.get(position);
 
-        holder.dateTextView.setText(String.format("Date: %s", reservation.getDate().format(dateFormatter)));
-        holder.timeFromTextView.setText(String.format("From: %s", reservation.getTimeFrom().format(timeFormatter)));
-        holder.timeToTextView.setText(String.format("To: %s", reservation.getTimeTo().format(timeFormatter)));
+        holder.dateTextView.setText(String.format("Date: %s", reservation.getDate().toString()));
+        holder.timeFromTextView.setText(String.format("From: %s", reservation.getTimeFrom().toString()));
+        holder.timeToTextView.setText(String.format("To: %s", reservation.getTimeTo().toString()));
     }
 
     @Override
