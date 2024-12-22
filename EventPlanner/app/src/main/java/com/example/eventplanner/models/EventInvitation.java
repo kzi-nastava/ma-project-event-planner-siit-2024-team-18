@@ -22,9 +22,9 @@ public class EventInvitation implements Parcelable, Serializable {
     @Expose
     private String description;
 
-    @SerializedName("startDate")
+    @SerializedName("date")
     @Expose
-    private LocalDateTime startDate;
+    private LocalDateTime date;
 
     @SerializedName("locationName")
     @Expose
@@ -52,7 +52,7 @@ public class EventInvitation implements Parcelable, Serializable {
     protected EventInvitation(Parcel in) {
         name = in.readString();
         description = in.readString();
-        startDate = (LocalDateTime) in.readSerializable();
+        date = (LocalDateTime) in.readSerializable();
         locationName = in.readString();
         eventTypeName = in.readString();
         creatorFirstName = in.readString();
@@ -88,12 +88,12 @@ public class EventInvitation implements Parcelable, Serializable {
         this.description = description;
     }
 
-    public LocalDateTime getStartDate() {
-        return startDate;
+    public LocalDateTime getDate() {
+        return date;
     }
 
-    public void setStartDate(LocalDateTime startDate) {
-        this.startDate = startDate;
+    public void setDate(LocalDateTime date) {
+        this.date = date;
     }
 
     public String getLocationName() {
@@ -142,7 +142,7 @@ public class EventInvitation implements Parcelable, Serializable {
         return "EventInvitation{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
-                ", startDate=" + startDate +
+                ", startDate=" + date +
                 ", locationName='" + locationName + '\'' +
                 ", eventTypeName='" + eventTypeName + '\'' +
                 ", creatorFirstName='" + creatorFirstName + '\'' +
@@ -160,7 +160,7 @@ public class EventInvitation implements Parcelable, Serializable {
     public void writeToParcel(@NonNull Parcel dest, int flags) {
         dest.writeString(name);
         dest.writeString(description);
-        dest.writeSerializable(startDate);
+        dest.writeSerializable(date);
         dest.writeString(locationName);
         dest.writeString(eventTypeName);
         dest.writeString(creatorFirstName);

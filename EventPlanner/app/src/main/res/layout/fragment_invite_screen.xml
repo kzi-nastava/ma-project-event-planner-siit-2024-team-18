@@ -1,0 +1,114 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_background"
+        android:padding="20dp"
+        android:elevation="10dp"
+        android:layout_margin="8dp"
+        android:clipToPadding="false"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/logo" />
+
+            <TextView
+                android:id="@+id/inviteTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/invitations"
+                android:textColor="#EBEBEB"
+                android:textSize="22sp"
+                android:layout_marginStart="65dp"
+                android:fontFamily="@font/merriweather_bold" />
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="68dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/close"
+                android:src="@drawable/ic_close" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <EditText
+                    android:id="@+id/emailInput"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:hint="@string/enter_email"
+                    android:background="@drawable/general_border"
+                    android:padding="10dp"
+                    android:textColor="#3F3F3F"
+                    android:fontFamily="@font/raleway" />
+
+                <Button
+                    android:id="@+id/addEmailButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_email"
+                    android:backgroundTint="#A29BFE"
+                    android:textColor="#EBEBEB"
+                    android:layout_marginStart="8dp"
+                    android:fontFamily="@font/raleway" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:orientation="vertical"
+                android:background="#EBEBEB"
+                android:padding="10dp"
+                android:layout_marginTop="16dp"
+                android:clipToPadding="false"
+                android:elevation="5dp">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/emailRecyclerView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/sendInvitesButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A29BFE"
+            android:text="@string/send_invites"
+            android:textColor="#EBEBEB"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/raleway" />
+    </LinearLayout>
+</LinearLayout>
