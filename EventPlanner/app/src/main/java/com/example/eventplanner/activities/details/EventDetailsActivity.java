@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.details;
 
 import android.os.Bundle;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.fragments.InviteScreenFragment;
 import com.example.eventplanner.models.Event;
 
 public class EventDetailsActivity extends BaseActivity {
@@ -18,6 +20,7 @@ public class EventDetailsActivity extends BaseActivity {
 
     private ImageView eventImage;
     private TextView eventTitle, eventDescription;
+    private Button sendInvitationsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +30,7 @@ public class EventDetailsActivity extends BaseActivity {
         eventImage = findViewById(R.id.event_image);
         eventTitle = findViewById(R.id.event_title);
         eventDescription = findViewById(R.id.event_description);
+        sendInvitationsButton = findViewById(R.id.send_invitations_button);
 
         int eventId = getIntent().getIntExtra("eventId", -1);
 
@@ -36,6 +40,8 @@ public class EventDetailsActivity extends BaseActivity {
         } else {
             Toast.makeText(this, "Invalid Event ID", Toast.LENGTH_SHORT).show();
         }
+
+        setupListeners(eventId);
     }
 
     private void setupViewModel() {
@@ -44,6 +50,7 @@ public class EventDetailsActivity extends BaseActivity {
         eventDetailsViewModel.getEventDetails().observe(this, this::displayEventDetails);
 
         eventDetailsViewModel.isLoading().observe(this, isLoading -> {
+            // Handle loading state
         });
 
         eventDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
@@ -68,5 +75,22 @@ public class EventDetailsActivity extends BaseActivity {
                 eventImage.setImageResource(R.drawable.event_placeholder);
             }
         }
+    }
+
+    private void setupListeners(int eventId) {
+        sendInvitationsButton.setOnClickListener(v -> navigateToInvitationFragment(eventId));
+    }
+
+    private void navigateToInvitationFragment(int eventId) {
+        InviteScreenFragment fragment = new InviteScreenFragment();
+
+        Bundle bundle = new Bundle();
+        bundle.putInt("eventId", eventId);
+        fragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 }
