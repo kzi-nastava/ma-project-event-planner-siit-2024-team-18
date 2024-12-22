@@ -70,7 +70,7 @@ public class InviteScreenFragment extends Fragment {
 
         viewModel.getIsSending().observe(getViewLifecycleOwner(), isSending -> {
             if (isSending) {
-                binding.sendInvitesButton.setText("Sending Invitations...");
+                binding.sendInvitesButton.setText("Sending Invites...");
                 binding.sendInvitesButton.setEnabled(false);
             } else {
                 binding.sendInvitesButton.setText("Send Invites");

@@ -1,6 +1,6 @@
 package com.example.eventplanner.clients;
 
-import com.example.eventplanner.models.ReservationDetails;
+import com.example.eventplanner.models.Reservation;
 
 import java.util.Collection;
 
@@ -18,12 +18,12 @@ public interface ReservationService {
             "Content-Type:application/json"
     })
     @POST("reservations")
-    Call<ReservationDetails> createReservation(@Body ReservationDetails reservation);
+    Call<Reservation> createReservation(@Body Reservation reservation);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
     @GET("reservations/{serviceId}")
-    Call<Collection<ReservationDetails>> getReservationsByServiceId(@Path("serviceId") int serviceId);
+    Call<Collection<Reservation>> getReservationsByServiceId(@Path("serviceId") int serviceId);
 }
