@@ -91,7 +91,7 @@ public class ServiceFilter extends DialogFragment {
 
     private void setupCategoryAdapter() {
         List<Category> categoriesWithPlaceholder = new ArrayList<>();
-        categoriesWithPlaceholder.add(new Category("Select a category"));
+        categoriesWithPlaceholder.add(new Category("Select a category", "Blank"));
         categoriesWithPlaceholder.addAll(listCategories);
 
         ArrayAdapter<Category> categoryAdapter = new ArrayAdapter<>(getContext(), android.R.layout.simple_spinner_item, categoriesWithPlaceholder);

@@ -224,7 +224,8 @@ public class CreateServiceActivity extends BaseActivity {
             if (hasFocus) {
                 categories.showDropDown();
             }
-        });}
+        });
+    }
 
     private List<String> getCategoryNames() {
         List<String> names = new ArrayList<>();

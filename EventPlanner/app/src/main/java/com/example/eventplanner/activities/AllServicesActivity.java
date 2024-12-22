@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
@@ -16,12 +19,7 @@ import com.example.eventplanner.fragments.ServiceListFragment;
 import com.example.eventplanner.viewmodels.ServiceListViewModel;
 import com.google.android.material.textfield.TextInputEditText;
 
-import android.view.inputmethod.InputMethodManager;
-
-import androidx.lifecycle.ViewModelProvider;
-
 public class AllServicesActivity extends BaseActivity implements FilterApplyListener {
-
     private TextInputEditText searchEditText;
     private ImageView addServiceButton, btnBack, btnFilter;
     private FrameLayout btnSearch;
