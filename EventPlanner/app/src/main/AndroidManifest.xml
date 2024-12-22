@@ -30,6 +30,9 @@
             android:name=".activities.EditServiceActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.CategoriesActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.details.EventDetailsActivity"
             android:exported="false" />
         <activity

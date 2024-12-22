@@ -155,8 +155,10 @@ public class ServiceDetailsActivity extends BaseActivity {
             spannableCancellationDeadline.setSpan(new StyleSpan(Typeface.BOLD), 0, 22, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             serviceCancellationDeadline.setText(spannableCancellationDeadline);
 
-            SpannableString spannableWorkingHours = new SpannableString(String.format("Working Hours: %s - %s", service.getWorkingHoursStart(), service.getWorkingHoursEnd()));
-            spannableWorkingHours.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            String workingHoursStart = service.getWorkingHoursStart().substring(0, service.getWorkingHoursStart().lastIndexOf(":"));
+            String workingHoursEnd = service.getWorkingHoursEnd().substring(0, service.getWorkingHoursEnd().lastIndexOf(":"));
+            SpannableString spannableWorkingHours = new SpannableString(String.format("Working Hours: %s - %s", workingHoursStart, workingHoursEnd));
+            spannableWorkingHours.setSpan(new StyleSpan(Typeface.BOLD), 0, 14, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
             serviceWorkingHours.setText(spannableWorkingHours);
 
             if (service.getDiscount() > 0) {

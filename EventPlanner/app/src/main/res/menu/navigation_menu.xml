@@ -27,6 +27,10 @@
                     android:title="@string/products"
                     android:icon="@drawable/ic_box" />
 
+                <item android:id="@+id/nav_categories"
+                    android:title="@string/categories"
+                    android:icon="@drawable/ic_category" />
+
                 <item android:id="@+id/nav_profile"
                     android:title="@string/profile"
                     android:icon="@drawable/ic_user" />
