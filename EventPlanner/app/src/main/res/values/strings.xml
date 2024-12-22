@@ -129,6 +129,12 @@
     <string name="close">Close</string>
     <string name="logo">Logo</string>
     <string name="service_reservation">Service Reservation</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="add_email">Add Email</string>
+    <string name="send_invites">Send Invites</string>
+    <string name="invitations">Invitations</string>
+    <string name="delete">Delete</string>
+    <string name="send_invitations">Send Invitations</string>
     <string-array name="sort_options">
         <item>Ascending</item>
         <item>Descending</item>
