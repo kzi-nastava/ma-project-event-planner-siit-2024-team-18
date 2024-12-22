@@ -25,6 +25,13 @@ public interface CategoryService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
+    @GET("categories/review")
+    Call<ArrayList<Category>> getReviewCategories();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
     @POST("categories/create")
     Call<Category> add(@Body Category category);
 
@@ -41,4 +48,11 @@ public interface CategoryService {
     })
     @DELETE("categories/delete/{id}")
     Call<Void> deleteById(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("categories/approve/review/{id}")
+    Call<Void> approveById(@Path("id") int id);
 }

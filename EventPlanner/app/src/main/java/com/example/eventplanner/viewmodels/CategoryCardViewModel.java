@@ -15,10 +15,15 @@ import retrofit2.Response;
 
 public class CategoryCardViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Category>> categoriesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<Category>> reviewCategoriesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+
     public LiveData<ArrayList<Category>> getCategories() {
         return categoriesLiveData;
+    }
+    public LiveData<ArrayList<Category>> getReviewCategories() {
+        return reviewCategoriesLiveData;
     }
     public LiveData<String> getErrorMessage() {
         return errorMessage;
@@ -35,6 +40,25 @@ public class CategoryCardViewModel extends ViewModel {
                     categoriesLiveData.postValue(response.body());
                 } else {
                     errorMessage.postValue("Failed to fetch Categories. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Category>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchReviewCategories() {
+        Call<ArrayList<Category>> call = ClientUtils.categoryService.getReviewCategories();
+        call.enqueue(new Callback<ArrayList<Category>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
+                if (response.isSuccessful()) {
+                    reviewCategoriesLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch Review Categories. Code: " + response.code());
                 }
             }
 
@@ -90,6 +114,7 @@ public class CategoryCardViewModel extends ViewModel {
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     fetchCategories();
+                    fetchReviewCategories();
                 } else {
                     errorMessage.postValue("Failed to delete category. Code: " + response.code());
                 }
@@ -98,6 +123,26 @@ public class CategoryCardViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
                 errorMessage.postValue("Failed to delete category: " + t.getMessage());
+            }
+        });
+    }
+
+    public void approveCategoryById(int id) {
+        Call<Void> call = ClientUtils.categoryService.approveById(id);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    fetchCategories();
+                    fetchReviewCategories();
+                } else {
+                    errorMessage.postValue("Failed to approve category. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue("Failed to approve category: " + t.getMessage());
             }
         });
     }
