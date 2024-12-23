@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments.homepage;
+package com.example.eventplanner.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

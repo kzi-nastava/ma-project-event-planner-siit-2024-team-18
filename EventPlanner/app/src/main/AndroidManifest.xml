@@ -63,8 +63,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http"
-                    android:host="localhost"
-                    android:pathPrefix="/api/invites/accept" />
+                    android:host="localhost" />
             </intent-filter>
         </activity>
     </application>

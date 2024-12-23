@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AllProductsServicesAdapter;
 import com.example.eventplanner.databinding.AllProductsServicesSectionBinding;
+import com.example.eventplanner.viewmodels.AllProductsServicesViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
