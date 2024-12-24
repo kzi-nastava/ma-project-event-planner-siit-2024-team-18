@@ -33,6 +33,9 @@
             android:name=".activities.CategoriesActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.BudgetActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.details.EventDetailsActivity"
             android:exported="false" />
         <activity

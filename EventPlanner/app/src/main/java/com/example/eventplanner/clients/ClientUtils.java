@@ -6,16 +6,17 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
-import okhttp3.OkHttpClient;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
+
+import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientUtils {
 
@@ -64,6 +65,7 @@ public class ClientUtils {
     public static ServiceService serviceService = retrofit.create(ServiceService.class);
     public static EventTypeService eventTypeService = retrofit.create(EventTypeService.class);
     public static CategoryService categoryService = retrofit.create(CategoryService.class);
+    public static BudgetService budgetService = retrofit.create(BudgetService.class);
     public static EventService eventService = retrofit.create(EventService.class);
     public static ProductService productService = retrofit.create(ProductService.class);
     public static SolutionService solutionService = retrofit.create(SolutionService.class);

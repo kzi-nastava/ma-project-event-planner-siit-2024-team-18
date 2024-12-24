@@ -67,6 +67,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent categoriesIntent = new Intent(BaseActivity.this, CategoriesActivity.class);
                     startActivity(categoriesIntent);
                 }
+            } else if (id == R.id.nav_budget) {
+                if (currentActivity != BudgetActivity.class) {
+                    Intent budgetIntent = new Intent(BaseActivity.this, BudgetActivity.class);
+                    startActivity(budgetIntent);
+                }
             }
 
             drawerLayout.closeDrawers();
