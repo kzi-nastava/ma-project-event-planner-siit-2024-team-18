@@ -177,19 +177,7 @@ public class Event implements Parcelable, Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "Event{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", maxParticipants=" + maxParticipants +
-                ", budget=" + budget +
-                ", images=" + images +
-                ", creatorId=" + creatorId +
-                ", locationId=" + locationId +
-                ", locationName='" + locationName + '\'' +
-                ", eventTypeId=" + eventTypeId +
-                ", eventTypeName='" + eventTypeName + '\'' +
-                '}';
+        return name;
     }
 
     @Override

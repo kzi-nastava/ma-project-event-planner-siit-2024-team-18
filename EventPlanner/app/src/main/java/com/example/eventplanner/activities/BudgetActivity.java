@@ -19,7 +19,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private ImageView addBudgetItemButton, btnBack;
     private BudgetViewModel budgetViewModel;
     private BudgetItemListFragment budgetItemListFragment;
-    private TextView solutionDetails;
+    private TextView solutionDetails, totalBudget;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,6 +28,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
         initializeViews();
         initializeBudgetItemsFragment();
+        populateData();
         setupListeners();
     }
 
@@ -38,8 +39,11 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
     private void initializeViews() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        budgetViewModel.getTotalBudget(1);
+
         addBudgetItemButton = findViewById(R.id.addBudgetItem);
         solutionDetails = findViewById(R.id.solutionDetails);
+        totalBudget = findViewById(R.id.totalBudget);
         btnBack = findViewById(R.id.btnBack);
     }
 
@@ -49,6 +53,17 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
         FragmentTransition.to(budgetItemListFragment, this, false, R.id.listViewBudgetItems);
     }
+
+    private void populateData() {
+        budgetViewModel.getTotalBudgetLiveData().observe(this, total -> {
+            if (total != null) {
+                totalBudget.setText(String.format("Total Budget: %d$", total));
+            } else {
+                totalBudget.setText("Total Budget: N/A");
+            }
+        });
+    }
+
 
     private void setupListeners() {
         setupAddBudgetItemButton();
@@ -82,6 +97,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
         findViewById(R.id.btnBack).setVisibility(View.GONE);
         findViewById(R.id.solutionDetails).setVisibility(View.GONE);
         findViewById(R.id.listViewBudgetItemsContainer).setVisibility(View.GONE);
+        findViewById(R.id.totalBudget).setVisibility(View.GONE);
     }
 
     @Override
@@ -91,5 +107,6 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
         findViewById(R.id.btnBack).setVisibility(View.VISIBLE);
         findViewById(R.id.solutionDetails).setVisibility(View.VISIBLE);
         findViewById(R.id.listViewBudgetItemsContainer).setVisibility(View.VISIBLE);
+        findViewById(R.id.totalBudget).setVisibility(View.VISIBLE);
     }
 }

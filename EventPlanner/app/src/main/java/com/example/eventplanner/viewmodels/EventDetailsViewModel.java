@@ -1,4 +1,4 @@
-package com.example.eventplanner.activities.details;
+package com.example.eventplanner.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Event;
 
+import java.util.ArrayList;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
 public class EventDetailsViewModel extends ViewModel {
-
+    private final MutableLiveData<ArrayList<Event>> allEventsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Event> eventDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
@@ -21,12 +23,36 @@ public class EventDetailsViewModel extends ViewModel {
         return eventDetailsLiveData;
     }
 
+    public LiveData<ArrayList<Event>> getEvents() {
+        return allEventsLiveData;
+    }
+
     public LiveData<Boolean> isLoading() {
         return loading;
     }
 
     public LiveData<String> getErrorMessage() {
         return errorMessage;
+    }
+
+
+    public void fetchEvents() {
+        Call<ArrayList<Event>> call = ClientUtils.eventService.getAll();
+        call.enqueue(new Callback<ArrayList<Event>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Event>> call, Response<ArrayList<Event>> response) {
+                if (response.isSuccessful()) {
+                    allEventsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch events. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Event>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
     }
 
     public void fetchEventDetailsById(int eventId) {

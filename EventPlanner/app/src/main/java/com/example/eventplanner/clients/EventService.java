@@ -5,6 +5,7 @@ import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.PagedResponse;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Collection;
 
 import retrofit2.Call;
@@ -14,6 +15,12 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface EventService {
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("events/all")
+    Call<ArrayList<Event>> getAll();
 
     @Headers({
             "User-Agent: Mobile-Android",

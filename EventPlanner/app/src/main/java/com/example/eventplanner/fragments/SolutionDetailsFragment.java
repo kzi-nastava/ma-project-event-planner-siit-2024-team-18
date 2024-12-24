@@ -37,7 +37,7 @@ public class SolutionDetailsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeViews(view);
-        initializeFragment(view);
+        initializeFragment();
         setupListeners();
     }
 
@@ -54,8 +54,8 @@ public class SolutionDetailsFragment extends Fragment {
         btnBack = view.findViewById(R.id.btnBack);
     }
 
-    private void initializeFragment(View view) {
-        FragmentTransition.to(SolutionDetailsFragment.newInstance(), requireActivity(), false, R.id.listViewSolutionDetails);
+    private void initializeFragment() {
+        FragmentTransition.to(SolutionDetailsListFragment.newInstance(), requireActivity(), false, R.id.listViewSolutionDetails);
     }
 
     private void setupListeners() {
