@@ -48,11 +48,7 @@ public class EditBudgetItemDialog {
     private static void populateFields() {
         String budgetItemCategoryName = budgetItem.getCategory();
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                dialogView.getContext(),
-                android.R.layout.simple_spinner_item,
-                new String[]{budgetItemCategoryName}
-        );
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(dialogView.getContext(), android.R.layout.simple_spinner_item, new String[]{budgetItemCategoryName});
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         budgetItemCategory.setAdapter(adapter);
         budgetItemCategory.setEnabled(false);

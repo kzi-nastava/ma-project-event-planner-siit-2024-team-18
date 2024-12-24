@@ -34,7 +34,7 @@ public interface BudgetService {
             "Content-Type:application/json"
     })
     @GET("budget/details/{eventId}")
-    Call<ArrayList<ProductDetails>> getDetails(@Path("eventId") int eventId);
+    Call<ArrayList<ProductDetails>> getSolutionDetails(@Path("eventId") int eventId);
 
     @Headers({
             "User-Agent: Mobile-Android",
