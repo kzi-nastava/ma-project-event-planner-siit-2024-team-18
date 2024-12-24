@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventplanner.activities.details.EventDetailsActivity;
 import com.example.eventplanner.adapters.EmailAdapter;
 import com.example.eventplanner.databinding.FragmentInviteScreenBinding;
+import com.example.eventplanner.viewmodels.InviteScreenViewModel;
 
 public class InviteScreenFragment extends Fragment {
 
@@ -70,7 +71,7 @@ public class InviteScreenFragment extends Fragment {
 
         viewModel.getIsSending().observe(getViewLifecycleOwner(), isSending -> {
             if (isSending) {
-                binding.sendInvitesButton.setText("Sending Invitations...");
+                binding.sendInvitesButton.setText("Sending Invites...");
                 binding.sendInvitesButton.setEnabled(false);
             } else {
                 binding.sendInvitesButton.setText("Send Invites");

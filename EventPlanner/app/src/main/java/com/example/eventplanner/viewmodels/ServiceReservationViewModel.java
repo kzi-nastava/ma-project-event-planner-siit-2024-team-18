@@ -1,4 +1,4 @@
-package com.example.eventplanner.fragments;
+package com.example.eventplanner.viewmodels;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.EventCard;
-import com.example.eventplanner.models.ReservationDetails;
+import com.example.eventplanner.models.Reservation;
 import com.example.eventplanner.models.Service;
 
 import java.time.LocalDate;
@@ -20,7 +20,7 @@ import retrofit2.Response;
 
 public class ServiceReservationViewModel extends ViewModel {
 
-    private final MutableLiveData<Collection<ReservationDetails>> reservations = new MutableLiveData<>();
+    private final MutableLiveData<Collection<Reservation>> reservations = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Integer> selectedEventId = new MutableLiveData<>();
     private final MutableLiveData<LocalDate> selectedDate = new MutableLiveData<>();
@@ -36,7 +36,7 @@ public class ServiceReservationViewModel extends ViewModel {
         return ServiceLiveData;
     }
 
-    public LiveData<Collection<ReservationDetails>> getReservations() {
+    public LiveData<Collection<Reservation>> getReservations() {
         return reservations;
     }
 
@@ -77,10 +77,10 @@ public class ServiceReservationViewModel extends ViewModel {
     }
 
     public void fetchReservations(int serviceId) {
-        Call<Collection<ReservationDetails>> call = ClientUtils.reservationService.getReservationsByServiceId(serviceId);
-        call.enqueue(new Callback<Collection<ReservationDetails>>() {
+        Call<Collection<Reservation>> call = ClientUtils.reservationService.getReservationsByServiceId(serviceId);
+        call.enqueue(new Callback<Collection<Reservation>>() {
             @Override
-            public void onResponse(Call<Collection<ReservationDetails>> call, Response<Collection<ReservationDetails>> response) {
+            public void onResponse(Call<Collection<Reservation>> call, Response<Collection<Reservation>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     reservations.setValue(response.body());
                 } else {
@@ -89,7 +89,7 @@ public class ServiceReservationViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<Collection<ReservationDetails>> call, Throwable t) {
+            public void onFailure(Call<Collection<Reservation>> call, Throwable t) {
                 errorMessage.setValue("Error: " + t.getMessage());
             }
         });
@@ -176,17 +176,17 @@ public class ServiceReservationViewModel extends ViewModel {
     }
 
     public void bookService(int eventId, LocalDate date, LocalTime timeFrom, LocalTime timeTo, Consumer<Boolean> callback) {
-        ReservationDetails reservation = new ReservationDetails(0, serviceId, eventId, date, timeFrom, timeTo, "PENDING");
+        Reservation reservation = new Reservation(0, serviceId, eventId, date, timeFrom, timeTo, "PENDING");
 
-        Call<ReservationDetails> call = ClientUtils.reservationService.createReservation(reservation);
-        call.enqueue(new Callback<ReservationDetails>() {
+        Call<Reservation> call = ClientUtils.reservationService.createReservation(reservation);
+        call.enqueue(new Callback<Reservation>() {
             @Override
-            public void onResponse(Call<ReservationDetails> call, Response<ReservationDetails> response) {
+            public void onResponse(Call<Reservation> call, Response<Reservation> response) {
                 callback.accept(response.isSuccessful());
             }
 
             @Override
-            public void onFailure(Call<ReservationDetails> call, Throwable t) {
+            public void onFailure(Call<Reservation> call, Throwable t) {
                 callback.accept(false);
             }
         });

@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.Top5EventsAdapter;
 import com.example.eventplanner.databinding.Top5EventsCarouselBinding;
+import com.example.eventplanner.viewmodels.Top5EventsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;

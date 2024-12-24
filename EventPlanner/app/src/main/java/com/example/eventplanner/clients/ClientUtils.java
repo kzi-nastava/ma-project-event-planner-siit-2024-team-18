@@ -8,7 +8,9 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -18,34 +20,39 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class ClientUtils {
 
-    public static final String SERVICE_API_PATH = "http://"+ BuildConfig.IP_ADDR +":8080/api/";
+    public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
 
     public static OkHttpClient test() {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-        OkHttpClient client = new OkHttpClient.Builder()
+        return new OkHttpClient.Builder()
                 .connectTimeout(120, TimeUnit.SECONDS)
                 .readTimeout(120, TimeUnit.SECONDS)
                 .writeTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .build();
-
-        return client;
     }
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
     public static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) -> {
-                return new JsonPrimitive(src.toString());
-            })
-            .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> {
-                return LocalDate.parse(json.getAsString());
-            })
-            .registerTypeAdapter(LocalTime.class, (JsonSerializer<LocalTime>) (src, typeOfSrc, context) -> {
-                return new JsonPrimitive(src.toString());
-            })
-            .registerTypeAdapter(LocalTime.class, (JsonDeserializer<LocalTime>) (json, typeOfT, context) -> {
-                return LocalTime.parse(json.getAsString());
+            .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) ->
+                    new JsonPrimitive(src.toString()))
+            .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) ->
+                    LocalDate.parse(json.getAsString()))
+            .registerTypeAdapter(LocalTime.class, (JsonSerializer<LocalTime>) (src, typeOfSrc, context) ->
+                    new JsonPrimitive(src.toString()))
+            .registerTypeAdapter(LocalTime.class, (JsonDeserializer<LocalTime>) (json, typeOfT, context) ->
+                    LocalTime.parse(json.getAsString()))
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
+                    new JsonPrimitive(src.format(DATE_TIME_FORMATTER)))
+            .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
+                String dateTimeStr = json.getAsString();
+                if (dateTimeStr.contains(".")) {
+                    dateTimeStr = dateTimeStr.substring(0, Math.min(dateTimeStr.indexOf('.') + 4, dateTimeStr.length()));
+                }
+                return LocalDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER);
             })
             .create();
 
@@ -64,4 +71,5 @@ public class ClientUtils {
     public static SolutionService solutionService = retrofit.create(SolutionService.class);
     public static ReservationService reservationService = retrofit.create(ReservationService.class);
     public static EmailService emailService = retrofit.create(EmailService.class);
+    public static InviteService inviteService = retrofit.create(InviteService.class);
 }

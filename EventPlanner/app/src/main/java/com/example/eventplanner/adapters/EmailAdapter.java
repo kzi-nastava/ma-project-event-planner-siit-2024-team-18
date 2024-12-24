@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.DiffUtil;
 import androidx.recyclerview.widget.ListAdapter;
 
 import com.example.eventplanner.databinding.ItemEmailBinding;
-import com.example.eventplanner.fragments.InviteScreenViewModel;
+import com.example.eventplanner.viewmodels.InviteScreenViewModel;
 
 public class EmailAdapter extends ListAdapter<String, EmailAdapter.EmailViewHolder> {
 

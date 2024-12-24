@@ -21,6 +21,7 @@ import com.example.eventplanner.activities.details.ServiceDetailsActivity;
 import com.example.eventplanner.adapters.ServiceReservationAdapter;
 import com.example.eventplanner.databinding.FragmentServiceReservationBinding;
 import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.viewmodels.ServiceReservationViewModel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

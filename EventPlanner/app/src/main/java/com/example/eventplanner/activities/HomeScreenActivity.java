@@ -2,6 +2,7 @@ package com.example.eventplanner.activities;
 
 import android.os.Bundle;
 import androidx.fragment.app.Fragment;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.homepage.Top5EventsFragment;
@@ -11,12 +12,26 @@ import com.example.eventplanner.fragments.homepage.AllProductsServicesFragment;
 
 public class HomeScreenActivity extends BaseActivity {
 
+    private SwipeRefreshLayout swipeRefreshLayout;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         getLayoutInflater().inflate(R.layout.activity_home_screen, findViewById(R.id.content_frame));
 
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh_layout);
+
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            loadFragments();
+
+            swipeRefreshLayout.setRefreshing(false);
+        });
+
+        loadFragments();
+    }
+
+    private void loadFragments() {
         Fragment top5EventsFragment = new Top5EventsFragment();
         Fragment allEventsFragment = new AllEventsFragment();
         Fragment top5ProductsServicesFragment = new Top5SolutionsFragment();
@@ -30,3 +45,4 @@ public class HomeScreenActivity extends BaseActivity {
                 .commit();
     }
 }
+
