@@ -31,6 +31,10 @@
                     android:title="@string/categories"
                     android:icon="@drawable/ic_category" />
 
+                <item android:id="@+id/nav_budget"
+                    android:title="Budget"
+                    android:icon="@drawable/ic_lock" />
+
                 <item android:id="@+id/nav_profile"
                     android:title="@string/profile"
                     android:icon="@drawable/ic_user" />
