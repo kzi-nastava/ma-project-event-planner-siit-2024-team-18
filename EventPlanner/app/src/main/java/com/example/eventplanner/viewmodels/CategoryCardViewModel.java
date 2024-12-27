@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -31,8 +33,15 @@ public class CategoryCardViewModel extends ViewModel {
     public LiveData<Boolean> getSuccess() {
         return success;
     }
+
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchCategories() {
-        Call<ArrayList<Category>> call = ClientUtils.categoryService.getAll();
+        Call<ArrayList<Category>> call = ClientUtils.getCategoryService(this.context).getAll();
         call.enqueue(new Callback<ArrayList<Category>>() {
             @Override
             public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
@@ -51,7 +60,7 @@ public class CategoryCardViewModel extends ViewModel {
     }
 
     public void fetchReviewCategories() {
-        Call<ArrayList<Category>> call = ClientUtils.categoryService.getReviewCategories();
+        Call<ArrayList<Category>> call = ClientUtils.getCategoryService(this.context).getReviewCategories();
         call.enqueue(new Callback<ArrayList<Category>>() {
             @Override
             public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
@@ -70,7 +79,7 @@ public class CategoryCardViewModel extends ViewModel {
     }
 
     public void addCategory(Category category) {
-        Call<Category> call = ClientUtils.categoryService.add(category);
+        Call<Category> call = ClientUtils.getCategoryService(this.context).add(category);
         call.enqueue(new Callback<Category>() {
             @Override
             public void onResponse(Call<Category> call, Response<Category> response) {
@@ -89,7 +98,7 @@ public class CategoryCardViewModel extends ViewModel {
     }
 
     public void editCategory(int id, Category category) {
-        Call<Category> call = ClientUtils.categoryService.edit(id, category);
+        Call<Category> call = ClientUtils.getCategoryService(this.context).edit(id, category);
         call.enqueue(new Callback<Category>() {
             @Override
             public void onResponse(Call<Category> call, Response<Category> response) {
@@ -108,7 +117,7 @@ public class CategoryCardViewModel extends ViewModel {
     }
 
     public void deleteCategoryById(int id) {
-        Call<Void> call = ClientUtils.categoryService.deleteById(id);
+        Call<Void> call = ClientUtils.getCategoryService(this.context).deleteById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -128,7 +137,7 @@ public class CategoryCardViewModel extends ViewModel {
     }
 
     public void approveCategoryById(int id) {
-        Call<Void> call = ClientUtils.categoryService.approveById(id);
+        Call<Void> call = ClientUtils.getCategoryService(this.context).approveById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {

@@ -41,6 +41,7 @@ public class Top5EventsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(Top5EventsViewModel.class);
+        viewModel.setContext(requireContext());
 
         if (binding != null) {
             setupRecyclerView();

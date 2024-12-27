@@ -47,7 +47,7 @@ public class AllServicesActivity extends BaseActivity implements FilterApplyList
 
     private void initializeViews() {
         serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
-        serviceListViewModel = new ViewModelProvider(this).get(ServiceListViewModel.class);
+        serviceListViewModel.setContext(this);
         addServiceButton = findViewById(R.id.addService);
         searchEditText = findViewById(R.id.searchEditText);
         btnSearch = findViewById(R.id.btnSearch);

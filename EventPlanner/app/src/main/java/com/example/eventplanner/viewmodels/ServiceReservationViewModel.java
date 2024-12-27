@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -76,8 +78,14 @@ public class ServiceReservationViewModel extends ViewModel {
         return serviceId;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchReservations(int serviceId) {
-        Call<Collection<Reservation>> call = ClientUtils.reservationService.getReservationsByServiceId(serviceId);
+        Call<Collection<Reservation>> call = ClientUtils.getReservationService(this.context).getReservationsByServiceId(serviceId);
         call.enqueue(new Callback<Collection<Reservation>>() {
             @Override
             public void onResponse(Call<Collection<Reservation>> call, Response<Collection<Reservation>> response) {
@@ -96,7 +104,7 @@ public class ServiceReservationViewModel extends ViewModel {
     }
 
     public void fetchEvents() {
-        Call<Collection<EventCard>> call = ClientUtils.eventService.getAllByCreator();
+        Call<Collection<EventCard>> call = ClientUtils.getEventService(this.context).getAllByCreator();
         call.enqueue(new Callback<Collection<EventCard>>() {
             @Override
             public void onResponse(Call<Collection<EventCard>> call, Response<Collection<EventCard>> response) {
@@ -140,7 +148,7 @@ public class ServiceReservationViewModel extends ViewModel {
 
     public void fetchServiceById(int serviceId) {
         loading.setValue(true);
-        Call<Service> call = ClientUtils.serviceService.getById(serviceId);
+        Call<Service> call = ClientUtils.getServiceService(this.context).getById(serviceId);
         call.enqueue(new Callback<Service>() {
             @Override
             public void onResponse(Call<Service> call, Response<Service> response) {
@@ -178,7 +186,7 @@ public class ServiceReservationViewModel extends ViewModel {
     public void bookService(int eventId, LocalDate date, LocalTime timeFrom, LocalTime timeTo, Consumer<Boolean> callback) {
         Reservation reservation = new Reservation(0, serviceId, eventId, date, timeFrom, timeTo, "PENDING");
 
-        Call<Reservation> call = ClientUtils.reservationService.createReservation(reservation);
+        Call<Reservation> call = ClientUtils.getReservationService(this.context).createReservation(reservation);
         call.enqueue(new Callback<Reservation>() {
             @Override
             public void onResponse(Call<Reservation> call, Response<Reservation> response) {

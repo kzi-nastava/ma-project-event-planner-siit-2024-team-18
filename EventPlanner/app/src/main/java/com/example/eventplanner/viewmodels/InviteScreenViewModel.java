@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -32,6 +34,12 @@ public class InviteScreenViewModel extends ViewModel {
         return toastMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void addEmail(String email) {
         if (email.isEmpty() || emailList.getValue().contains(email)) {
             toastMessage.setValue("Enter a valid and unique email");
@@ -57,7 +65,7 @@ public class InviteScreenViewModel extends ViewModel {
 
         isSending.setValue(true);
 
-        ClientUtils.emailService.sendEventInvitations(eventId, emailList.getValue())
+        ClientUtils.getEmailService(this.context).sendEventInvitations(eventId, emailList.getValue())
                 .enqueue(new Callback<EventInvitation>() {
                     @Override
                     public void onResponse(Call<EventInvitation> call, Response<EventInvitation> response) {

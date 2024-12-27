@@ -41,6 +41,7 @@ public class Top5SolutionsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(Top5SolutionsViewModel.class);
+        viewModel.setContext(requireContext());
 
         if (binding != null) {
             setupRecyclerView();

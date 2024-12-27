@@ -69,5 +69,7 @@ dependencies {
     implementation(libs.legacy.support.v4)
     implementation(libs.annotation)
     implementation (libs.glide)
+    implementation(libs.android.jwtdecode)
+    implementation(libs.okhttp)
     annotationProcessor (libs.compiler)
 }

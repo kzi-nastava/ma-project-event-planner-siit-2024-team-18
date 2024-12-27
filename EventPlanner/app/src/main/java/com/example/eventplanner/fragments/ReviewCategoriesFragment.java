@@ -51,6 +51,7 @@ public class ReviewCategoriesFragment extends Fragment {
 
     private void initializeViews(View view) {
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(requireContext());
         btnBack = view.findViewById(R.id.btnBack);
     }
 

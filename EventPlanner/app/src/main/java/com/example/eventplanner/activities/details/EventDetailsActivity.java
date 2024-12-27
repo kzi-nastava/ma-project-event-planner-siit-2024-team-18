@@ -47,6 +47,7 @@ public class EventDetailsActivity extends BaseActivity {
 
     private void setupViewModel() {
         eventDetailsViewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
+        eventDetailsViewModel.setContext(this);
 
         eventDetailsViewModel.getEventDetails().observe(this, this::displayEventDetails);
 

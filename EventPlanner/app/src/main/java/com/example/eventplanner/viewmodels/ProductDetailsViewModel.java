@@ -1,5 +1,6 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
 import android.util.Log;
 
 import androidx.lifecycle.LiveData;
@@ -31,13 +32,19 @@ public class ProductDetailsViewModel extends ViewModel {
         return errorMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchProductDetailsById(int productId) {
         if (Boolean.TRUE.equals(loading.getValue())) return;
 
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<Product> call = ClientUtils.productService.getProductDetails(productId);
+        Call<Product> call = ClientUtils.getProductService(this.context).getProductDetails(productId);
         call.enqueue(new Callback<Product>() {
             @Override
             public void onResponse(Call<Product> call, Response<Product> response) {
@@ -63,7 +70,7 @@ public class ProductDetailsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<ResponseBody> call = ClientUtils.productService.buyProduct(productId, 1);
+        Call<ResponseBody> call = ClientUtils.getProductService(this.context).buyProduct(productId, 1);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

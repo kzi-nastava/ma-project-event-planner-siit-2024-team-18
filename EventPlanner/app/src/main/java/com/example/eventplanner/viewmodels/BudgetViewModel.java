@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -41,8 +43,14 @@ public class BudgetViewModel extends ViewModel {
         return success;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchBudgetItems() {
-        Call<ArrayList<BudgetItem>> call = ClientUtils.budgetService.getAll();
+        Call<ArrayList<BudgetItem>> call = ClientUtils.getBudgetService(this.context).getAll();
         call.enqueue(new Callback<ArrayList<BudgetItem>>() {
             @Override
             public void onResponse(Call<ArrayList<BudgetItem>> call, Response<ArrayList<BudgetItem>> response) {
@@ -61,7 +69,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void fetchSolutionDetails(int eventId) {
-        Call<ArrayList<ProductDetails>> call = ClientUtils.budgetService.getSolutionDetails(eventId);
+        Call<ArrayList<ProductDetails>> call = ClientUtils.getBudgetService(this.context).getSolutionDetails(eventId);
         call.enqueue(new Callback<ArrayList<ProductDetails>>() {
             @Override
             public void onResponse(Call<ArrayList<ProductDetails>> call, Response<ArrayList<ProductDetails>> response) {
@@ -80,7 +88,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void addBudgetItem(BudgetItem budgetItem) {
-        Call<BudgetItem> call = ClientUtils.budgetService.add(1, budgetItem);
+        Call<BudgetItem> call = ClientUtils.getBudgetService(this.context).add(1, budgetItem);
         call.enqueue(new Callback<BudgetItem>() {
             @Override
             public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
@@ -101,7 +109,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void editBudgetItem(int id, BudgetItem budgetItem) {
-        Call<BudgetItem> call = ClientUtils.budgetService.edit(1, budgetItem);
+        Call<BudgetItem> call = ClientUtils.getBudgetService(this.context).edit(1, budgetItem);
         call.enqueue(new Callback<BudgetItem>() {
             @Override
             public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
@@ -121,7 +129,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void deleteBudgetItemById(int id) {
-        Call<Void> call = ClientUtils.budgetService.deleteById(id);
+        Call<Void> call = ClientUtils.getBudgetService(this.context).deleteById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
@@ -141,7 +149,7 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void getTotalBudget(int eventId) {
-        Call<Integer> call = ClientUtils.budgetService.getTotalBudget(eventId);
+        Call<Integer> call = ClientUtils.getBudgetService(this.context).getTotalBudget(eventId);
         call.enqueue(new Callback<Integer>() {
             @Override
             public void onResponse(Call<Integer> call, Response<Integer> response) {

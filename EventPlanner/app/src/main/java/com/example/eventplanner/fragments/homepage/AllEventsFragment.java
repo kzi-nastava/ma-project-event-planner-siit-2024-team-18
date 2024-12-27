@@ -43,6 +43,7 @@ public class AllEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AllEventsViewModel.class);
+        viewModel.setContext(requireContext());
 
         injectFilterMapping();
         setupRecyclerView();

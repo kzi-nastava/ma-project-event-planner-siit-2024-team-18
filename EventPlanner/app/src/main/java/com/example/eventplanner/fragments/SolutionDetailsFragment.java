@@ -51,6 +51,7 @@ public class SolutionDetailsFragment extends Fragment {
 
     private void initializeViews(View view) {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        budgetViewModel.setContext(requireContext());
         btnBack = view.findViewById(R.id.btnBack);
     }
 

@@ -36,6 +36,7 @@ public class ReviewCategoryListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         categoriesViewModel = new ViewModelProvider(requireActivity()).get(CategoryCardViewModel.class);
+        categoriesViewModel.setContext(requireContext());
 
         adapter = new ReviewCategoryListAdapter(requireActivity(), categoriesViewModel);
         setListAdapter(adapter);

@@ -1,5 +1,7 @@
 package com.example.eventplanner.clients;
 
+import android.content.Context;
+
 import com.example.eventplanner.BuildConfig;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -22,7 +24,7 @@ public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
 
-    public static OkHttpClient test() {
+    public static OkHttpClient test(Context context) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
@@ -31,6 +33,7 @@ public class ClientUtils {
                 .readTimeout(120, TimeUnit.SECONDS)
                 .writeTimeout(120, TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
+                .addInterceptor(new AuthInterceptor(context))
                 .build();
     }
 
@@ -56,20 +59,55 @@ public class ClientUtils {
             })
             .create();
 
-    public static Retrofit retrofit = new Retrofit.Builder()
-            .baseUrl(SERVICE_API_PATH)
-            .addConverterFactory(GsonConverterFactory.create(gson))
-            .client(test())
-            .build();
+    public static Retrofit retrofit(Context context) {
+        return new Retrofit.Builder()
+                .baseUrl(SERVICE_API_PATH)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(test(context))
+                .build();
+    }
 
-    public static ServiceService serviceService = retrofit.create(ServiceService.class);
-    public static EventTypeService eventTypeService = retrofit.create(EventTypeService.class);
-    public static CategoryService categoryService = retrofit.create(CategoryService.class);
-    public static BudgetService budgetService = retrofit.create(BudgetService.class);
-    public static EventService eventService = retrofit.create(EventService.class);
-    public static ProductService productService = retrofit.create(ProductService.class);
-    public static SolutionService solutionService = retrofit.create(SolutionService.class);
-    public static ReservationService reservationService = retrofit.create(ReservationService.class);
-    public static EmailService emailService = retrofit.create(EmailService.class);
-    public static InviteService inviteService = retrofit.create(InviteService.class);
+    public static ServiceService getServiceService(Context context) {
+        return retrofit(context).create(ServiceService.class);
+    }
+
+    public static EventTypeService getEventTypeService(Context context) {
+        return retrofit(context).create(EventTypeService.class);
+    }
+
+    public static CategoryService getCategoryService(Context context) {
+        return retrofit(context).create(CategoryService.class);
+    }
+
+    public static BudgetService getBudgetService(Context context) {
+        return retrofit(context).create(BudgetService.class);
+    }
+
+    public static EventService getEventService(Context context) {
+        return retrofit(context).create(EventService.class);
+    }
+
+    public static ProductService getProductService(Context context) {
+        return retrofit(context).create(ProductService.class);
+    }
+
+    public static SolutionService getSolutionService(Context context) {
+        return retrofit(context).create(SolutionService.class);
+    }
+
+    public static ReservationService getReservationService(Context context) {
+        return retrofit(context).create(ReservationService.class);
+    }
+
+    public static EmailService getEmailService(Context context) {
+        return retrofit(context).create(EmailService.class);
+    }
+
+    public static InviteService getInviteService(Context context) {
+        return retrofit(context).create(InviteService.class);
+    }
+
+    public static AuthService getAuthService(Context context) {
+        return retrofit(context).create(AuthService.class);
+    }
 }

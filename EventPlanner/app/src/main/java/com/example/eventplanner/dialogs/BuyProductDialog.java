@@ -45,6 +45,7 @@ public class BuyProductDialog {
 
     private static void initializeViewModels(Context context, androidx.lifecycle.LifecycleOwner lifecycleOwner) {
         eventViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context).get(EventDetailsViewModel.class);
+        eventViewModel.setContext(context);
 
         eventViewModel.getEvents().observe(lifecycleOwner, events -> {
             populateFields(events);

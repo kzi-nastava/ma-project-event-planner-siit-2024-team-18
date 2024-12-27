@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -29,8 +31,14 @@ public class ServiceListViewModel extends ViewModel {
         return errorMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchServices() {
-        Call<PagedResponse<Service>> call = ClientUtils.serviceService.searchAndFilter(name, category, eventType, isAvailable, currentPage, pageSize, minPrice, maxPrice);
+        Call<PagedResponse<Service>> call = ClientUtils.getServiceService(this.context).searchAndFilter(name, category, eventType, isAvailable, currentPage, pageSize, minPrice, maxPrice);
         call.enqueue(new Callback<PagedResponse<Service>>() {
             @Override
             public void onResponse(Call<PagedResponse<Service>> call, Response<PagedResponse<Service>> response) {
@@ -51,7 +59,7 @@ public class ServiceListViewModel extends ViewModel {
     }
 
     public void deleteServiceById(int serviceId) {
-        Call<Void> call = ClientUtils.serviceService.deleteById(serviceId);
+        Call<Void> call = ClientUtils.getServiceService(this.context).deleteById(serviceId);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
