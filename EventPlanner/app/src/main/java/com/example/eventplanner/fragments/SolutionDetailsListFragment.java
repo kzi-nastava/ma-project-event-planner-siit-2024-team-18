@@ -36,6 +36,7 @@ public class SolutionDetailsListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         budgetViewModel = new ViewModelProvider(requireActivity()).get(BudgetViewModel.class);
+        budgetViewModel.setContext(requireContext());
 
         adapter = new SolutionDetailsListAdapter(requireActivity(), budgetViewModel);
         setListAdapter(adapter);

@@ -39,6 +39,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
     private void initializeViews() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        budgetViewModel.setContext(this);
         budgetViewModel.getTotalBudget(1);
 
         addBudgetItemButton = findViewById(R.id.addBudgetItem);
@@ -49,6 +50,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
     private void initializeBudgetItemsFragment() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
+        budgetViewModel.setContext(this);
         budgetItemListFragment = BudgetItemListFragment.newInstance(budgetViewModel);
 
         FragmentTransition.to(budgetItemListFragment, this, false, R.id.listViewBudgetItems);

@@ -29,6 +29,7 @@ public class InviteScreenFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentInviteScreenBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(InviteScreenViewModel.class);
+        viewModel.setContext(requireContext());
 
         setupRecyclerView();
         setupObservers();

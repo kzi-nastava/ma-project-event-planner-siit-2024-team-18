@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -60,6 +62,12 @@ public class AllProductsServicesViewModel extends ViewModel {
         return currentPageLiveData;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void setFilterMapping(Map<String, String> mapping) {
         filterMapping.clear();
         filterMapping.putAll(mapping);
@@ -71,7 +79,7 @@ public class AllProductsServicesViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<PagedResponse<SolutionCard>> call = ClientUtils.solutionService.searchAndFilterSolutions(
+        Call<PagedResponse<SolutionCard>> call = ClientUtils.getSolutionService(this.context).searchAndFilterSolutions(
                 searchQuery,
                 city,
                 isProductOnly,

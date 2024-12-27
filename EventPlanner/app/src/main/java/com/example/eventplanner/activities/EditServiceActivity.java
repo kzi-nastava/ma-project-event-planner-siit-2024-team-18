@@ -94,6 +94,7 @@ public class EditServiceActivity extends BaseActivity {
         });
 
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.setContext(this);
         serviceDetailsViewModel.getService().observe(this, service -> {
             if (service != null) {
                 this.service = service;
@@ -117,6 +118,7 @@ public class EditServiceActivity extends BaseActivity {
 
     private void initializeViews() {
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.setContext(this);
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
 
         serviceName = findViewById(R.id.editServiceName);

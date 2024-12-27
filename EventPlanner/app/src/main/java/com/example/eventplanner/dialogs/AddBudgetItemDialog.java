@@ -45,6 +45,7 @@ public class AddBudgetItemDialog {
 
     private static void initializeViews(Context context) {
         categoriesViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CategoryCardViewModel.class);
+        categoriesViewModel.setContext(context);
 
         budgetItemCategory = dialogView.findViewById(R.id.budgetItemCategory);
         budgetItemMaxAmount = dialogView.findViewById(R.id.budgetItemMaxAmount);

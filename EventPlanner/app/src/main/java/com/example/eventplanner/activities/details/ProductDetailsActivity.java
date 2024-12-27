@@ -53,6 +53,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private void initializeViews() {
         productDetailsViewModel = new ViewModelProvider(this).get(ProductDetailsViewModel.class);
+        productDetailsViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         productImageSlider = findViewById(R.id.product_image_slider);

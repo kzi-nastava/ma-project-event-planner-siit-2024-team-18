@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void acceptInvite(int inviteId) {
-        ClientUtils.inviteService.acceptInvite(inviteId).enqueue(new Callback<UpdatedInvite>() {
+        ClientUtils.getInviteService(this).acceptInvite(inviteId).enqueue(new Callback<UpdatedInvite>() {
             @Override
             public void onResponse(Call<UpdatedInvite> call, Response<UpdatedInvite> response) {
                 if (response.isSuccessful()) {

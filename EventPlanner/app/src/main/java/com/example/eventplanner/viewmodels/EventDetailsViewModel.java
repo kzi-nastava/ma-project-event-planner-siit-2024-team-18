@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -35,9 +37,14 @@ public class EventDetailsViewModel extends ViewModel {
         return errorMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
 
     public void fetchEvents() {
-        Call<ArrayList<Event>> call = ClientUtils.eventService.getAll();
+        Call<ArrayList<Event>> call = ClientUtils.getEventService(this.context).getAll();
         call.enqueue(new Callback<ArrayList<Event>>() {
             @Override
             public void onResponse(Call<ArrayList<Event>> call, Response<ArrayList<Event>> response) {
@@ -61,7 +68,7 @@ public class EventDetailsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<Event> call = ClientUtils.eventService.getEventDetailsById(eventId);
+        Call<Event> call = ClientUtils.getEventService(this.context).getEventDetailsById(eventId);
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
