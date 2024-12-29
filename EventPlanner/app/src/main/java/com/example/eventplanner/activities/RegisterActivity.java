@@ -10,19 +10,32 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.clients.UserService;
+import com.example.eventplanner.models.Category;
+import com.example.eventplanner.models.EventType;
+import com.example.eventplanner.models.User;
+import com.example.eventplanner.viewmodels.CategoryCardViewModel;
+import com.example.eventplanner.viewmodels.EventTypeCardViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
     private static final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
@@ -65,11 +78,14 @@ public class RegisterActivity extends AppCompatActivity {
     private ImageView profilePhoto;
     private ImageView delete;
 
-    private final List<String> categories = Arrays.asList("Category 1", "Category 2", "Category 3", "Category 4");
+    private final List<String> categories = new ArrayList<>();
     private final List<String> selectedCategories = new ArrayList<>();
 
-    private final List<String> eventTypes = Arrays.asList("Event Type 1", "Event Type 2", "Event Type 3", "Event Type 4");
+    private final List<String> eventTypes = new ArrayList<>();
     private final List<String> selectedEventTypes = new ArrayList<>();
+
+    private CategoryCardViewModel categoryCardViewModel;
+    private EventTypeCardViewModel eventTypeCardViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,18 +199,56 @@ public class RegisterActivity extends AppCompatActivity {
             String password = editTextPassword.getText().toString().trim();
             String confirmPassword = editTextConfirmPassword.getText().toString().trim();
 
-            ValidateEmail(email);
-            ValidateFirstName(firstName);
-            ValidateLastName(lastName);
-            ValidateAddress(address);
-            ValidatePhoneNumber(phoneNumber);
-            ValidatePassword(password, confirmPassword);
+            boolean emailValid = ValidateEmail(email);
+            boolean firstNameValid = ValidateFirstName(firstName);
+            boolean lastNameValid = ValidateLastName(lastName);
+            boolean addressValid = ValidateAddress(address);
+            boolean phoneNumberValid = ValidatePhoneNumber(phoneNumber);
+            boolean passwordValid = ValidatePassword(password, confirmPassword);
+            boolean companyNameValid = true;
+            boolean descriptionValid = true;
+            boolean categoriesValid = true;
+            boolean eventTypesValid = true;
+            String chosenRole = "EVENT_ORGANIZER";
 
             if (role.getCheckedRadioButtonId() == R.id.radioServiceProductProvider) {
-                ValidateCompanyName(companyName);
-                ValidateDescription(description);
-                ValidateCategories();
-                ValidateEventTypes();
+                companyNameValid = ValidateCompanyName(companyName);
+                descriptionValid = ValidateDescription(description);
+                categoriesValid = ValidateCategories();
+                eventTypesValid = ValidateEventTypes();
+                chosenRole = "SERVICE_PRODUCT_PROVIDER";
+            }
+
+            if (emailValid && firstNameValid && lastNameValid && addressValid && phoneNumberValid &&
+            passwordValid && companyNameValid && descriptionValid && categoriesValid && eventTypesValid) {
+                User user = new User(0, email, firstName, lastName, chosenRole, companyName, "", address, phoneNumber, description, selectedCategories, selectedEventTypes, password);
+
+                UserService userService = ClientUtils.getUserService(this);
+                Call<Void> call;
+                if (user.getRole().equalsIgnoreCase("EVENT_ORGANIZER")) {
+                    call = userService.eventOrganizerRegistration(user);
+                } else {
+                    call = userService.serviceProductProviderRegistration(user);
+                }
+
+                call.enqueue(new Callback<Void>() {
+                    @Override
+                    public void onResponse(Call<Void> call, Response<Void> response) {
+                        if (response.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Registration successful! Please check your email.", Toast.LENGTH_LONG).show();
+                            finish();
+                        } else if (response.code() == 400) {
+                            Toast.makeText(RegisterActivity.this, "User with this email already exists.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "An unexpected error occurred.", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<Void> call, Throwable t) {
+                        Toast.makeText(RegisterActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         });
     }
@@ -248,6 +302,27 @@ public class RegisterActivity extends AppCompatActivity {
 
         profilePhoto = findViewById(R.id.image_view_profile_photo);
         delete = findViewById(R.id.delete);
+
+        categoryCardViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryCardViewModel.setContext(this);
+        eventTypeCardViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeCardViewModel.setContext(this);
+
+        categoryCardViewModel.fetchCategories();
+        categoryCardViewModel.getCategories().observeForever(categoryList -> {
+            categories.clear();
+            for (Category category : categoryList) {
+                categories.add(category.getName());
+            }
+        });
+
+        eventTypeCardViewModel.fetchEventTypes();
+        eventTypeCardViewModel.getEventTypes().observeForever(eventTypeList -> {
+            eventTypes.clear();
+            for (EventType eventType : eventTypeList) {
+                eventTypes.add(eventType.getName());
+            }
+        });
     }
 
     private void DisableErrors() {
@@ -275,108 +350,132 @@ public class RegisterActivity extends AppCompatActivity {
         selectEventTypes.setVisibility(id);
     }
 
-    private void ValidateEmail(String email) {
+    private boolean ValidateEmail(String email) {
         if (email.isEmpty()) {
             errorEmail.setText(R.string.please_enter_e_mail_address);
             errorEmail.setVisibility(View.VISIBLE);
+            return false;
         } else if (!email.matches(EMAIL_REGEX)) {
             errorEmail.setText(R.string.e_mail_address_is_invalid);
             errorEmail.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorEmail.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidateFirstName(String firstName) {
+    private boolean ValidateFirstName(String firstName) {
         if (firstName.isEmpty()) {
             errorFirstName.setText(R.string.please_enter_first_name);
             errorFirstName.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorFirstName.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidateLastName(String lastName) {
+    private boolean ValidateLastName(String lastName) {
         if (lastName.isEmpty()) {
             errorLastName.setText(R.string.please_enter_last_name);
             errorLastName.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorLastName.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidateCompanyName(String companyName) {
+    private boolean ValidateCompanyName(String companyName) {
         if (companyName.isEmpty()) {
             errorCompanyName.setText(R.string.please_enter_company_name);
             errorCompanyName.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorCompanyName.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidateDescription(String description) {
+    private boolean ValidateDescription(String description) {
         if (description.isEmpty()) {
             errorDescription.setText(R.string.please_enter_description);
             errorDescription.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorDescription.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidateAddress(String address) {
+    private boolean ValidateAddress(String address) {
         if (address.isEmpty()) {
             errorAddress.setText(R.string.please_enter_address);
             errorAddress.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorAddress.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidatePhoneNumber(String phoneNumber) {
+    private boolean ValidatePhoneNumber(String phoneNumber) {
         if (phoneNumber.isEmpty()) {
             errorPhoneNumber.setText(R.string.please_enter_phone_number);
             errorPhoneNumber.setVisibility(View.VISIBLE);
+            return false;
         } else if (!phoneNumber.matches(PHONE_NUMBER_REGEX)) {
             errorPhoneNumber.setText(R.string.phone_number_is_invalid);
             errorPhoneNumber.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorPhoneNumber.setVisibility(View.GONE);
+            return true;
         }
     }
 
-    private void ValidatePassword(String password, String confirmPassword) {
+    private boolean ValidatePassword(String password, String confirmPassword) {
         if (password.isEmpty()) {
             errorPassword.setText(R.string.please_enter_password);
             errorPassword.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorPassword.setVisibility(View.GONE);
         }
         if (confirmPassword.isEmpty()) {
             errorConfirmPassword.setText(R.string.please_confirm_password);
             errorConfirmPassword.setVisibility(View.VISIBLE);
+            return false;
         } else if (!password.isEmpty() && !password.equals(confirmPassword)) {
             errorConfirmPassword.setText(R.string.not_same_as_password);
             errorConfirmPassword.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorConfirmPassword.setVisibility(View.GONE);
         }
+        return true;
      }
 
-     private void ValidateCategories() {
+     private boolean ValidateCategories() {
         if (selectedCategories.isEmpty()) {
             errorCategories.setText(R.string.please_select_categories);
             errorCategories.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorCategories.setVisibility(View.GONE);
+            return true;
         }
      }
 
-    private void ValidateEventTypes() {
+    private boolean ValidateEventTypes() {
         if (selectedEventTypes.isEmpty()) {
             errorEventTypes.setText(R.string.please_select_event_types);
             errorEventTypes.setVisibility(View.VISIBLE);
+            return false;
         } else {
             errorEventTypes.setVisibility(View.GONE);
+            return true;
         }
     }
 }

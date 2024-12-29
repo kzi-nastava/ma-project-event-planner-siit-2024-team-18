@@ -110,4 +110,12 @@ public class ClientUtils {
     public static AuthService getAuthService(Context context) {
         return retrofit(context).create(AuthService.class);
     }
+
+    public static UserService getUserService(Context context) {
+        return retrofit(context).create(UserService.class);
+    }
+
+    public static RegistrationRequestService getRegistrationRequestService(Context context) {
+        return retrofit(context).create(RegistrationRequestService.class);
+    }
 }
