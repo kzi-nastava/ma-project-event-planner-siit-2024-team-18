@@ -13,6 +13,7 @@ import com.example.eventplanner.models.Service;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Consumer;
 
@@ -104,10 +105,10 @@ public class ServiceReservationViewModel extends ViewModel {
     }
 
     public void fetchEvents() {
-        Call<Collection<EventCard>> call = ClientUtils.getEventService(this.context).getAllByCreator();
-        call.enqueue(new Callback<Collection<EventCard>>() {
+        Call<ArrayList<EventCard>> call = ClientUtils.getEventService(this.context).getAllByCreator();
+        call.enqueue(new Callback<ArrayList<EventCard>>() {
             @Override
-            public void onResponse(Call<Collection<EventCard>> call, Response<Collection<EventCard>> response) {
+            public void onResponse(Call<ArrayList<EventCard>> call, Response<ArrayList<EventCard>> response) {
                 if (response.isSuccessful() && response.body() != null) {
                     events.setValue(response.body());
                 } else {
@@ -116,7 +117,7 @@ public class ServiceReservationViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<Collection<EventCard>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<EventCard>> call, Throwable t) {
                 errorMessage.setValue("Error: " + t.getMessage());
             }
         });

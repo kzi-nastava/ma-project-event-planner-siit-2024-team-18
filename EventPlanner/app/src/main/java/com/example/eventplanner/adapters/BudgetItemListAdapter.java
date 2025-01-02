@@ -17,6 +17,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.example.eventplanner.R;
 import com.example.eventplanner.dialogs.EditBudgetItemDialog;
 import com.example.eventplanner.models.BudgetItem;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.BudgetViewModel;
 
 import java.util.ArrayList;
@@ -28,10 +29,13 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
     private BudgetViewModel budgetViewModel;
     private TextView budgetItemCategory, budgetItemMaxAmount;
     private FrameLayout frameEditBudgetItem, frameDeleteBudgetItem;
-    public BudgetItemListAdapter(Activity context, BudgetViewModel budgetViewModel) {
+    private Event event;
+
+    public BudgetItemListAdapter(Activity context, BudgetViewModel budgetViewModel, Event event) {
         super(context, R.layout.budget_item_card);
         this.budgetItems = new ArrayList<>();
         this.budgetViewModel = budgetViewModel;
+        this.event = event;
     }
 
     @NonNull
@@ -82,8 +86,7 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
     private void setupListeners(BudgetItem budgetItem) {
         frameEditBudgetItem.setOnClickListener(v -> {
             EditBudgetItemDialog.show(getContext(), budgetItem, updatedBudgetItem -> {
-                notifyDataSetChanged();
-                budgetViewModel.editBudgetItem(updatedBudgetItem.getId(), updatedBudgetItem);
+                budgetViewModel.editBudgetItem(event.getId(), updatedBudgetItem.getId(), updatedBudgetItem);
             });
         });
 
@@ -92,7 +95,7 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
                     .setTitle("Confirm Deletion")
                     .setMessage("Are you sure you want to delete this budget item?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        budgetViewModel.deleteBudgetItemById(budgetItem.getId());
+                        budgetViewModel.deleteBudgetItemById(event.getId(), budgetItem.getId());
                         Toast.makeText(v.getContext(), "Budget Item deleted", Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())

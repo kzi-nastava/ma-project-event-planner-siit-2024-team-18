@@ -17,6 +17,7 @@ import retrofit2.Response;
 
 public class CategoryCardViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Category>> categoriesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<Category>> categoriesByEventLiveData = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Category>> reviewCategoriesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
@@ -24,12 +25,19 @@ public class CategoryCardViewModel extends ViewModel {
     public LiveData<ArrayList<Category>> getCategories() {
         return categoriesLiveData;
     }
+
+    public LiveData<ArrayList<Category>> getCategoriesForEvent() {
+        return categoriesByEventLiveData;
+    }
+
     public LiveData<ArrayList<Category>> getReviewCategories() {
         return reviewCategoriesLiveData;
     }
+
     public LiveData<String> getErrorMessage() {
         return errorMessage;
     }
+
     public LiveData<Boolean> getSuccess() {
         return success;
     }
@@ -47,6 +55,25 @@ public class CategoryCardViewModel extends ViewModel {
             public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
                 if (response.isSuccessful()) {
                     categoriesLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch Categories. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Category>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchCategoriesForEvent(int eventId) {
+        Call<ArrayList<Category>> call = ClientUtils.getCategoryService(this.context).getAllForEvent(eventId);
+        call.enqueue(new Callback<ArrayList<Category>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Category>> call, Response<ArrayList<Category>> response) {
+                if (response.isSuccessful()) {
+                    categoriesByEventLiveData.postValue(response.body());
                 } else {
                     errorMessage.postValue("Failed to fetch Categories. Code: " + response.code());
                 }

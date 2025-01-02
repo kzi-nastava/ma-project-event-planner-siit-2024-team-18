@@ -41,7 +41,7 @@ public interface EventService {
             "Content-Type:application/json"
     })
     @GET("events/events-all")
-    Call<Collection<EventCard>> getAllByCreator();
+    Call<ArrayList<EventCard>> getAllByCreator();
 
     @Headers({
             "User-Agent: Mobile-Android",
