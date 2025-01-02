@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Category;
@@ -38,12 +40,14 @@ public class AddBudgetItemDialog {
         dialogView = inflater.inflate(R.layout.dialog_add_budget_item, null);
         event = eventAdd;
 
-        initializeViews();
+        initializeViews(context);
         populateFields();
         createDialog(context, listener);
     }
 
-    private static void initializeViews() {
+    private static void initializeViews(Context context) {
+        categoriesViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CategoryCardViewModel.class);
+        categoriesViewModel.setContext(context);
         budgetItemCategory = dialogView.findViewById(R.id.budgetItemCategory);
         budgetItemMaxAmount = dialogView.findViewById(R.id.budgetItemMaxAmount);
         errorBudgetItemCategory = dialogView.findViewById(R.id.errorBudgetItemCategory);
