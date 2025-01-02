@@ -9,7 +9,10 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Service;
 
-import okhttp3.ResponseBody;
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -56,8 +59,8 @@ public class ServiceDetailsViewModel extends ViewModel {
         });
     }
 
-    public void addNewService(Service newService) {
-        Call<Service> call = ClientUtils.getServiceService(this.context).add(newService);
+    public void addNewService(RequestBody nameBody, RequestBody descriptionBody, RequestBody specificsBody, RequestBody categoryBody, RequestBody eventTypesBody, RequestBody locationBody, RequestBody reservationDeadlineBody, RequestBody cancellationDeadlineBody, RequestBody priceBody, RequestBody discountBody, RequestBody durationBody, RequestBody minEngagementBody, RequestBody maxEngagementBody, RequestBody visibleBody, RequestBody availableBody, RequestBody reservationTypeBody, RequestBody workingHoursStartBody, RequestBody workingHoursEndBody, List<MultipartBody.Part> imageParts) {
+        Call<Service> call = ClientUtils.getServiceService(this.context).add(nameBody, descriptionBody, specificsBody, categoryBody, eventTypesBody, locationBody, reservationDeadlineBody, cancellationDeadlineBody, priceBody, discountBody, durationBody, minEngagementBody, maxEngagementBody, visibleBody, availableBody, reservationTypeBody, workingHoursStartBody, workingHoursEndBody, imageParts);
         call.enqueue(new Callback<Service>() {
             @Override
             public void onResponse(Call<Service> call, Response<Service> response) {
@@ -75,8 +78,8 @@ public class ServiceDetailsViewModel extends ViewModel {
         });
     }
 
-    public void editService(int id, Service editService) {
-        Call<Service> call = ClientUtils.getServiceService(this.context).edit(id, editService);
+    public void editService(int id, RequestBody nameBody, RequestBody descriptionBody, RequestBody specificsBody, RequestBody categoryBody, RequestBody eventTypesBody, RequestBody locationBody, RequestBody reservationDeadlineBody, RequestBody cancellationDeadlineBody, RequestBody priceBody, RequestBody discountBody, RequestBody durationBody, RequestBody minEngagementBody, RequestBody maxEngagementBody, RequestBody visibleBody, RequestBody availableBody, RequestBody reservationTypeBody, RequestBody workingHoursStartBody, RequestBody workingHoursEndBody, List<MultipartBody.Part> imageParts) {
+        Call<Service> call = ClientUtils.getServiceService(this.context).edit(id, nameBody, descriptionBody, specificsBody, categoryBody, eventTypesBody, locationBody, reservationDeadlineBody, cancellationDeadlineBody, priceBody, discountBody, durationBody, minEngagementBody, maxEngagementBody, visibleBody, availableBody, reservationTypeBody, workingHoursStartBody, workingHoursEndBody, imageParts);
         call.enqueue(new Callback<Service>() {
             @Override
             public void onResponse(Call<Service> call, Response<Service> response) {
