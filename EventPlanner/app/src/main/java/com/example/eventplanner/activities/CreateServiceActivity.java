@@ -426,24 +426,31 @@ public class CreateServiceActivity extends BaseActivity {
     }
 
     private String getRealPathFromURI(Uri contentUri) {
-        String[] proj = {MediaStore.Images.Media.DATA};
+        String[] proj = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME};
         CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
         Cursor cursor = loader.loadInBackground();
         int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
         cursor.moveToFirst();
         String result = cursor.getString(column_index);
+        String fileName = cursor.getString(nameIndex);
         cursor.close();
-        return result;
+
+        return result != null ? result : fileName;
     }
 
     private File convertBase64ToFile(String base64String) {
         try {
             String base64Image = base64String.split(",")[1];
             byte[] decodedBytes = Base64.decode(base64Image, Base64.DEFAULT);
-            File file = new File(getCacheDir(), "temp_image.png");
+
+            String fileName = "image_" + System.currentTimeMillis() + ".png";
+            File file = new File(getCacheDir(), fileName);
+
             try (FileOutputStream fos = new FileOutputStream(file)) {
                 fos.write(decodedBytes);
             }
+
             return file;
         } catch (Exception e) {
             e.printStackTrace();
