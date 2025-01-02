@@ -2,27 +2,44 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
+import com.example.eventplanner.viewmodels.BudgetViewModel;
+import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.google.android.material.navigation.NavigationView;
+
+import java.util.Objects;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Button signInButton;
+    private LoginViewModel viewModel;
+    private ImageView profileImageView;
+    private TextView userFullNameTextView;
+    private TextView userEmailTextView;
+    private View headerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_base);
+
+        viewModel = LoginViewModel.getInstance(getApplicationContext());
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -41,12 +58,30 @@ public abstract class BaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         signInButton = findViewById(R.id.button_sign_in);
+        viewModel.getLoggedInStatus().observe(this, isLoggedIn -> {
+            if (isLoggedIn) {
+                signInButton.setVisibility(View.GONE);
+                updateProfileInfo();
+            } else {
+                signInButton.setVisibility(View.VISIBLE);
+                hideProfileInfo();
+            }
+        });
         signInButton.setOnClickListener(v -> {
             Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
             startActivity(loginIntent);
         });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
+        headerView = navigationView.getHeaderView(0);
+        profileImageView = headerView.findViewById(R.id.profile_image);
+        userFullNameTextView = headerView.findViewById(R.id.user_name);
+        userEmailTextView = headerView.findViewById(R.id.user_email);
+
+        viewModel.getLoggedInStatus().observe(this, isLoggedIn -> {
+            updateMenuVisibility(navigationView.getMenu(), isLoggedIn);
+        });
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -67,11 +102,53 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent categoriesIntent = new Intent(BaseActivity.this, CategoriesActivity.class);
                     startActivity(categoriesIntent);
                 }
+            } else if (id == R.id.nav_budget) {
+                if (currentActivity != BudgetActivity.class) {
+                    Intent budgetIntent = new Intent(BaseActivity.this, BudgetActivity.class);
+                    startActivity(budgetIntent);
+                }
+            } else if (id == R.id.nav_sign_out) {
+                viewModel.signOut();
+                Intent homeIntent = new Intent(BaseActivity.this, HomeScreenActivity.class);
+                startActivity(homeIntent);
+                finish();
             }
 
             drawerLayout.closeDrawers();
             return true;
         });
+    }
+
+    private void updateMenuVisibility(Menu menu, boolean isLoggedIn) {
+        menu.findItem(R.id.nav_home).setVisible(true);
+        menu.findItem(R.id.nav_chat).setVisible(isLoggedIn);
+        menu.findItem(R.id.nav_notifications).setVisible(isLoggedIn);
+        menu.findItem(R.id.nav_events).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "EVENT_ORGANIZER"));
+        menu.findItem(R.id.nav_services).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
+        menu.findItem(R.id.nav_products).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
+        menu.findItem(R.id.nav_categories).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
+        menu.findItem(R.id.nav_budget).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "EVENT_ORGANIZER"));
+        menu.findItem(R.id.nav_profile).setVisible(isLoggedIn);
+        menu.findItem(R.id.nav_sign_out).setVisible(isLoggedIn);
+    }
+
+    private void updateProfileInfo() {
+        profileImageView.setVisibility(View.VISIBLE);
+        userFullNameTextView.setVisibility(View.VISIBLE);
+        userEmailTextView.setVisibility(View.VISIBLE);
+        userEmailTextView.setText(viewModel.getUserEmail());
+        userFullNameTextView.setText(viewModel.getUserFirstName() + " " + viewModel.getUserLastName());
+        Glide.with(this)
+                .load(viewModel.getUserImage())
+                .placeholder(R.drawable.profile_photo_placeholder)
+                .error(R.drawable.profile_photo_placeholder)
+                .into(profileImageView);
+    }
+
+    private void hideProfileInfo() {
+        profileImageView.setVisibility(View.GONE);
+        userFullNameTextView.setVisibility(View.GONE);
+        userEmailTextView.setVisibility(View.GONE);
     }
 
     @Override

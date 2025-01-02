@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.Top5SolutionsAdapter;
 import com.example.eventplanner.databinding.Top5SolutionsCarouselBinding;
+import com.example.eventplanner.viewmodels.Top5SolutionsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +41,7 @@ public class Top5SolutionsFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         viewModel = new ViewModelProvider(this).get(Top5SolutionsViewModel.class);
+        viewModel.setContext(requireContext());
 
         if (binding != null) {
             setupRecyclerView();

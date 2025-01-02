@@ -9,6 +9,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 
 public interface ProductService {
 
@@ -26,4 +27,10 @@ public interface ProductService {
     @POST("products/comment/{id}")
     Call<ResponseBody> commentProduct(@Body String commentContent, @Path("id") int id);
 
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @POST("budget/purchase-product/{productId}")
+    Call<ResponseBody> buyProduct(@Path("productId") int productId, @Query("eventId") int eventId);
 }

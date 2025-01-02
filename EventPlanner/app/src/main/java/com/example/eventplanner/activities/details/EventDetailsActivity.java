@@ -13,6 +13,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.fragments.InviteScreenFragment;
 import com.example.eventplanner.models.Event;
+import com.example.eventplanner.viewmodels.EventDetailsViewModel;
 
 public class EventDetailsActivity extends BaseActivity {
 
@@ -46,6 +47,7 @@ public class EventDetailsActivity extends BaseActivity {
 
     private void setupViewModel() {
         eventDetailsViewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
+        eventDetailsViewModel.setContext(this);
 
         eventDetailsViewModel.getEventDetails().observe(this, this::displayEventDetails);
 

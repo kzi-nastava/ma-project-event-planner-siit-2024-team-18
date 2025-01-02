@@ -54,6 +54,7 @@ public class ServiceDetailsActivity extends BaseActivity {
 
     private void initializeViews() {
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         serviceImageSlider = findViewById(R.id.service_image_slider);

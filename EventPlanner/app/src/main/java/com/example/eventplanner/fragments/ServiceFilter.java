@@ -69,7 +69,9 @@ public class ServiceFilter extends DialogFragment {
 
     private void loadViewModels() {
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.setContext(requireContext());
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(requireContext());
 
         eventTypeViewModel.fetchEventTypes();
         categoryViewModel.fetchCategories();

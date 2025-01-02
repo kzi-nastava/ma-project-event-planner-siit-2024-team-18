@@ -38,6 +38,7 @@ public class CategoriesActivity extends BaseActivity implements ReviewCategories
 
     private void initializeViews() {
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(this);
         addCategoryButton = findViewById(R.id.addCategory);
         reviewCategories = findViewById(R.id.reviewCategories);
         btnBack = findViewById(R.id.btnBack);
@@ -46,6 +47,7 @@ public class CategoriesActivity extends BaseActivity implements ReviewCategories
     private void initializeCategoriesFragment() {
         categoryListFragment = CategoryListFragment.newInstance();
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(this);
 
         FragmentTransition.to(categoryListFragment, this, false, R.id.listViewCategories);
     }

@@ -1,4 +1,6 @@
-package com.example.eventplanner.fragments.homepage;
+package com.example.eventplanner.viewmodels;
+
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -29,13 +31,19 @@ public class Top5EventsViewModel extends ViewModel {
         return loading;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchTop5Events() {
         if (Boolean.TRUE.equals(loading.getValue())) return;
 
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<Collection<EventCard>> call = ClientUtils.eventService.getTop5Events();
+        Call<Collection<EventCard>> call = ClientUtils.getEventService(this.context).getTop5Events();
         call.enqueue(new Callback<Collection<EventCard>>() {
             @Override
             public void onResponse(Call<Collection<EventCard>> call, Response<Collection<EventCard>> response) {

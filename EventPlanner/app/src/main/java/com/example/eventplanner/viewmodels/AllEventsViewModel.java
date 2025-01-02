@@ -1,4 +1,6 @@
-package com.example.eventplanner.fragments.homepage;
+package com.example.eventplanner.viewmodels;
+
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -52,6 +54,12 @@ public class AllEventsViewModel extends ViewModel {
         return currentPageLiveData;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void setFilterMapping(Map<String, String> mapping) {
         filterMapping.clear();
         filterMapping.putAll(mapping);
@@ -63,7 +71,7 @@ public class AllEventsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<PagedResponse<EventCard>> call = ClientUtils.eventService.searchAndFilterEvents(
+        Call<PagedResponse<EventCard>> call = ClientUtils.getEventService(this.context).searchAndFilterEvents(
                 searchQuery,
                 null,
                 fromDate != null ? LocalDate.parse(fromDate) : null,

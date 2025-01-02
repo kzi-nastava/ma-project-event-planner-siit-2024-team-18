@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AllEventsAdapter;
 import com.example.eventplanner.databinding.AllEventsSectionBinding;
+import com.example.eventplanner.viewmodels.AllEventsViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -42,6 +43,7 @@ public class AllEventsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AllEventsViewModel.class);
+        viewModel.setContext(requireContext());
 
         injectFilterMapping();
         setupRecyclerView();

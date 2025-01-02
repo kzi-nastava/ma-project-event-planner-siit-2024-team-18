@@ -37,7 +37,7 @@ public class ReviewCategoriesFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initializeViews(view);
-        initializeFragment(view);
+        initializeFragment();
         setupListeners();
     }
 
@@ -51,10 +51,11 @@ public class ReviewCategoriesFragment extends Fragment {
 
     private void initializeViews(View view) {
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(requireContext());
         btnBack = view.findViewById(R.id.btnBack);
     }
 
-    private void initializeFragment(View view) {
+    private void initializeFragment() {
         FragmentTransition.to(ReviewCategoryListFragment.newInstance(), requireActivity(), false, R.id.listViewCategoriesInReview);
     }
 

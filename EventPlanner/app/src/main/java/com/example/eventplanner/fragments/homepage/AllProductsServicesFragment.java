@@ -24,6 +24,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.AllProductsServicesAdapter;
 import com.example.eventplanner.databinding.AllProductsServicesSectionBinding;
+import com.example.eventplanner.viewmodels.AllProductsServicesViewModel;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -53,6 +54,7 @@ public class AllProductsServicesFragment extends Fragment implements SensorEvent
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(this).get(AllProductsServicesViewModel.class);
+        viewModel.setContext(requireContext());
 
         sensorManager = (SensorManager) requireContext().getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager != null) {

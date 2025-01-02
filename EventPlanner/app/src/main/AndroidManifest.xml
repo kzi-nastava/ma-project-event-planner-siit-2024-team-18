@@ -33,6 +33,9 @@
             android:name=".activities.CategoriesActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.BudgetActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.details.EventDetailsActivity"
             android:exported="false" />
         <activity
@@ -63,8 +66,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:scheme="http"
-                    android:host="localhost"
-                    android:pathPrefix="/api/invites/accept" />
+                    android:host="localhost" />
             </intent-filter>
         </activity>
     </application>

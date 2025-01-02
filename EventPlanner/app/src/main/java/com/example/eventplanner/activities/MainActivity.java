@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -47,9 +48,13 @@ public class MainActivity extends AppCompatActivity {
 
     private void handleDeepLink(Uri data) {
         String inviteIdString = data.getQueryParameter("inviteId");
+        String idString = data.getQueryParameter("id");
         if (inviteIdString != null) {
             int inviteId = Integer.parseInt(inviteIdString);
             acceptInvite(inviteId);
+        } else if (idString != null) {
+            int id = Integer.parseInt(idString);
+            activateAccount(id);
         } else {
             Log.e("MainActivity", "Invite ID is missing in the URL.");
         }
@@ -68,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void acceptInvite(int inviteId) {
-        ClientUtils.inviteService.acceptInvite(inviteId).enqueue(new Callback<UpdatedInvite>() {
+        ClientUtils.getInviteService(this).acceptInvite(inviteId).enqueue(new Callback<UpdatedInvite>() {
             @Override
             public void onResponse(Call<UpdatedInvite> call, Response<UpdatedInvite> response) {
                 if (response.isSuccessful()) {
@@ -90,6 +95,28 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailure(Call<UpdatedInvite> call, Throwable t) {
                 Log.e("MainActivity", "Error accepting invite: " + t.getMessage());
+            }
+        });
+    }
+
+    private void activateAccount(int id) {
+        ClientUtils.getRegistrationRequestService(this).activateAccount(id).enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(MainActivity.this, "Account activated", Toast.LENGTH_LONG).show();
+                    showSplashScreenToLogin();
+                } else if (response.code() == 400) {
+                    Toast.makeText(MainActivity.this, "Activation link expired", Toast.LENGTH_LONG).show();
+                    showSplashScreenToLogin();
+                } else {
+                    Log.e("MainActivity", "Error in account activation: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Log.e("MainActivity", "Error in communicating with server: " + t.getMessage());
             }
         });
     }

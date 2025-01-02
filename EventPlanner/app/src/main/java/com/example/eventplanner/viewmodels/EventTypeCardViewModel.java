@@ -1,5 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -23,8 +25,14 @@ public class EventTypeCardViewModel extends ViewModel {
         return errorMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchEventTypes() {
-        Call<ArrayList<EventType>> call = ClientUtils.eventTypeService.getAll();
+        Call<ArrayList<EventType>> call = ClientUtils.getEventTypeService(this.context).getAll();
         call.enqueue(new Callback<ArrayList<EventType>>() {
             @Override
             public void onResponse(Call<ArrayList<EventType>> call, Response<ArrayList<EventType>> response) {

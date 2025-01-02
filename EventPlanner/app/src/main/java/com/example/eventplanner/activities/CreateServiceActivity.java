@@ -70,8 +70,11 @@ public class CreateServiceActivity extends BaseActivity {
 
     private void initializeViews() {
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.setContext(this);
         categoryViewModel = new ViewModelProvider(this).get(CategoryCardViewModel.class);
+        categoryViewModel.setContext(this);
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.setContext(this);
 
         serviceName = findViewById(R.id.createServiceName);
         serviceDescription = findViewById(R.id.createServiceDescription);

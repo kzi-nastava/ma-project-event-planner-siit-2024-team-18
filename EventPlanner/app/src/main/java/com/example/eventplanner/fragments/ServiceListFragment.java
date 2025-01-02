@@ -44,6 +44,7 @@ public class ServiceListFragment extends ListFragment {
         super.onViewCreated(view, savedInstanceState);
 
         serviceListViewModel = new ViewModelProvider(requireActivity()).get(ServiceListViewModel.class);
+        serviceListViewModel.setContext(requireContext());
 
         adapter = new ServiceListAdapter(requireActivity(), serviceListViewModel);
         setListAdapter(adapter);

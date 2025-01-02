@@ -1,4 +1,6 @@
-package com.example.eventplanner.fragments.homepage;
+package com.example.eventplanner.viewmodels;
+
+import android.content.Context;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -31,13 +33,19 @@ public class Top5SolutionsViewModel extends ViewModel {
         return errorMessage;
     }
 
+    private Context context;
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
     public void fetchTop5Solutions() {
         if (Boolean.TRUE.equals(loading.getValue())) return;
 
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<List<SolutionCard>> call = ClientUtils.solutionService.getTopSolutions();
+        Call<List<SolutionCard>> call = ClientUtils.getSolutionService(this.context).getTopSolutions();
         call.enqueue(new Callback<List<SolutionCard>>() {
             @Override
             public void onResponse(Call<List<SolutionCard>> call, Response<List<SolutionCard>> response) {

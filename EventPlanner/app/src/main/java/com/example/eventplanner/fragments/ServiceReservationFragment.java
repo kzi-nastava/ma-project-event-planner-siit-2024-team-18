@@ -21,6 +21,7 @@ import com.example.eventplanner.activities.details.ServiceDetailsActivity;
 import com.example.eventplanner.adapters.ServiceReservationAdapter;
 import com.example.eventplanner.databinding.FragmentServiceReservationBinding;
 import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.viewmodels.ServiceReservationViewModel;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -42,6 +43,7 @@ public class ServiceReservationFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentServiceReservationBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(ServiceReservationViewModel.class);
+        viewModel.setContext(requireContext());
 
         setupRecyclerView();
         observeViewModel();

@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
+import com.example.eventplanner.dialogs.BuyProductDialog;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
 
@@ -52,6 +53,7 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private void initializeViews() {
         productDetailsViewModel = new ViewModelProvider(this).get(ProductDetailsViewModel.class);
+        productDetailsViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         productImageSlider = findViewById(R.id.product_image_slider);
@@ -140,7 +142,7 @@ public class ProductDetailsActivity extends BaseActivity {
         favoriteButton.setOnClickListener(v -> toggleFavorite());
         commentsButton.setOnClickListener(v -> openComments());
         visitProviderButton.setOnClickListener(v -> visitProvider());
-        buyProductButton.setOnClickListener(v -> bookproduct());
+        buyProductButton.setOnClickListener(v -> buyProduct());
     }
 
     private void toggleFavorite() {
@@ -152,7 +154,11 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private void visitProvider() {}
 
-    private void bookproduct() {}
+    private void buyProduct() {
+        BuyProductDialog.show(this, product, (productId, eventId) -> {
+            productDetailsViewModel.buyProduct(productId, eventId);
+        }, this);
+    }
 
     private void setupPaginationDots(int size) {
         dots = new ArrayList<>();

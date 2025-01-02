@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import com.example.eventplanner.activities.details.EventDetailsActivity;
 import com.example.eventplanner.adapters.EmailAdapter;
 import com.example.eventplanner.databinding.FragmentInviteScreenBinding;
+import com.example.eventplanner.viewmodels.InviteScreenViewModel;
 
 public class InviteScreenFragment extends Fragment {
 
@@ -28,6 +29,7 @@ public class InviteScreenFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         binding = FragmentInviteScreenBinding.inflate(inflater, container, false);
         viewModel = new ViewModelProvider(this).get(InviteScreenViewModel.class);
+        viewModel.setContext(requireContext());
 
         setupRecyclerView();
         setupObservers();
