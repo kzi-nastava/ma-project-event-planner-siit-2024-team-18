@@ -157,6 +157,7 @@ public class ProductDetailsActivity extends BaseActivity {
     private void buyProduct() {
         BuyProductDialog.show(this, product, (productId, eventId) -> {
             productDetailsViewModel.buyProduct(productId, eventId);
+            finish();
         }, this);
     }
 

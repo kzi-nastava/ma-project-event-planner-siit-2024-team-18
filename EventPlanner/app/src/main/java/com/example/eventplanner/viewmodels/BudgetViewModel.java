@@ -49,8 +49,8 @@ public class BudgetViewModel extends ViewModel {
         this.context = context.getApplicationContext();
     }
 
-    public void fetchBudgetItems() {
-        Call<ArrayList<BudgetItem>> call = ClientUtils.getBudgetService(this.context).getAll();
+    public void fetchBudgetItems(int eventId) {
+        Call<ArrayList<BudgetItem>> call = ClientUtils.getBudgetService(this.context).getAll(eventId);
         call.enqueue(new Callback<ArrayList<BudgetItem>>() {
             @Override
             public void onResponse(Call<ArrayList<BudgetItem>> call, Response<ArrayList<BudgetItem>> response) {
@@ -87,15 +87,15 @@ public class BudgetViewModel extends ViewModel {
         });
     }
 
-    public void addBudgetItem(BudgetItem budgetItem) {
-        Call<BudgetItem> call = ClientUtils.getBudgetService(this.context).add(1, budgetItem);
+    public void addBudgetItem(int eventId, BudgetItem budgetItem) {
+        Call<BudgetItem> call = ClientUtils.getBudgetService(this.context).add(eventId, budgetItem);
         call.enqueue(new Callback<BudgetItem>() {
             @Override
             public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
                 if (response.isSuccessful()) {
                     success.postValue(true);
-                    fetchBudgetItems();
-                    getTotalBudget(1);
+                    fetchBudgetItems(eventId);
+                    getTotalBudget(eventId);
                 } else {
                     errorMessage.postValue("Failed to add Budget Item. Code: " + response.code());
                 }
@@ -108,34 +108,35 @@ public class BudgetViewModel extends ViewModel {
         });
     }
 
-    public void editBudgetItem(int id, BudgetItem budgetItem) {
-        Call<BudgetItem> call = ClientUtils.getBudgetService(this.context).edit(1, budgetItem);
-        call.enqueue(new Callback<BudgetItem>() {
+    public void editBudgetItem(int eventId, int id, BudgetItem budgetItem) {
+        Call<Void> call = ClientUtils.getBudgetService(this.context).edit(id, budgetItem);
+        call.enqueue(new Callback<Void>() {
             @Override
-            public void onResponse(Call<BudgetItem> call, Response<BudgetItem> response) {
+            public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
                     success.postValue(true);
-                    getTotalBudget(1);
+                    fetchBudgetItems(eventId);
+                    getTotalBudget(eventId);
                 } else {
                     errorMessage.postValue("Failed to edit budget item. Code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<BudgetItem> call, Throwable t) {
+            public void onFailure(Call<Void> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });
     }
 
-    public void deleteBudgetItemById(int id) {
+    public void deleteBudgetItemById(int eventId, int id) {
         Call<Void> call = ClientUtils.getBudgetService(this.context).deleteById(id);
         call.enqueue(new Callback<Void>() {
             @Override
             public void onResponse(Call<Void> call, Response<Void> response) {
                 if (response.isSuccessful()) {
-                    fetchBudgetItems();
-                    getTotalBudget(1);
+                    fetchBudgetItems(eventId);
+                    getTotalBudget(eventId);
                 } else {
                     errorMessage.postValue("Failed to delete budget item. Code: " + response.code());
                 }

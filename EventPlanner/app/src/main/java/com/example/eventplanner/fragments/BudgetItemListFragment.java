@@ -12,20 +12,23 @@ import androidx.fragment.app.ListFragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.BudgetItemListAdapter;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.BudgetViewModel;
 
 public class BudgetItemListFragment extends ListFragment {
     private BudgetItemListAdapter adapter;
     private BudgetViewModel budgetViewModel;
+    private Event event;
 
-    public static BudgetItemListFragment newInstance(BudgetViewModel budgetViewModel) {
+    public static BudgetItemListFragment newInstance(BudgetViewModel budgetViewModel, Event event) {
         BudgetItemListFragment fragment = new BudgetItemListFragment();
-        fragment.setBudgetViewModel(budgetViewModel);
+        fragment.setBudgetViewModelAndEvent(budgetViewModel, event);
         return fragment;
     }
 
-    public void setBudgetViewModel(BudgetViewModel budgetViewModel) {
+    public void setBudgetViewModelAndEvent(BudgetViewModel budgetViewModel, Event event) {
         this.budgetViewModel = budgetViewModel;
+        this.event = event;
     }
 
     @Nullable
@@ -40,7 +43,7 @@ public class BudgetItemListFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new BudgetItemListAdapter(requireActivity(), budgetViewModel);
+        adapter = new BudgetItemListAdapter(requireActivity(), budgetViewModel, event);
         setListAdapter(adapter);
 
         budgetViewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
@@ -55,7 +58,7 @@ public class BudgetItemListFragment extends ListFragment {
             }
         });
 
-        budgetViewModel.fetchBudgetItems();
+        budgetViewModel.fetchBudgetItems(event.getId());
     }
 
     @Override

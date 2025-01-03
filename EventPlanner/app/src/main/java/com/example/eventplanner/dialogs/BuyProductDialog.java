@@ -11,7 +11,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.Event;
+import com.example.eventplanner.models.EventCard;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.EventDetailsViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -23,7 +23,6 @@ public class BuyProductDialog {
     private static View dialogView;
     private static Product product;
     private static EventDetailsViewModel eventViewModel;
-    private static Event event;
 
     public interface BuyProductListener {
         void onBuyProduct(int productId, int eventId);
@@ -47,7 +46,7 @@ public class BuyProductDialog {
         eventViewModel = new ViewModelProvider((androidx.fragment.app.FragmentActivity) context).get(EventDetailsViewModel.class);
         eventViewModel.setContext(context);
 
-        eventViewModel.getEvents().observe(lifecycleOwner, events -> {
+        eventViewModel.getEventsByCreator().observe(lifecycleOwner, events -> {
             populateFields(events);
         });
 
@@ -57,12 +56,12 @@ public class BuyProductDialog {
             }
         });
 
-        eventViewModel.fetchEvents();
+        eventViewModel.fetchEventsByCreator();
     }
 
 
-    private static void populateFields(ArrayList<Event> events) {
-        ArrayAdapter<Event> adapter = new ArrayAdapter<>(dialogView.getContext(), android.R.layout.simple_spinner_item, events);
+    private static void populateFields(ArrayList<EventCard> events) {
+        ArrayAdapter<EventCard> adapter = new ArrayAdapter<>(dialogView.getContext(), android.R.layout.simple_spinner_item, events);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         eventSpinner.setAdapter(adapter);
     }
@@ -78,7 +77,7 @@ public class BuyProductDialog {
 
         dialog.setOnShowListener(dialogInterface -> {
             dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
-                event = (Event) eventSpinner.getSelectedItem();
+                EventCard event = eventViewModel.getEventByName(eventSpinner.getSelectedItem().toString());
                 listener.onBuyProduct(product.getId(), event.getId());
                 dialog.dismiss();
             });
