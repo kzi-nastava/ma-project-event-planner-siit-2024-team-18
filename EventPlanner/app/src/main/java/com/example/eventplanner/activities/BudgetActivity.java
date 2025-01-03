@@ -13,6 +13,7 @@ import com.example.eventplanner.dialogs.AddBudgetItemDialog;
 import com.example.eventplanner.fragments.BudgetItemListFragment;
 import com.example.eventplanner.fragments.SolutionDetailsFragment;
 import com.example.eventplanner.models.BudgetItem;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.BudgetViewModel;
 
 public class BudgetActivity extends BaseActivity implements SolutionDetailsFragment.OnFragmentCloseListener {
@@ -20,12 +21,14 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private BudgetViewModel budgetViewModel;
     private BudgetItemListFragment budgetItemListFragment;
     private TextView solutionDetails, totalBudget;
+    private Event event = new Event() {};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_budget, findViewById(R.id.content_frame));
 
+        event.setId(1);
         initializeViews();
         initializeBudgetItemsFragment();
         populateData();
@@ -40,7 +43,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private void initializeViews() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
         budgetViewModel.setContext(this);
-        budgetViewModel.getTotalBudget(1);
+        budgetViewModel.getTotalBudget(event.getId());
 
         addBudgetItemButton = findViewById(R.id.addBudgetItem);
         solutionDetails = findViewById(R.id.solutionDetails);
@@ -51,7 +54,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private void initializeBudgetItemsFragment() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
         budgetViewModel.setContext(this);
-        budgetItemListFragment = BudgetItemListFragment.newInstance(budgetViewModel);
+        budgetItemListFragment = BudgetItemListFragment.newInstance(budgetViewModel, event);
 
         FragmentTransition.to(budgetItemListFragment, this, false, R.id.listViewBudgetItems);
     }
@@ -66,7 +69,6 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
         });
     }
 
-
     private void setupListeners() {
         setupAddBudgetItemButton();
         setupBackButton();
@@ -75,8 +77,8 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
     private void setupAddBudgetItemButton() {
         addBudgetItemButton.setOnClickListener(v -> {
-            AddBudgetItemDialog.show(this, (category, maxAmount) -> {
-                budgetViewModel.addBudgetItem(new BudgetItem(category, Integer.parseInt(maxAmount)));
+            AddBudgetItemDialog.show(event, this, (category, maxAmount) -> {
+                budgetViewModel.addBudgetItem(event.getId(), new BudgetItem(category, Integer.parseInt(maxAmount)));
             });
         });
     }

@@ -99,13 +99,7 @@ public class EventCard implements Parcelable, Serializable {
     @NonNull
     @Override
     public String toString() {
-        return "EventCard{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", locationName='" + locationName + '\'' +
-                ", cardImage='" + cardImage + '\'' +
-                '}';
+        return name;
     }
 
     @Override

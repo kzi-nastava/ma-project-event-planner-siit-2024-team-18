@@ -4,14 +4,18 @@ import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 
@@ -51,15 +55,35 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("services/{id}")
+    @GET("services/details/{id}")
     Call<Service> getById(@Path("id") int id);
 
     @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
+            "User-Agent: Mobile-Android"
     })
+    @Multipart
     @POST("services/create")
-    Call<Service> add(@Body Service service);
+    Call<Service> add(
+            @Part("name") RequestBody name,
+            @Part("description") RequestBody description,
+            @Part("specifics") RequestBody specifics,
+            @Part("category") RequestBody category,
+            @Part("eventTypes") RequestBody eventTypes,
+            @Part("location") RequestBody location,
+            @Part("reservationDeadline") RequestBody reservationDeadline,
+            @Part("cancellationDeadline") RequestBody cancellationDeadline,
+            @Part("price") RequestBody price,
+            @Part("discount") RequestBody discount,
+            @Part("duration") RequestBody duration,
+            @Part("minEngagement") RequestBody minEngagement,
+            @Part("maxEngagement") RequestBody maxEngagement,
+            @Part("visible") RequestBody visible,
+            @Part("available") RequestBody available,
+            @Part("reservationType") RequestBody reservationType,
+            @Part("workingHoursStart") RequestBody workingHoursStart,
+            @Part("workingHoursEnd") RequestBody workingHoursEnd,
+            @Part List<MultipartBody.Part> images
+    );
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -69,9 +93,30 @@ public interface ServiceService {
     Call<Void> deleteById(@Path("id") int id);
 
     @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
+            "User-Agent: Mobile-Android"
     })
+    @Multipart
     @PUT("services/edit/{id}")
-    Call<Service> edit(@Path("id") int id, @Body Service service);
+    Call<Service> edit(
+            @Path("id") int id,
+            @Part("name") RequestBody name,
+            @Part("description") RequestBody description,
+            @Part("specifics") RequestBody specifics,
+            @Part("category") RequestBody category,
+            @Part("eventTypes") RequestBody eventTypes,
+            @Part("location") RequestBody location,
+            @Part("reservationDeadline") RequestBody reservationDeadline,
+            @Part("cancellationDeadline") RequestBody cancellationDeadline,
+            @Part("price") RequestBody price,
+            @Part("discount") RequestBody discount,
+            @Part("duration") RequestBody duration,
+            @Part("minEngagement") RequestBody minEngagement,
+            @Part("maxEngagement") RequestBody maxEngagement,
+            @Part("visible") RequestBody visible,
+            @Part("available") RequestBody available,
+            @Part("reservationType") RequestBody reservationType,
+            @Part("workingHoursStart") RequestBody workingHoursStart,
+            @Part("workingHoursEnd") RequestBody workingHoursEnd,
+            @Part List<MultipartBody.Part> images
+    );
 }

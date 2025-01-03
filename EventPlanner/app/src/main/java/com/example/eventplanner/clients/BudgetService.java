@@ -19,8 +19,8 @@ public interface BudgetService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @GET("budget")
-    Call<ArrayList<BudgetItem>> getAll();
+    @GET("budget/{eventId}")
+    Call<ArrayList<BudgetItem>> getAll(@Path("eventId") int eventId);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -47,8 +47,8 @@ public interface BudgetService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @PUT("budget/edit/{eventId}")
-    Call<BudgetItem> edit(@Path("eventId") int eventId, @Body BudgetItem budgetItem);
+    @PUT("budget/edit/{id}")
+    Call<Void> edit(@Path("id") int id, @Body BudgetItem budgetItem);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -62,6 +62,6 @@ public interface BudgetService {
             "Content-Type:application/json"
     })
     @PUT("budget/purchase-product/{productId}")
-    Call<Void> purchaseProduct(@Path("productId") int productId);
+    Call<Void> purchaseProduct(@Path("productId") int productId, @Body int eventId);
 
 }

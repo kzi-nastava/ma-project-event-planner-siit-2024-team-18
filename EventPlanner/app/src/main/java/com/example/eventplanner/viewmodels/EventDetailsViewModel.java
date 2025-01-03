@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Event;
+import com.example.eventplanner.models.EventCard;
 
 import java.util.ArrayList;
 
@@ -17,12 +18,17 @@ import retrofit2.Response;
 
 public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Event>> allEventsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<EventCard>> allEventsByCreatorLiveData = new MutableLiveData<>();
     private final MutableLiveData<Event> eventDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
 
     public LiveData<Event> getEventDetails() {
         return eventDetailsLiveData;
+    }
+
+    public LiveData<ArrayList<EventCard>> getEventsByCreator() {
+        return allEventsByCreatorLiveData;
     }
 
     public LiveData<ArrayList<Event>> getEvents() {
@@ -62,6 +68,25 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
+    public void fetchEventsByCreator() {
+        Call<ArrayList<EventCard>> call = ClientUtils.getEventService(this.context).getAllByCreator();
+        call.enqueue(new Callback<ArrayList<EventCard>>() {
+            @Override
+            public void onResponse(Call<ArrayList<EventCard>> call, Response<ArrayList<EventCard>> response) {
+                if (response.isSuccessful()) {
+                    allEventsByCreatorLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch events. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<EventCard>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
     public void fetchEventDetailsById(int eventId) {
         if (Boolean.TRUE.equals(loading.getValue())) return;
 
@@ -86,5 +111,14 @@ public class EventDetailsViewModel extends ViewModel {
                 errorMessage.setValue("Network error");
             }
         });
+    }
+
+    public EventCard getEventByName(String eventName) {
+        for (EventCard eventCard : allEventsByCreatorLiveData.getValue()) {
+            if (eventCard.getName().equals(eventName)) {
+                return eventCard;
+            }
+        }
+        return null;
     }
 }
