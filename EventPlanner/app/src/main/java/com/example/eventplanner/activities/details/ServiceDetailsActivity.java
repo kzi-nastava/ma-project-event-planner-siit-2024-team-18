@@ -8,7 +8,6 @@ import android.text.Spanned;
 import android.text.style.StyleSpan;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
@@ -23,14 +22,17 @@ import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ServiceDetailsActivity extends BaseActivity {
     private Service service;
     private ServiceDetailsViewModel serviceDetailsViewModel;
+    private LoginViewModel loginViewModel;
     private ViewPager2 serviceImageSlider;
     private LinearLayout sliderDotsContainer;
     private TextView serviceName, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice, serviceNumberOfReviews, serviceSpecifics, serviceCategory, serviceEventTypes, serviceDuration, serviceEngagement, serviceReservationDeadline, serviceCancellationDeadline, serviceWorkingHours, serviceLocation;
@@ -55,6 +57,7 @@ public class ServiceDetailsActivity extends BaseActivity {
     private void initializeViews() {
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
         serviceDetailsViewModel.setContext(this);
+        loginViewModel = LoginViewModel.getInstance(getApplicationContext());
 
         favoriteButton = findViewById(R.id.favorite_button);
         serviceImageSlider = findViewById(R.id.service_image_slider);
@@ -175,6 +178,9 @@ public class ServiceDetailsActivity extends BaseActivity {
         favoriteButton.setOnClickListener(v -> toggleFavorite());
         commentsButton.setOnClickListener(v -> openComments());
         visitProviderButton.setOnClickListener(v -> visitProvider());
+        if(!Objects.equals(loginViewModel.getRole(), "EVENT_ORGANIZER")){
+            bookServiceButton.setVisibility(View.GONE);
+        }
         bookServiceButton.setOnClickListener(v -> navigateToServiceReservation(this.service.getId()));
     }
 

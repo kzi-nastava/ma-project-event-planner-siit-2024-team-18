@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 } else {
                     Log.e("MainActivity", "Failed to accept invite. Response code: " + response.code());
+                    showSplashScreen();
                 }
             }
 
