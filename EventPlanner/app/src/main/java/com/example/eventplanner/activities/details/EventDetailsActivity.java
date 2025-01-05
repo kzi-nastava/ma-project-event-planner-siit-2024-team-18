@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities.details;
 
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -14,10 +15,14 @@ import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.fragments.InviteScreenFragment;
 import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.EventDetailsViewModel;
+import com.example.eventplanner.viewmodels.LoginViewModel;
+
+import java.util.Objects;
 
 public class EventDetailsActivity extends BaseActivity {
 
     private EventDetailsViewModel eventDetailsViewModel;
+    private LoginViewModel loginViewModel;
 
     private ImageView eventImage;
     private TextView eventTitle, eventDescription;
@@ -27,11 +32,16 @@ public class EventDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_event_details, findViewById(R.id.content_frame));
+        loginViewModel = LoginViewModel.getInstance(getApplicationContext());
 
         eventImage = findViewById(R.id.event_image);
         eventTitle = findViewById(R.id.event_title);
         eventDescription = findViewById(R.id.event_description);
         sendInvitationsButton = findViewById(R.id.send_invitations_button);
+
+        if(!Objects.equals(loginViewModel.getRole(), "EVENT_ORGANIZER")){
+            sendInvitationsButton.setVisibility(View.GONE);
+        }
 
         int eventId = getIntent().getIntExtra("eventId", -1);
 
