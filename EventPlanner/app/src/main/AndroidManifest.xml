@@ -23,6 +23,9 @@
             android:name=".activities.AllServicesActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.PricelistActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.BaseActivity"
             android:exported="false" />
         <activity
