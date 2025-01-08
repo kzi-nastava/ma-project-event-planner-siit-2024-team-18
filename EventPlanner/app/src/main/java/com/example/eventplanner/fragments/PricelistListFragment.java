@@ -43,15 +43,21 @@ public class PricelistListFragment extends ListFragment {
         adapter = new PricelistListAdapter(requireActivity(), pricelistViewModel);
         setListAdapter(adapter);
 
-        pricelistViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
-            if (products != null) {
-                adapter.updatePricelistItemList(products);
-            }
-        });
-
-        pricelistViewModel.getServices().observe(getViewLifecycleOwner(), services -> {
-            if (services != null) {
-                adapter.updatePricelistItemList(services);
+        pricelistViewModel.getIsProductSelected().observe(getViewLifecycleOwner(), isProductSelected -> {
+            if (isProductSelected != null) {
+                if (isProductSelected) {
+                    pricelistViewModel.getProducts().observe(getViewLifecycleOwner(), products -> {
+                        if (products != null) {
+                            adapter.updatePricelistItemList(products);
+                        }
+                    });
+                } else {
+                    pricelistViewModel.getServices().observe(getViewLifecycleOwner(), services -> {
+                        if (services != null) {
+                            adapter.updatePricelistItemList(services);
+                        }
+                    });
+                }
             }
         });
 
@@ -67,7 +73,5 @@ public class PricelistListFragment extends ListFragment {
     @Override
     public void onResume() {
         super.onResume();
-        pricelistViewModel.getServices();
-        pricelistViewModel.getProducts();
     }
 }

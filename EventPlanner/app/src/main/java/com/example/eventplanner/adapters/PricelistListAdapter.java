@@ -100,7 +100,7 @@ public class PricelistListAdapter<T> extends ArrayAdapter<T> {
     }
 
     private void setupListeners(T pricelistItem) {
-        pricelistItemCard.setOnClickListener(v -> {
+        frameEditPricelistItem.setOnClickListener(v -> {
             EditPricelistItemDialog<T> dialog = new EditPricelistItemDialog<>();
             dialog.show(getContext(), pricelistItem, updatedPricelistItem -> {
                 int id = -1;
@@ -111,7 +111,11 @@ public class PricelistListAdapter<T> extends ArrayAdapter<T> {
                     e.printStackTrace();
                 }
 
-                pricelistViewModel.editPricelistItem(id, updatedPricelistItem);
+                if (pricelistItem instanceof Service) {
+                    pricelistViewModel.editPricelistItemService(id, (Service) updatedPricelistItem);
+                } else if (pricelistItem instanceof Product) {
+                    pricelistViewModel.editPricelistItemProduct(id, (Product) updatedPricelistItem);
+                }
             });
         });
     }

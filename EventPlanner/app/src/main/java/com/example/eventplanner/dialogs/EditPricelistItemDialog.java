@@ -72,11 +72,11 @@ public class EditPricelistItemDialog<T> {
                     Toast.makeText(context, "Invalid Input Detected!", Toast.LENGTH_SHORT).show();
                 } else {
                     try {
-                        Method setPriceMethod = pricelistItem.getClass().getMethod("setPrice", int.class);
-                        Method setDiscountMethod = pricelistItem.getClass().getMethod("setDiscount", int.class);
+                        Method setPriceMethod = pricelistItem.getClass().getMethod("setPrice", double.class);
+                        Method setDiscountMethod = pricelistItem.getClass().getMethod("setDiscount", double.class);
 
-                        setPriceMethod.invoke(pricelistItem, Integer.parseInt(pricelistItemPrice.getText().toString()));
-                        setDiscountMethod.invoke(pricelistItem, Integer.parseInt(pricelistItemDiscount.getText().toString()));
+                        setPriceMethod.invoke(pricelistItem, Double.parseDouble(pricelistItemPrice.getText().toString()));
+                        setDiscountMethod.invoke(pricelistItem, Double.parseDouble(pricelistItemDiscount.getText().toString()));
 
                         listener.onPricelistItemEdited(pricelistItem);
                         dialog.dismiss();
