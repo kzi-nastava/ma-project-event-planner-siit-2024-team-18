@@ -7,6 +7,7 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,6 +17,8 @@ import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.models.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -185,19 +188,18 @@ public class PricelistViewModel extends ViewModel {
 
     private void savePDFToFile(byte[] pdfContent, String fileName) {
         try {
-            java.io.File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
-            java.io.File file = new java.io.File(downloadsDir, fileName);
-
-            String baseName = fileName.substring(0, fileName.lastIndexOf("."));
-            String extension = fileName.substring(fileName.lastIndexOf("."));
-            int counter = 1;
-
-            while (file.exists() || !file.createNewFile()) {
-                file = new java.io.File(downloadsDir, baseName + counter + extension);
-                counter++;
+            File downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            if (downloadsDir == null) {
+                throw new IOException("Failed to get external directory.");
             }
 
-            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(file)) {
+            if (!downloadsDir.exists() && !downloadsDir.mkdirs()) {
+                throw new IOException("Failed to create directory.");
+            }
+
+            File file = getFile(fileName, downloadsDir);
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
                 fos.write(pdfContent);
             }
 
@@ -206,9 +208,28 @@ public class PricelistViewModel extends ViewModel {
             Toast.makeText(context, "PDF saved as " + file.getName(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "Error saving PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("FileSaveError", "Error saving file: " + e.getMessage(), e);
         }
     }
 
+    @NonNull
+    private static File getFile(String fileName, File downloadsDir) throws IOException {
+        File file = new File(downloadsDir, fileName);
+
+        String baseName = fileName.substring(0, fileName.lastIndexOf("."));
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        int counter = 1;
+
+        while (file.exists()) {
+            file = new File(downloadsDir, baseName + counter + extension);
+            counter++;
+        }
+
+        if (!file.createNewFile()) {
+            throw new IOException("Failed to create new file.");
+        }
+        return file;
+    }
 
     private void openPDF(java.io.File file) {
         if (file.exists()) {
