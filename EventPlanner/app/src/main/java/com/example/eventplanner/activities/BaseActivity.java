@@ -26,6 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Button signInButton;
+    private Button signUpButton;
     private LoginViewModel viewModel;
     private ImageView profileImageView;
     private TextView userFullNameTextView;
@@ -56,18 +57,29 @@ public abstract class BaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         signInButton = findViewById(R.id.button_sign_in);
+        signUpButton = findViewById(R.id.button_sign_up);
         viewModel.getLoggedInStatus().observe(this, isLoggedIn -> {
             if (isLoggedIn) {
                 signInButton.setVisibility(View.GONE);
+                signUpButton.setVisibility(View.GONE);
+                if(Objects.equals(viewModel.getRole(), "AUTHENTICATED_USER")){
+                    signUpButton.setVisibility(View.VISIBLE);
+                }
                 updateProfileInfo();
             } else {
                 signInButton.setVisibility(View.VISIBLE);
+                signUpButton.setVisibility(View.GONE);
                 hideProfileInfo();
             }
         });
         signInButton.setOnClickListener(v -> {
             Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
             startActivity(loginIntent);
+        });
+
+        signUpButton.setOnClickListener(v -> {
+            Intent fastRegisterIntent = new Intent(BaseActivity.this, FastRegisterActivity.class);
+            startActivity(fastRegisterIntent);
         });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
