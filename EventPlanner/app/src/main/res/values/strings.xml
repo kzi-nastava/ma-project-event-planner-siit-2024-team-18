@@ -136,6 +136,7 @@
     <string name="invitations">Invitations</string>
     <string name="delete">Delete</string>
     <string name="send_invitations">Send Invitations</string>
+    <string name="event_type_name">Event Type Name</string>
     <string-array name="sort_options">
         <item>Ascending</item>
         <item>Descending</item>
