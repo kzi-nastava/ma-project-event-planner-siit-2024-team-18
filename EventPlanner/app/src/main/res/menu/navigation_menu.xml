@@ -39,6 +39,10 @@
                     android:title="Budget"
                     android:icon="@drawable/ic_lock" />
 
+                <item android:id="@+id/nav_pricelist"
+                    android:title="Pricelist"
+                    android:icon="@drawable/ic_pricelist" />
+
                 <item android:id="@+id/nav_profile"
                     android:title="@string/profile"
                     android:icon="@drawable/ic_user" />

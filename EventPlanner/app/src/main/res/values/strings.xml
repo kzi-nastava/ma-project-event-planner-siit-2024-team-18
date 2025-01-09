@@ -6,6 +6,7 @@
     <string name="homeScreen_name">Home Screen</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
+    <string name="fast_registration">Fast Registration</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="remember_me">Remember me</string>

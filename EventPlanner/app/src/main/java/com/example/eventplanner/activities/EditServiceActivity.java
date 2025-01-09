@@ -3,18 +3,18 @@ package com.example.eventplanner.activities;
 import android.app.AlertDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
-import android.content.res.Resources;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,25 +23,27 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.SwitchCompat;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.loader.content.CursorLoader;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.adapters.ServiceListAdapter;
-import com.example.eventplanner.models.Category;
-import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.R;
+import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.EventTypeCardViewModel;
 import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
-import com.example.eventplanner.viewmodels.ServiceListViewModel;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.time.format.DateTimeFormatter;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class EditServiceActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
@@ -76,11 +78,16 @@ public class EditServiceActivity extends BaseActivity {
     }
 
     private void loadViewModels() {
+        serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
+        serviceDetailsViewModel.setContext(getApplicationContext());
+
+        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.setContext(getApplicationContext());
+
         eventTypeViewModel.fetchEventTypes();
         serviceDetailsViewModel.fetchServiceById(serviceId);
 
         // ViewModel setup
-        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
         eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
             if (eventTypes != null) {
                 this.listEventTypes = eventTypes;
@@ -93,8 +100,6 @@ public class EditServiceActivity extends BaseActivity {
             }
         });
 
-        serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
-        serviceDetailsViewModel.setContext(this);
         serviceDetailsViewModel.getService().observe(this, service -> {
             if (service != null) {
                 this.service = service;
@@ -117,10 +122,6 @@ public class EditServiceActivity extends BaseActivity {
     }
 
     private void initializeViews() {
-        serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
-        serviceDetailsViewModel.setContext(this);
-        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
-
         serviceName = findViewById(R.id.editServiceName);
         serviceDescription = findViewById(R.id.editServiceDescription);
         servicePrice = findViewById(R.id.editServicePrice);
@@ -300,7 +301,9 @@ public class EditServiceActivity extends BaseActivity {
 
         if (isNewImage) {
             Uri imageUri = Uri.parse(imageUrlOrUri);
-            imageView.setImageURI(imageUri);
+            Glide.with(this)
+                    .load(imageUri)
+                    .into(imageView);
             imageUris.add(imageUri);
         } else {
             Glide.with(this)
@@ -341,7 +344,7 @@ public class EditServiceActivity extends BaseActivity {
             return;
         }
 
-        serviceDetailsViewModel.editService(serviceId, updateService());
+        updateService();
     }
 
     private boolean validateInputs() {
@@ -427,34 +430,81 @@ public class EditServiceActivity extends BaseActivity {
         return null;
     }
 
-    private Service updateService() {
-        service.setName(serviceName.getText().toString());
-        service.setDescription(serviceDescription.getText().toString());
-        service.setSpecifics(specifics.getText().toString());
-        service.setCategory(category.getSelectedItem().toString());
-        service.setEventTypes(selectedEventTypes.toArray(new String[0]));
-        service.setLocation(location.getText().toString());
-        service.setReservationDeadline(Integer.parseInt(reservationDeadline.getText().toString()));
-        service.setCancellationDeadline(Integer.parseInt(cancellationDeadline.getText().toString()));
-        service.setPrice(Double.parseDouble(servicePrice.getText().toString()));
-        service.setDiscount(Double.parseDouble(discount.getText().toString()));
+    private void updateService() {
+        RequestBody nameBody = RequestBody.create(MediaType.parse("text/plain"), serviceName.getText().toString());
+        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), serviceDescription.getText().toString());
+        RequestBody specificsBody = RequestBody.create(MediaType.parse("text/plain"), specifics.getText().toString());
+        RequestBody categoryBody = RequestBody.create(MediaType.parse("text/plain"), category.getSelectedItem().toString());
+        RequestBody eventTypesBody = RequestBody.create(MediaType.parse("text/plain"), TextUtils.join(",", selectedEventTypes));
+        RequestBody locationBody = RequestBody.create(MediaType.parse("text/plain"), location.getText().toString());
+        RequestBody reservationDeadlineBody = RequestBody.create(MediaType.parse("text/plain"), reservationDeadline.getText().toString());
+        RequestBody cancellationDeadlineBody = RequestBody.create(MediaType.parse("text/plain"), cancellationDeadline.getText().toString());
+        RequestBody priceBody = RequestBody.create(MediaType.parse("text/plain"), servicePrice.getText().toString());
+        RequestBody discountBody = RequestBody.create(MediaType.parse("text/plain"), discount.getText().toString());
+        RequestBody durationBody = RequestBody.create(MediaType.parse("text/plain"), Integer.toString((int) duration.getValue()));
+        RequestBody minEngagementBody = RequestBody.create(MediaType.parse("text/plain"), Integer.toString((int) minEngagement.getValue()));
+        RequestBody maxEngagementBody = RequestBody.create(MediaType.parse("text/plain"), Integer.toString((int) maxEngagement.getValue()));
+        RequestBody visibleBody = RequestBody.create(MediaType.parse("text/plain"), isVisible.isChecked() ? "1" : "0");
+        RequestBody availableBody = RequestBody.create(MediaType.parse("text/plain"), isAvailable.isChecked() ? "1" : "0");
+        RequestBody reservationTypeBody = RequestBody.create(MediaType.parse("text/plain"), getSelectedReservationType());
+        RequestBody workingHoursStartBody = RequestBody.create(MediaType.parse("text/plain"), workingHoursStart.getText().toString());
+        RequestBody workingHoursEndBody = RequestBody.create(MediaType.parse("text/plain"), workingHoursEnd.getText().toString());
 
-        List<String> allImagePaths = new ArrayList<>();
-        imageUris.forEach(uri -> allImagePaths.add(uri.toString()));
-        if (service.getImages() != null) {
-            allImagePaths.addAll(List.of(service.getImages()));
+        List<MultipartBody.Part> imageParts = new ArrayList<>();
+        for (Uri uri : imageUris) {
+            try {
+                if (uri.toString().startsWith("content://")) {
+                    File file = new File(getRealPathFromURI(uri));
+                    RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+                    MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), fileBody);
+                    imageParts.add(imagePart);
+                } else if (uri.toString().startsWith("data:image")) {
+                    File file = convertBase64ToFile(uri.toString());
+                    if (file != null) {
+                        RequestBody fileBody = RequestBody.create(MediaType.parse("image/*"), file);
+                        MultipartBody.Part imagePart = MultipartBody.Part.createFormData("images", file.getName(), fileBody);
+                        imageParts.add(imagePart);
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        service.setImages(allImagePaths.toArray(new String[0]));
 
-        service.setDuration((int) duration.getValue());
-        service.setMinEngagement((int) minEngagement.getValue());
-        service.setMaxEngagement((int) maxEngagement.getValue());
-        service.setVisible(isVisible.isChecked());
-        service.setAvailable(isAvailable.isChecked());
-        service.setReservationType(getSelectedReservationType());
-        service.setWorkingHoursStart(workingHoursStart.getText().toString());
-        service.setWorkingHoursEnd(workingHoursEnd.getText().toString());
+        serviceDetailsViewModel.editService(serviceId, nameBody, descriptionBody, specificsBody, categoryBody, eventTypesBody, locationBody, reservationDeadlineBody, cancellationDeadlineBody,
+                priceBody, discountBody, durationBody, minEngagementBody, maxEngagementBody, visibleBody, availableBody, reservationTypeBody, workingHoursStartBody, workingHoursEndBody, imageParts);
+    }
 
-        return service;
+    private String getRealPathFromURI(Uri contentUri) {
+        String[] proj = {MediaStore.Images.Media.DATA, MediaStore.Images.Media.DISPLAY_NAME};
+        CursorLoader loader = new CursorLoader(this, contentUri, proj, null, null, null);
+        Cursor cursor = loader.loadInBackground();
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+        int nameIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DISPLAY_NAME);
+        cursor.moveToFirst();
+        String result = cursor.getString(column_index);
+        String fileName = cursor.getString(nameIndex);
+        cursor.close();
+
+        return result != null ? result : fileName;
+    }
+
+    private File convertBase64ToFile(String base64String) {
+        try {
+            String base64Image = base64String.split(",")[1];
+            byte[] decodedBytes = Base64.decode(base64Image, Base64.DEFAULT);
+
+            String fileName = "image_" + System.currentTimeMillis() + ".png";
+            File file = new File(getCacheDir(), fileName);
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(decodedBytes);
+            }
+
+            return file;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 }

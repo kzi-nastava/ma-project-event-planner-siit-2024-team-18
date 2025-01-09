@@ -17,6 +17,7 @@ import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.models.Category;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.CategoryCardViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
@@ -29,14 +30,15 @@ public class AddBudgetItemDialog {
     private static TextView errorBudgetItemCategory, errorBudgetItemMaxAmount;
     private static View dialogView;
     private static CategoryCardViewModel categoriesViewModel;
-
+    private static Event event;
     public interface AddBudgetItemListener {
         void onBudgetItemCreated(String category, String maxAmount);
     }
 
-    public static void show(Context context, AddBudgetItemDialog.AddBudgetItemListener listener) {
+    public static void show(Event eventAdd, Context context, AddBudgetItemDialog.AddBudgetItemListener listener) {
         LayoutInflater inflater = LayoutInflater.from(context);
         dialogView = inflater.inflate(R.layout.dialog_add_budget_item, null);
+        event = eventAdd;
 
         initializeViews(context);
         populateFields();
@@ -46,7 +48,6 @@ public class AddBudgetItemDialog {
     private static void initializeViews(Context context) {
         categoriesViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(CategoryCardViewModel.class);
         categoriesViewModel.setContext(context);
-
         budgetItemCategory = dialogView.findViewById(R.id.budgetItemCategory);
         budgetItemMaxAmount = dialogView.findViewById(R.id.budgetItemMaxAmount);
         errorBudgetItemCategory = dialogView.findViewById(R.id.errorBudgetItemCategory);
@@ -54,7 +55,7 @@ public class AddBudgetItemDialog {
     }
 
     private static void populateFields() {
-        categoriesViewModel.getCategories().observeForever(new Observer<List<Category>>() {
+        categoriesViewModel.getCategoriesForEvent().observeForever(new Observer<List<Category>>() {
             @Override
             public void onChanged(List<Category> categories) {
                 if (categories != null && !categories.isEmpty()) {
@@ -69,7 +70,7 @@ public class AddBudgetItemDialog {
             }
         });
 
-        categoriesViewModel.fetchCategories();
+        categoriesViewModel.fetchCategoriesForEvent(event.getId());
     }
 
 

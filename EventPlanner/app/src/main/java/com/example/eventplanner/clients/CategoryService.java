@@ -25,6 +25,13 @@ public interface CategoryService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
+    @GET("categories/{eventId}")
+    Call<ArrayList<Category>> getAllForEvent(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
     @GET("categories/review")
     Call<ArrayList<Category>> getReviewCategories();
 

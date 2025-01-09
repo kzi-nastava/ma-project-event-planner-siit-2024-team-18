@@ -12,4 +12,10 @@ public interface UserService {
 
     @POST("/api/service-product-providers")
     Call<Void> serviceProductProviderRegistration(@Body User user);
+
+    @POST("/api/event-organizers/fast-registration")
+    Call<Void> fastEventOrganizerRegistration(@Body User user);
+
+    @POST("/api/service-product-providers/fast-registration")
+    Call<Void> fastServiceProductProviderRegistration(@Body User user);
 }

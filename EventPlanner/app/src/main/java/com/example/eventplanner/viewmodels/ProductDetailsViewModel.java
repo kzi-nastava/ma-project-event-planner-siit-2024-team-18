@@ -70,7 +70,7 @@ public class ProductDetailsViewModel extends ViewModel {
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<ResponseBody> call = ClientUtils.getProductService(this.context).buyProduct(productId, 1);
+        Call<ResponseBody> call = ClientUtils.getProductService(this.context).buyProduct(productId, eventId);
         call.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {

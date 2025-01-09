@@ -13,11 +13,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
-import com.example.eventplanner.viewmodels.BudgetViewModel;
 import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -28,6 +26,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle actionBarDrawerToggle;
     private Button signInButton;
+    private Button signUpButton;
     private LoginViewModel viewModel;
     private ImageView profileImageView;
     private TextView userFullNameTextView;
@@ -58,18 +57,29 @@ public abstract class BaseActivity extends AppCompatActivity {
         actionBarDrawerToggle.syncState();
 
         signInButton = findViewById(R.id.button_sign_in);
+        signUpButton = findViewById(R.id.button_sign_up);
         viewModel.getLoggedInStatus().observe(this, isLoggedIn -> {
             if (isLoggedIn) {
                 signInButton.setVisibility(View.GONE);
+                signUpButton.setVisibility(View.GONE);
+                if(Objects.equals(viewModel.getRole(), "AUTHENTICATED_USER")){
+                    signUpButton.setVisibility(View.VISIBLE);
+                }
                 updateProfileInfo();
             } else {
                 signInButton.setVisibility(View.VISIBLE);
+                signUpButton.setVisibility(View.GONE);
                 hideProfileInfo();
             }
         });
         signInButton.setOnClickListener(v -> {
             Intent loginIntent = new Intent(BaseActivity.this, LoginActivity.class);
             startActivity(loginIntent);
+        });
+
+        signUpButton.setOnClickListener(v -> {
+            Intent fastRegisterIntent = new Intent(BaseActivity.this, FastRegisterActivity.class);
+            startActivity(fastRegisterIntent);
         });
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -111,6 +121,10 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (currentActivity != EventTypesActivity.class) {
                     Intent eventTypesIntent = new Intent(BaseActivity.this, EventTypesActivity.class);
                     startActivity(eventTypesIntent);
+            } else if (id == R.id.nav_pricelist) {
+                if (currentActivity != PricelistActivity.class) {
+                    Intent pricelistIntent = new Intent(BaseActivity.this, PricelistActivity.class);
+                    startActivity(pricelistIntent);
                 }
             } else if (id == R.id.nav_sign_out) {
                 viewModel.signOut();
@@ -134,6 +148,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         menu.findItem(R.id.nav_categories).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
         menu.findItem(R.id.nav_event_types).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
         menu.findItem(R.id.nav_budget).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "EVENT_ORGANIZER"));
+        menu.findItem(R.id.nav_pricelist).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_profile).setVisible(isLoggedIn);
         menu.findItem(R.id.nav_sign_out).setVisible(isLoggedIn);
     }

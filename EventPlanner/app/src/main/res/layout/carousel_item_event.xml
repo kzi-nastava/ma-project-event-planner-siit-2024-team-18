@@ -13,7 +13,8 @@
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@android:color/white">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/carousel_item_image"
