@@ -2,6 +2,8 @@ package com.example.eventplanner.clients;
 
 import com.example.eventplanner.models.Product;
 
+import java.util.ArrayList;
+
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
@@ -19,6 +21,13 @@ public interface ProductService {
     })
     @GET("products/details/{id}")
     Call<Product> getProductDetails(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("products/creator")
+    Call<ArrayList<Product>> getAllByCreator();
 
     @Headers({
             "User-Agent: Mobile-Android",

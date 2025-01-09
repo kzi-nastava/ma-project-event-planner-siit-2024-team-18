@@ -1,0 +1,243 @@
+package com.example.eventplanner.viewmodels;
+
+import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Environment;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.ViewModel;
+
+import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.models.Product;
+import com.example.eventplanner.models.Service;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class PricelistViewModel extends ViewModel {
+    private Context context;
+    private final MutableLiveData<ArrayList<Service>> servicesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<Product>> productsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+    private MutableLiveData<Boolean> isProductSelected = new MutableLiveData<>(true);
+
+    public LiveData<Boolean> getIsProductSelected() {
+        return isProductSelected;
+    }
+
+    public void setIsProductSelected(boolean isProductSelected) {
+        this.isProductSelected.postValue(isProductSelected);
+    }
+
+    public LiveData<String> getErrorMessage() {
+        return errorMessage;
+    }
+
+    public LiveData<Boolean> getSuccess() {
+        return success;
+    }
+
+
+    public void setContext(Context context) {
+        this.context = context.getApplicationContext();
+    }
+
+    public LiveData<ArrayList<Service>> getServices() {
+        return servicesLiveData;
+    }
+
+    public LiveData<ArrayList<Product>> getProducts() {
+        return productsLiveData;
+    }
+
+    public void fetchPricelistItems() {
+        getServicesBackend();
+        getProductsBackend();
+    }
+
+    public void editPricelistItemService(int id, Service service) {
+        Call<Service> call = ClientUtils.getPricelistService(this.context).editService(id, service);
+        call.enqueue(new Callback<Service>() {
+            @Override
+            public void onResponse(Call<Service> call, Response<Service> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                    getServicesBackend();
+                } else {
+                    errorMessage.postValue("Failed to edit service. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Service> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void editPricelistItemProduct(int id, Product product) {
+        Call<Product> call = ClientUtils.getPricelistService(this.context).editProduct(id, product);
+        call.enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                    getProductsBackend();
+                } else {
+                    errorMessage.postValue("Failed to edit product. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+
+    public void getProductsBackend() {
+        Call<ArrayList<Product>> call2 = ClientUtils.getProductService(this.context).getAllByCreator();
+        call2.enqueue(new Callback<ArrayList<Product>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Product>> call2, Response<ArrayList<Product>> response) {
+                if (response.isSuccessful()) {
+                    productsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch products. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Product>> call2, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+
+    }
+
+    public void getServicesBackend() {
+        Call<ArrayList<Service>> call1 = ClientUtils.getServiceService(this.context).getAllByCreator();
+        call1.enqueue(new Callback<ArrayList<Service>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Service>> call1, Response<ArrayList<Service>> response) {
+                if (response.isSuccessful()) {
+                    servicesLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch services. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Service>> call1, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void generatePDF(List<Map<String, Object>> data, boolean isProductSelected) {
+        if (isProductSelected) {
+            String type = "products";
+            generatePDFRequest(type, data);
+        } else {
+            String type = "services";
+            generatePDFRequest(type, data);
+        }
+    }
+
+    private void generatePDFRequest(String type, List<Map<String, Object>> data) {
+        Call<ResponseBody> call = ClientUtils.getPricelistService(this.context).generatePDF(type, data);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        byte[] pdfContent = response.body().bytes();
+                        savePDFToFile(pdfContent, type + "_pricelist.pdf");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    Toast.makeText(context, "Failed to generate PDF. Code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("PDF Error", "Error: " + t.getMessage());
+                Toast.makeText(context, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void savePDFToFile(byte[] pdfContent, String fileName) {
+        try {
+            File downloadsDir = context.getExternalFilesDir(Environment.DIRECTORY_DOCUMENTS);
+            if (downloadsDir == null) {
+                throw new IOException("Failed to get external directory.");
+            }
+
+            if (!downloadsDir.exists() && !downloadsDir.mkdirs()) {
+                throw new IOException("Failed to create directory.");
+            }
+
+            File file = getFile(fileName, downloadsDir);
+
+            try (FileOutputStream fos = new FileOutputStream(file)) {
+                fos.write(pdfContent);
+            }
+
+            openPDF(file);
+
+            Toast.makeText(context, "PDF saved as " + file.getName(), Toast.LENGTH_SHORT).show();
+        } catch (Exception e) {
+            Toast.makeText(context, "Error saving PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            Log.e("FileSaveError", "Error saving file: " + e.getMessage(), e);
+        }
+    }
+
+    @NonNull
+    private static File getFile(String fileName, File downloadsDir) throws IOException {
+        File file = new File(downloadsDir, fileName);
+
+        String baseName = fileName.substring(0, fileName.lastIndexOf("."));
+        String extension = fileName.substring(fileName.lastIndexOf("."));
+        int counter = 1;
+
+        while (file.exists()) {
+            file = new File(downloadsDir, baseName + counter + extension);
+            counter++;
+        }
+
+        if (!file.createNewFile()) {
+            throw new IOException("Failed to create new file.");
+        }
+        return file;
+    }
+
+    private void openPDF(java.io.File file) {
+        if (file.exists()) {
+            Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+        }
+    }
+}

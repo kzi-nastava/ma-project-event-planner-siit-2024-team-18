@@ -32,6 +32,13 @@ public interface ServiceService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
+    @GET("services/creator")
+    Call<ArrayList<Service>> getAllByCreator();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
     @GET("services/search")
     Call<PagedResponse<Service>> searchAndFilter(
             @Query("name") String name,

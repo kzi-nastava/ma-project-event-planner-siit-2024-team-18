@@ -117,6 +117,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent budgetIntent = new Intent(BaseActivity.this, BudgetActivity.class);
                     startActivity(budgetIntent);
                 }
+            } else if (id == R.id.nav_pricelist) {
+                if (currentActivity != PricelistActivity.class) {
+                    Intent pricelistIntent = new Intent(BaseActivity.this, PricelistActivity.class);
+                    startActivity(pricelistIntent);
+                }
             } else if (id == R.id.nav_sign_out) {
                 viewModel.signOut();
                 Intent homeIntent = new Intent(BaseActivity.this, HomeScreenActivity.class);
@@ -138,6 +143,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         menu.findItem(R.id.nav_products).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_categories).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
         menu.findItem(R.id.nav_budget).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "EVENT_ORGANIZER"));
+        menu.findItem(R.id.nav_pricelist).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_profile).setVisible(isLoggedIn);
         menu.findItem(R.id.nav_sign_out).setVisible(isLoggedIn);
     }
