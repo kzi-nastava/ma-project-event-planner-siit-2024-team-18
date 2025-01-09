@@ -31,6 +31,10 @@
                     android:title="@string/categories"
                     android:icon="@drawable/ic_category" />
 
+                <item android:id="@+id/nav_event_types"
+                    android:title="@string/event_types"
+                    android:icon="@drawable/ic_event" />
+
                 <item android:id="@+id/nav_budget"
                     android:title="Budget"
                     android:icon="@drawable/ic_lock" />
