@@ -18,7 +18,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.EventPlanner"
         android:usesCleartextTraffic="true"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="31">
 
