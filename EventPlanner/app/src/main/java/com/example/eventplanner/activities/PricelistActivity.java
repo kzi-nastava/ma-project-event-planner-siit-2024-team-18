@@ -34,37 +34,12 @@ public class PricelistActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_pricelist, findViewById(R.id.content_frame));
 
-        checkAndRequestPermissions();
-
         initializeViews();
         initializePricelistFragment();
         setupListeners();
 
         loadProducts();
     }
-
-    private void checkAndRequestPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
-                    checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
-                        REQUEST_STORAGE_PERMISSION);
-            }
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQUEST_STORAGE_PERMISSION) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(this, "Storage permissions granted!", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Storage permissions denied!", Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
 
     private void initializeViews() {
         pricelistViewModel = new ViewModelProvider(this).get(PricelistViewModel.class);
@@ -90,26 +65,49 @@ public class PricelistActivity extends BaseActivity {
 
     private void setupGetPDFPricelistButton() {
         createPDFButton.setOnClickListener(v -> {
-            pricelistViewModel.getIsProductSelected().observe(this, isProductSelected -> {
-                if (isProductSelected != null && isProductSelected) {
-                    pricelistViewModel.getProducts().observe(this, products -> {
-                        if (products != null && !products.isEmpty()) {
-                            pricelistViewModel.generatePDF(convertProductsToMap(products));
-                        } else {
-                            Toast.makeText(this, "No products available for PDF generation.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
+                    (checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED ||
+                            checkSelfPermission(Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                requestPermissions(new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE},
+                        REQUEST_STORAGE_PERMISSION);
+            } else {
+                generatePDFPricelist();
+            }
+        });
+    }
+
+    private void generatePDFPricelist() {
+        Boolean isProductSelected = pricelistViewModel.getIsProductSelected().getValue();
+        if (isProductSelected != null && isProductSelected) {
+            pricelistViewModel.getProducts().observe(this, products -> {
+                if (products != null && !products.isEmpty()) {
+                    pricelistViewModel.generatePDF(convertProductsToMap(products), true);
                 } else {
-                    pricelistViewModel.getServices().observe(this, services -> {
-                        if (services != null && !services.isEmpty()) {
-                            pricelistViewModel.generatePDF(convertServicesToMap(services));
-                        } else {
-                            Toast.makeText(this, "No services available for PDF generation.", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    Toast.makeText(this, "No products available for PDF generation.", Toast.LENGTH_SHORT).show();
                 }
             });
-        });
+        } else {
+            pricelistViewModel.getServices().observe(this, services -> {
+                if (services != null && !services.isEmpty()) {
+                    pricelistViewModel.generatePDF(convertServicesToMap(services), false);
+                } else {
+                    Toast.makeText(this, "No services available for PDF generation.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_STORAGE_PERMISSION) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(this, "Storage permissions granted!", Toast.LENGTH_SHORT).show();
+                generatePDFPricelist();
+            } else {
+                Toast.makeText(this, "Storage permissions denied!", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private List<Map<String, Object>> convertProductsToMap(List<Product> products) {

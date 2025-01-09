@@ -3,6 +3,7 @@ package com.example.eventplanner.viewmodels;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -147,16 +148,14 @@ public class PricelistViewModel extends ViewModel {
         });
     }
 
-    public void generatePDF(List<Map<String, Object>> data) {
-        getIsProductSelected().observeForever(isProductSelected -> {
-            if (isProductSelected != null && isProductSelected) {
-                String type = "products";
-                generatePDFRequest(type, data);
-            } else {
-                String type = "services";
-                generatePDFRequest(type, data);
-            }
-        });
+    public void generatePDF(List<Map<String, Object>> data, boolean isProductSelected) {
+        if (isProductSelected) {
+            String type = "products";
+            generatePDFRequest(type, data);
+        } else {
+            String type = "services";
+            generatePDFRequest(type, data);
+        }
     }
 
     private void generatePDFRequest(String type, List<Map<String, Object>> data) {
@@ -168,10 +167,8 @@ public class PricelistViewModel extends ViewModel {
                     try {
                         byte[] pdfContent = response.body().bytes();
                         savePDFToFile(pdfContent, type + "_pricelist.pdf");
-                        Toast.makeText(context, "PDF generated successfully!", Toast.LENGTH_SHORT).show();
                     } catch (IOException e) {
                         e.printStackTrace();
-                        Toast.makeText(context, "Error reading PDF data: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     Toast.makeText(context, "Failed to generate PDF. Code: " + response.code(), Toast.LENGTH_SHORT).show();
@@ -188,35 +185,38 @@ public class PricelistViewModel extends ViewModel {
 
     private void savePDFToFile(byte[] pdfContent, String fileName) {
         try {
-            java.io.File file = new java.io.File(context.getExternalFilesDir(null), fileName);
-            java.io.FileOutputStream fos = new java.io.FileOutputStream(file);
-            fos.write(pdfContent);
-            fos.close();
+            java.io.File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS);
+            java.io.File file = new java.io.File(downloadsDir, fileName);
 
-            Log.e("PDF Error", "PDF saved at: " + file.getAbsolutePath());
-            Toast.makeText(context, "PDF saved at: " + file.getAbsolutePath(), Toast.LENGTH_LONG).show();
+            String baseName = fileName.substring(0, fileName.lastIndexOf("."));
+            String extension = fileName.substring(fileName.lastIndexOf("."));
+            int counter = 1;
+
+            while (file.exists() || !file.createNewFile()) {
+                file = new java.io.File(downloadsDir, baseName + counter + extension);
+                counter++;
+            }
+
+            try (java.io.FileOutputStream fos = new java.io.FileOutputStream(file)) {
+                fos.write(pdfContent);
+            }
 
             openPDF(file);
 
+            Toast.makeText(context, "PDF saved as " + file.getName(), Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             Toast.makeText(context, "Error saving PDF: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
+
 
     private void openPDF(java.io.File file) {
         if (file.exists()) {
             Uri uri = FileProvider.getUriForFile(context, context.getPackageName() + ".provider", file);
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setDataAndType(uri, "application/pdf");
-            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-            if (intent.resolveActivity(context.getPackageManager()) != null) {
-                context.startActivity(intent);
-            } else {
-                Toast.makeText(context, "No PDF viewer found", Toast.LENGTH_SHORT).show();
-            }
+            intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
         }
     }
 }
