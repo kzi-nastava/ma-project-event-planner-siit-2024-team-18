@@ -78,7 +78,7 @@ public class PricelistViewModel extends ViewModel {
             public void onResponse(Call<Service> call, Response<Service> response) {
                 if (response.isSuccessful()) {
                     success.postValue(true);
-                    fetchPricelistItems();
+                    getServicesBackend();
                 } else {
                     errorMessage.postValue("Failed to edit service. Code: " + response.code());
                 }
@@ -98,7 +98,7 @@ public class PricelistViewModel extends ViewModel {
             public void onResponse(Call<Product> call, Response<Product> response) {
                 if (response.isSuccessful()) {
                     success.postValue(true);
-                    fetchPricelistItems();
+                    getProductsBackend();
                 } else {
                     errorMessage.postValue("Failed to edit product. Code: " + response.code());
                 }
