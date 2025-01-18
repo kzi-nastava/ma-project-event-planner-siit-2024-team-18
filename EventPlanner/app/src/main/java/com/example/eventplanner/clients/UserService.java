@@ -1,10 +1,20 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.CalendarEvent;
+import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.models.SolutionCard;
+import com.example.eventplanner.models.UpdateUser;
 import com.example.eventplanner.models.User;
+
+import java.util.ArrayList;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
+import retrofit2.http.GET;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 
 public interface UserService {
     @POST("/api/event-organizers")
@@ -18,4 +28,46 @@ public interface UserService {
 
     @POST("/api/service-product-providers/fast-registration")
     Call<Void> fastServiceProductProviderRegistration(@Body User user);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles")
+    Call<User> getUserProfile();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/favourite-events")
+    Call<ArrayList<EventCard>> getFavouriteEvents();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/favourite-solutions")
+    Call<ArrayList<SolutionCard>> getFavouriteSolutions();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/accepted-events")
+    Call<ArrayList<CalendarEvent>> getAcceptedEvents();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @DELETE("/api/user-profiles/deactivate")
+    Call<Void> deactivateProfile();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("/api/user-profiles")
+    Call<Void> updateProfile(@Body UpdateUser user);
 }

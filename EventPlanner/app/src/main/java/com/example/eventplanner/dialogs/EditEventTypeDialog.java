@@ -86,6 +86,7 @@ public class EditEventTypeDialog {
 
     private static void populateFields() {
         eventTypeName.setText(eventType.getName());
+        eventTypeName.setEnabled(false);
         description.setText(eventType.getDescription());
         selectedCategories = eventType.getCategories();
         selectCategories.setText(selectedCategories.toString());

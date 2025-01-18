@@ -10,6 +10,7 @@ import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.SolutionCard;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +22,7 @@ import retrofit2.Response;
 public class AllProductsServicesViewModel extends ViewModel {
 
     private final MutableLiveData<List<SolutionCard>> solutionCardsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<SolutionCard>> favouriteSolutionsLiveData = new MutableLiveData<ArrayList<SolutionCard>>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>(0);
@@ -49,6 +51,8 @@ public class AllProductsServicesViewModel extends ViewModel {
     public LiveData<List<SolutionCard>> getSolutionCards() {
         return solutionCardsLiveData;
     }
+
+    public LiveData<ArrayList<SolutionCard>> getFavouriteSolutions() { return favouriteSolutionsLiveData; }
 
     public LiveData<Boolean> isLoading() {
         return loading;
@@ -115,6 +119,25 @@ public class AllProductsServicesViewModel extends ViewModel {
             public void onFailure(Call<PagedResponse<SolutionCard>> call, Throwable t) {
                 loading.setValue(false);
                 errorMessage.setValue("Network error");
+            }
+        });
+    }
+
+    public void fetchFavouriteSolutions() {
+        Call<ArrayList<SolutionCard>> call = ClientUtils.getUserService(this.context).getFavouriteSolutions();
+        call.enqueue(new Callback<ArrayList<SolutionCard>>() {
+            @Override
+            public void onResponse(Call<ArrayList<SolutionCard>> call, Response<ArrayList<SolutionCard>> response) {
+                if (response.isSuccessful()) {
+                    favouriteSolutionsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch favourite solutions. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<SolutionCard>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
             }
         });
     }
