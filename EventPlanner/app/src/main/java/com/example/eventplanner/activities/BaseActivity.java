@@ -121,10 +121,16 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (currentActivity != EventTypesActivity.class) {
                     Intent eventTypesIntent = new Intent(BaseActivity.this, EventTypesActivity.class);
                     startActivity(eventTypesIntent);
+                }
             } else if (id == R.id.nav_pricelist) {
                 if (currentActivity != PricelistActivity.class) {
                     Intent pricelistIntent = new Intent(BaseActivity.this, PricelistActivity.class);
                     startActivity(pricelistIntent);
+                }
+            } else if (id == R.id.nav_profile) {
+                if (currentActivity != UserProfileActivity.class) {
+                    Intent profileIntent = new Intent(BaseActivity.this, UserProfileActivity.class);
+                    startActivity(profileIntent);
                 }
             } else if (id == R.id.nav_sign_out) {
                 viewModel.signOut();

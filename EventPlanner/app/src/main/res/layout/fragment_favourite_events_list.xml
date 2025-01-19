@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="@string/favourite_events"
+            android:textSize="30sp"
+            android:fontFamily="@font/merriweather"
+            android:textColor="@color/lightText">
+        </TextView>
+
+        <TextView
+            android:id="@+id/noEventsTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/there_are_no_favourite_events"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:fontFamily="@font/raleway"
+            android:textColor="@color/lightText"
+            android:visibility="gone"
+            android:padding="16dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:divider="@drawable/divider"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </LinearLayout>
+</FrameLayout>

@@ -72,5 +72,6 @@ dependencies {
     implementation (libs.glide)
     implementation(libs.android.jwtdecode)
     implementation(libs.okhttp)
+    implementation(libs.android.week.view)
     annotationProcessor (libs.compiler)
 }
