@@ -102,6 +102,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent homeIntent = new Intent(BaseActivity.this, HomeScreenActivity.class);
                     startActivity(homeIntent);
                 }
+            } else if (id == R.id.nav_chat) {
+                if (currentActivity != CommunicationActivity.class) {
+                    Intent communicationIntent = new Intent(BaseActivity.this, CommunicationActivity.class);
+                    startActivity(communicationIntent);
+                }
             } else if (id == R.id.nav_services) {
                 if (currentActivity != AllServicesActivity.class) {
                     Intent servicesIntent = new Intent(BaseActivity.this, AllServicesActivity.class);
@@ -121,6 +126,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (currentActivity != EventTypesActivity.class) {
                     Intent eventTypesIntent = new Intent(BaseActivity.this, EventTypesActivity.class);
                     startActivity(eventTypesIntent);
+                }
             } else if (id == R.id.nav_pricelist) {
                 if (currentActivity != PricelistActivity.class) {
                     Intent pricelistIntent = new Intent(BaseActivity.this, PricelistActivity.class);
