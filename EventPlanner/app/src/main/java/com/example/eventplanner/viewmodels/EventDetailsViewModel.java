@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -98,8 +99,13 @@ public class EventDetailsViewModel extends ViewModel {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
                 loading.setValue(false);
-                if (response.isSuccessful() && response.body() != null) {
-                    eventDetailsLiveData.setValue(response.body());
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        eventDetailsLiveData.setValue(response.body());
+                    } else {
+                        // Handle empty response
+                        errorMessage.setValue("Event not found or no data available.");
+                    }
                 } else {
                     errorMessage.setValue("Error fetching event details: " + response.message());
                 }
@@ -108,7 +114,8 @@ public class EventDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Event> call, Throwable t) {
                 loading.setValue(false);
-                errorMessage.setValue("Network error");
+                Log.e("EventDetailsActivity", "Failed to fetch event by id", t);
+                errorMessage.setValue("Network error: " + t.getMessage());
             }
         });
     }

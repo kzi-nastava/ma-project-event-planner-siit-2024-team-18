@@ -21,6 +21,8 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
+import com.example.eventplanner.fragments.ContentUnavailableFragment;
+import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
 
@@ -83,9 +85,20 @@ public class ProductDetailsActivity extends BaseActivity {
 
         productDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                if (errorMessage.startsWith("Network error: End of input at line 1 column 1 path $")) {
+                    navigateToSolutionUnavailableContentFragment();
+                } else {
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void navigateToSolutionUnavailableContentFragment() {
+        SolutionContentUnavailableFragment fragment = new SolutionContentUnavailableFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
 
     private void displayProductDetails(Product product) {

@@ -21,6 +21,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
+import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
@@ -90,9 +91,20 @@ public class ServiceDetailsActivity extends BaseActivity {
 
         serviceDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                if (errorMessage.startsWith("End of input at line 1 column 1 path $")) {
+                    navigateToSolutionUnavailableContentFragment();
+                } else {
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    private void navigateToSolutionUnavailableContentFragment() {
+        SolutionContentUnavailableFragment fragment = new SolutionContentUnavailableFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
 
     private void displayServiceDetails(Service service) {
