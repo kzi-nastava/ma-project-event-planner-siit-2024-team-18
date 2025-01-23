@@ -47,6 +47,10 @@
                     android:title="@string/profile"
                     android:icon="@drawable/ic_user" />
 
+                <item android:id="@+id/nav_reports"
+                    android:title="@string/report_requests"
+                    android:icon="@drawable/ic_report_request" />
+
                 <item android:id="@+id/nav_sign_out"
                     android:title="@string/sign_out"
                     android:icon="@drawable/ic_sign_out" />

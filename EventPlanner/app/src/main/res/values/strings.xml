@@ -139,6 +139,8 @@
     <string name="event_type_name">Event Type Name</string>
     <string name="edit_profile">Edit Profile</string>
     <string name="deactivate_profile">Deactivate Profile</string>
+    <string name="block_user">Block User</string>
+    <string name="report_user">Report User</string>
     <string name="favourite_solutions">Favourite Solutions</string>
     <string name="favourite_events">Favourite Events</string>
     <string name="calendar">Calendar</string>
@@ -202,4 +204,17 @@
     <string name="old_password">Old Password</string>
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
+    <string name="report_requests">Report Requests</string>
+    <string name="remove">Remove</string>
+    <string name="approve">Approve</string>
+    <string name="there_are_no_pending_reports_currently">There are no pending reports currently.</string>
+    <string name="loading_pending_reports">Loading pending reports...</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="type_your_reason_for_reporting">Type your reason for reporting</string>
+    <string name="x">×</string>
+    <string name="ok">OK</string>
+    <string name="your_account_has_been_temporarily_suspended_due_to_unprofessional_behavior">Your account has been temporarily suspended due to unprofessional behavior.</string>
+    <string name="account_suspended">Account Suspended</string>
+    <string name="please_review_our_community_guidelines_to_avoid_future_suspensions_for_further_assistance_contact_support">Please review our Community Guidelines to avoid future suspensions. For further assistance, contact support</string>
+    <string name="here">here</string>
 </resources>
