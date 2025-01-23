@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/gradient_background"
+    android:padding="20dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/dialog_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/account_suspended"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/white" />
+
+            <Button
+                android:id="@+id/close_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:text="@string/x"
+                android:textSize="18sp"
+                android:textColor="@color/white" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/your_account_has_been_temporarily_suspended_due_to_unprofessional_behavior"
+            android:gravity="center"
+            android:paddingBottom="10dp"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/remaining_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:paddingBottom="20dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/please_review_our_community_guidelines_to_avoid_future_suspensions_for_further_assistance_contact_support"
+            android:gravity="center"
+            android:textColor="@color/white" />
+
+        <TextView
+            android:id="@+id/contact_support"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/here"
+            android:gravity="center"
+            android:textColor="#a29bfe"
+            android:textStyle="bold"
+            android:paddingBottom="20dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <Button
+            android:id="@+id/ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/ok"
+            android:background="@drawable/rounded_report_button"
+            android:textColor="@color/white"
+            android:padding="10dp" />
+    </LinearLayout>
+</ScrollView>

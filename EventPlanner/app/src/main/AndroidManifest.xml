@@ -39,6 +39,12 @@
         </provider>
 
         <activity
+            android:name=".activities.OtherUserProfileActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.ReportRequestsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.EventTypesActivity"
             android:exported="false" />
         <activity

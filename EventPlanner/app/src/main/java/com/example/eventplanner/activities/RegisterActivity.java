@@ -30,7 +30,6 @@ import com.example.eventplanner.viewmodels.EventTypeCardViewModel;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import retrofit2.Call;
@@ -221,7 +220,7 @@ public class RegisterActivity extends AppCompatActivity {
 
             if (emailValid && firstNameValid && lastNameValid && addressValid && phoneNumberValid &&
             passwordValid && companyNameValid && descriptionValid && categoriesValid && eventTypesValid) {
-                User user = new User(0, email, firstName, lastName, chosenRole, companyName, "", address, phoneNumber, description, selectedCategories, selectedEventTypes, password);
+                User user = new User(0, email, firstName, lastName, chosenRole, companyName, "ENABLED", "", address, phoneNumber, description, selectedCategories, selectedEventTypes, password);
 
                 UserService userService = ClientUtils.getUserService(this);
                 Call<Void> call;

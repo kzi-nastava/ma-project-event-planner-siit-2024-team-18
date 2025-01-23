@@ -3,12 +3,19 @@ package com.example.eventplanner.clients;
 import android.content.Context;
 
 import com.example.eventplanner.BuildConfig;
+import com.example.eventplanner.models.SuspensionDetails;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
 import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializer;
 
+import java.lang.reflect.Type;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -39,23 +46,49 @@ public class ClientUtils {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER_WITH_MILLIS = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSS");
+
     public static Gson gson = new GsonBuilder()
-            .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) ->
-                    new JsonPrimitive(src.toString()))
-            .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) ->
-                    LocalDate.parse(json.getAsString()))
-            .registerTypeAdapter(LocalTime.class, (JsonSerializer<LocalTime>) (src, typeOfSrc, context) ->
-                    new JsonPrimitive(src.toString()))
-            .registerTypeAdapter(LocalTime.class, (JsonDeserializer<LocalTime>) (json, typeOfT, context) ->
-                    LocalTime.parse(json.getAsString()))
-            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) ->
-                    new JsonPrimitive(src.format(DATE_TIME_FORMATTER)))
+            .registerTypeAdapter(LocalDate.class, (JsonSerializer<LocalDate>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()))
+            .registerTypeAdapter(LocalDate.class, (JsonDeserializer<LocalDate>) (json, typeOfT, context) -> LocalDate.parse(json.getAsString()))
+            .registerTypeAdapter(LocalTime.class, (JsonSerializer<LocalTime>) (src, typeOfSrc, context) -> new JsonPrimitive(src.toString()))
+            .registerTypeAdapter(LocalTime.class, (JsonDeserializer<LocalTime>) (json, typeOfT, context) -> LocalTime.parse(json.getAsString()))
+            .registerTypeAdapter(LocalDateTime.class, (JsonSerializer<LocalDateTime>) (src, typeOfSrc, context) -> new JsonPrimitive(src.format(DATE_TIME_FORMATTER)))
             .registerTypeAdapter(LocalDateTime.class, (JsonDeserializer<LocalDateTime>) (json, typeOfT, context) -> {
                 String dateTimeStr = json.getAsString();
                 if (dateTimeStr.contains(".")) {
                     dateTimeStr = dateTimeStr.substring(0, Math.min(dateTimeStr.indexOf('.') + 4, dateTimeStr.length()));
+                    return LocalDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER_WITH_MILLIS);
                 }
                 return LocalDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER);
+            })
+            // Add custom deserializer for TimeLeft
+            .registerTypeAdapter(SuspensionDetails.TimeLeft.class, new JsonDeserializer<SuspensionDetails.TimeLeft>() {
+                @Override
+                public SuspensionDetails.TimeLeft deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    JsonObject jsonObject = json.getAsJsonObject();
+                    int seconds = jsonObject.get("seconds").getAsInt();
+                    int nanos = jsonObject.get("nanos").getAsInt();
+                    SuspensionDetails.TimeLeft timeLeft = new SuspensionDetails.TimeLeft();
+                    timeLeft.setSeconds(seconds);
+                    timeLeft.setNanos(nanos);
+                    return timeLeft;
+                }
+            })
+            .registerTypeAdapter(SuspensionDetails.TimeLeft.class, new JsonDeserializer<SuspensionDetails.TimeLeft>() {
+                @Override
+                public SuspensionDetails.TimeLeft deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
+                    String durationStr = json.getAsString(); // Expecting an ISO-8601 duration string
+                    try {
+                        Duration duration = Duration.parse(durationStr); // Parse the duration
+                        SuspensionDetails.TimeLeft timeLeft = new SuspensionDetails.TimeLeft();
+                        timeLeft.setSeconds((int) duration.getSeconds());
+                        timeLeft.setNanos(duration.getNano());
+                        return timeLeft;
+                    } catch (Exception e) {
+                        throw new JsonParseException("Failed to parse duration: " + durationStr, e);
+                    }
+                }
             })
             .create();
 
@@ -121,5 +154,9 @@ public class ClientUtils {
 
     public static RegistrationRequestService getRegistrationRequestService(Context context) {
         return retrofit(context).create(RegistrationRequestService.class);
+    }
+
+    public static ReportService getReportService(Context context) {
+        return retrofit(context).create(ReportService.class);
     }
 }

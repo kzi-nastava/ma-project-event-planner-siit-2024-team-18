@@ -40,6 +40,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
+//                Intent intent = new Intent(MainActivity.this, OtherUserProfileActivity.class);
+//                intent.putExtra("userId", 3);
                 startActivity(intent);
                 finish();
             }

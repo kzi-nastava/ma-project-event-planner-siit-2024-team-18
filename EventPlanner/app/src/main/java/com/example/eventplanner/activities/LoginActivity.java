@@ -2,6 +2,7 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,9 +16,14 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.fragments.SuspensionFragment;
 import com.example.eventplanner.models.AuthResponse;
 import com.example.eventplanner.models.Login;
+import com.example.eventplanner.models.SuspensionDetails;
 import com.example.eventplanner.viewmodels.LoginViewModel;
+
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -54,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
             boolean passwordValid = ValidatePassword(password);
 
             if (emailValid && passwordValid) {
-                performLogin(email, password);
+                checkSuspensionAndLogin(email, password);
             }
         });
 
@@ -99,6 +105,28 @@ public class LoginActivity extends AppCompatActivity {
             return true;
         }
     }
+
+    private void checkSuspensionAndLogin(String email, String password) {
+        ClientUtils.getReportService(getApplicationContext()).getSuspensionDetails(email).enqueue(new Callback<List<SuspensionDetails>>() {
+            @Override
+            public void onResponse(Call<List<SuspensionDetails>> call, Response<List<SuspensionDetails>> response) {
+                if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                    String suspensionEndDate = response.body().get(0).getSuspensionEndDate();
+                    SuspensionFragment fragment = SuspensionFragment.newInstance(suspensionEndDate);
+                    fragment.show(getSupportFragmentManager(), "SuspensionFragment");
+                } else {
+                    performLogin(email, password);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<SuspensionDetails>> call, Throwable t) {
+                Log.e("SuspensionCheck", "Network call failed", t);
+                Toast.makeText(LoginActivity.this, "Error checking suspension status: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
 
     private void performLogin(String email, String password) {
         Login login = new Login(email, password);

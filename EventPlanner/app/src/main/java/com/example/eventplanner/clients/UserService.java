@@ -15,6 +15,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.PUT;
+import retrofit2.http.Path;
 
 public interface UserService {
     @POST("/api/event-organizers")
@@ -28,6 +29,13 @@ public interface UserService {
 
     @POST("/api/service-product-providers/fast-registration")
     Call<Void> fastServiceProductProviderRegistration(@Body User user);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/other-user/{otherUserId}")
+    Call<User> getOtherUserProfile(@Path("otherUserId") int otherUserId);
 
     @Headers({
             "User-Agent: Mobile-Android",
