@@ -62,25 +62,12 @@ public class ClientUtils {
                 }
                 return LocalDateTime.parse(dateTimeStr, DATE_TIME_FORMATTER);
             })
-            // Add custom deserializer for TimeLeft
             .registerTypeAdapter(SuspensionDetails.TimeLeft.class, new JsonDeserializer<SuspensionDetails.TimeLeft>() {
                 @Override
                 public SuspensionDetails.TimeLeft deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                    JsonObject jsonObject = json.getAsJsonObject();
-                    int seconds = jsonObject.get("seconds").getAsInt();
-                    int nanos = jsonObject.get("nanos").getAsInt();
-                    SuspensionDetails.TimeLeft timeLeft = new SuspensionDetails.TimeLeft();
-                    timeLeft.setSeconds(seconds);
-                    timeLeft.setNanos(nanos);
-                    return timeLeft;
-                }
-            })
-            .registerTypeAdapter(SuspensionDetails.TimeLeft.class, new JsonDeserializer<SuspensionDetails.TimeLeft>() {
-                @Override
-                public SuspensionDetails.TimeLeft deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-                    String durationStr = json.getAsString(); // Expecting an ISO-8601 duration string
+                    String durationStr = json.getAsString();
                     try {
-                        Duration duration = Duration.parse(durationStr); // Parse the duration
+                        Duration duration = Duration.parse(durationStr);
                         SuspensionDetails.TimeLeft timeLeft = new SuspensionDetails.TimeLeft();
                         timeLeft.setSeconds((int) duration.getSeconds());
                         timeLeft.setNanos(duration.getNano());
@@ -158,5 +145,9 @@ public class ClientUtils {
 
     public static ReportService getReportService(Context context) {
         return retrofit(context).create(ReportService.class);
+    }
+
+    public static BlockService getBlockService(Context context) {
+        return retrofit(context).create(BlockService.class);
     }
 }

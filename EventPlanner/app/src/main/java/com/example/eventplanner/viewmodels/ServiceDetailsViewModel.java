@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -54,6 +55,7 @@ public class ServiceDetailsViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Service> call, Throwable t) {
+                Log.e("ServiceDetailsActivity", "Failed to fetch service by id", t);
                 errorMessage.postValue(t.getMessage());
             }
         });

@@ -140,7 +140,12 @@
     <string name="edit_profile">Edit Profile</string>
     <string name="deactivate_profile">Deactivate Profile</string>
     <string name="block_user">Block User</string>
+    <string name="unblock_user">Unblock User</string>
     <string name="report_user">Report User</string>
+    <string name="content_unavailable">Content Unavailable</string>
+    <string name="event_unavailable">This event is unavailable because you have blocked the organizer. If you believe this is an error, please contact support.</string>
+    <string name="solution_unavailable">This product/service is unavailable because you have blocked the provider. If you believe this is an error, please contact support.</string>
+    <string name="go_back">Go Back</string>
     <string name="favourite_solutions">Favourite Solutions</string>
     <string name="favourite_events">Favourite Events</string>
     <string name="calendar">Calendar</string>

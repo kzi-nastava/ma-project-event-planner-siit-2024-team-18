@@ -15,7 +15,11 @@ import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.fragments.ReportSubmissionFragment;
+import com.example.eventplanner.models.Block;
 import com.example.eventplanner.models.User;
+
+import java.time.LocalDateTime;
+import java.util.Date;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -38,6 +42,9 @@ public class OtherUserProfileActivity extends BaseActivity {
     private LinearLayout eventTypesLayout;
     private User user;
 
+    private Button reportUserButton, blockUserButton;
+    private boolean isBlocked = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +54,7 @@ public class OtherUserProfileActivity extends BaseActivity {
         int userId = getIntent().getIntExtra("userId", -1);
         if (userId != -1) {
             fetchUserProfile(userId);
+            checkIfUserIsBlocked(userId);
         } else {
             Toast.makeText(this, "Invalid User ID", Toast.LENGTH_SHORT).show();
             finish();
@@ -69,8 +77,107 @@ public class OtherUserProfileActivity extends BaseActivity {
         categoriesLayout = findViewById(R.id.categories_layout);
         eventTypesLayout = findViewById(R.id.event_types_layout);
 
-        Button reportUserButton = findViewById(R.id.report_user_button);
+        reportUserButton = findViewById(R.id.report_user_button);
         reportUserButton.setOnClickListener(v -> showReportConfirmationDialog());
+
+        blockUserButton = findViewById(R.id.block_user_button);
+        blockUserButton.setOnClickListener(v -> {
+            if (isBlocked) {
+                unblockUser();
+            } else {
+                blockUser();
+            }
+        });
+    }
+
+    private void checkIfUserIsBlocked(int userId) {
+        Call<Block> call = ClientUtils.getBlockService(this).getBlock(userId);
+        call.enqueue(new Callback<Block>() {
+            @Override
+            public void onResponse(Call<Block> call, Response<Block> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    isBlocked = true;
+                    updateBlockButton();
+                } else {
+                    isBlocked = false;
+                    updateBlockButton();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Block> call, Throwable t) {
+                Log.e("OtherUserProfileActivity", "Failed to check block status", t);
+                Toast.makeText(OtherUserProfileActivity.this, "Failed to check block status", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void blockUser() {
+        new AlertDialog.Builder(this)
+                .setTitle("Block User")
+                .setMessage("Are you sure you want to block this user?")
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    Block block = new Block(0, user.getId(), LocalDateTime.now());
+                    Call<Block> call = ClientUtils.getBlockService(this).blockOtherUser(block);
+                    call.enqueue(new Callback<Block>() {
+                        @Override
+                        public void onResponse(Call<Block> call, Response<Block> response) {
+                            if (response.isSuccessful()) {
+                                isBlocked = true;
+                                updateBlockButton();
+                                Toast.makeText(OtherUserProfileActivity.this, "User blocked successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(OtherUserProfileActivity.this, "Failed to block user", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Block> call, Throwable t) {
+                            Log.e("OtherUserProfileActivity", "Block API call failed", t);
+                            Toast.makeText(OtherUserProfileActivity.this, "Failed to block user", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void unblockUser() {
+        new AlertDialog.Builder(this)
+                .setTitle("Unblock User")
+                .setMessage("Are you sure you want to unblock this user?")
+                .setPositiveButton("Confirm", (dialog, which) -> {
+                    Block block = new Block(0, user.getId(), null);
+                    Call<Block> call = ClientUtils.getBlockService(this).unblockOtherUser(block);
+                    call.enqueue(new Callback<Block>() {
+                        @Override
+                        public void onResponse(Call<Block> call, Response<Block> response) {
+                            if (response.isSuccessful()) {
+                                isBlocked = false;
+                                updateBlockButton();
+                                Toast.makeText(OtherUserProfileActivity.this, "User unblocked successfully", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(OtherUserProfileActivity.this, "Failed to unblock user", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Block> call, Throwable t) {
+                            Log.e("OtherUserProfileActivity", "Unblock API call failed", t);
+                            Toast.makeText(OtherUserProfileActivity.this, "Failed to unblock user", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
+    }
+
+    private void updateBlockButton() {
+        if (isBlocked) {
+            blockUserButton.setText("Unblock User");
+        } else {
+            blockUserButton.setText("Block User");
+        }
     }
 
     private void navigateToReportFragment(int userId) {

@@ -59,7 +59,8 @@ public class ProductDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<Product> call, Throwable t) {
                 loading.setValue(false);
-                errorMessage.setValue("Network error");
+                Log.e("ProductDetailsActivity", "Failed to fetch product by id", t);
+                errorMessage.setValue("Network error: " + t.getMessage());
             }
         });
     }

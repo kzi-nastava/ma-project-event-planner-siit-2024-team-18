@@ -12,6 +12,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.fragments.ContentUnavailableFragment;
 import com.example.eventplanner.fragments.InviteScreenFragment;
 import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.EventDetailsViewModel;
@@ -67,7 +68,11 @@ public class EventDetailsActivity extends BaseActivity {
 
         eventDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
-                Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                if (errorMessage.startsWith("Network error: End of input at line 1 column 1 path $")) {
+                    navigateToUnavailableContentFragment();
+                } else {
+                    Toast.makeText(this, errorMessage, Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }
@@ -87,6 +92,13 @@ public class EventDetailsActivity extends BaseActivity {
                 eventImage.setImageResource(R.drawable.event_placeholder);
             }
         }
+    }
+
+    private void navigateToUnavailableContentFragment() {
+        ContentUnavailableFragment fragment = new ContentUnavailableFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, fragment)
+                .commit();
     }
 
     private void setupListeners(int eventId) {
