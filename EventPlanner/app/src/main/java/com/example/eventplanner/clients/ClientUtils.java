@@ -150,4 +150,8 @@ public class ClientUtils {
     public static BlockService getBlockService(Context context) {
         return retrofit(context).create(BlockService.class);
     }
+
+    public static CommentService getCommentService(Context context) {
+        return retrofit(context).create(CommentService.class);
+    }
 }

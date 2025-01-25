@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,10 +7,10 @@
     android:padding="20dp">
 
     <TextView
-        android:id="@+id/reportsHeader"
+        android:id="@+id/commentsHeader"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/report_requests"
+        android:text="@string/comment_requests"
         android:textSize="24sp"
         android:textColor="@android:color/white"
         android:fontFamily="serif"
@@ -17,7 +18,7 @@
         android:layout_marginBottom="16dp" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/reportsRecyclerView"
+        android:id="@+id/commentsRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
@@ -25,10 +26,10 @@
         android:visibility="visible" />
 
     <TextView
-        android:id="@+id/noReportsMessage"
+        android:id="@+id/noCommentsMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/there_are_no_pending_reports_currently"
+        android:text="@string/there_are_no_pending_comments_currently"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:fontFamily="sans-serif"
@@ -37,10 +38,10 @@
         android:layout_marginTop="16dp" />
 
     <TextView
-        android:id="@+id/loadingReportsMessage"
+        android:id="@+id/loadingCommentsMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/loading_pending_reports"
+        android:text="@string/loading_pending_comments"
         android:textSize="16sp"
         android:textColor="@android:color/white"
         android:fontFamily="sans-serif"

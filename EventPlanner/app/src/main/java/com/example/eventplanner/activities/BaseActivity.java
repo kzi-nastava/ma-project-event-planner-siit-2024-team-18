@@ -138,6 +138,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent reportRequestsIntent = new Intent(BaseActivity.this, ReportRequestsActivity.class);
                     startActivity(reportRequestsIntent);
                 }
+            } else if (id == R.id.nav_comments) {
+                if (currentActivity != CommentRequestsActivity.class) {
+                    Intent commentRequestsIntent = new Intent(BaseActivity.this, CommentRequestsActivity.class);
+                    startActivity(commentRequestsIntent);
+                }
             } else if (id == R.id.nav_sign_out) {
                 viewModel.signOut();
                 Intent homeIntent = new Intent(BaseActivity.this, HomeScreenActivity.class);
@@ -163,6 +168,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         menu.findItem(R.id.nav_pricelist).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_profile).setVisible(isLoggedIn);
         menu.findItem(R.id.nav_reports).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
+        menu.findItem(R.id.nav_comments).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
         menu.findItem(R.id.nav_sign_out).setVisible(isLoggedIn);
     }
 
