@@ -210,10 +210,13 @@
     <string name="new_password">New Password</string>
     <string name="confirm_new_password">Confirm New Password</string>
     <string name="report_requests">Report Requests</string>
+    <string name="comment_requests">Comment Requests</string>
     <string name="remove">Remove</string>
     <string name="approve">Approve</string>
     <string name="there_are_no_pending_reports_currently">There are no pending reports currently.</string>
     <string name="loading_pending_reports">Loading pending reports...</string>
+    <string name="there_are_no_pending_comments_currently">There are no pending comments currently.</string>
+    <string name="loading_pending_comments">Loading pending comments...</string>
     <string name="submit_report">Submit Report</string>
     <string name="type_your_reason_for_reporting">Type your reason for reporting</string>
     <string name="x">×</string>

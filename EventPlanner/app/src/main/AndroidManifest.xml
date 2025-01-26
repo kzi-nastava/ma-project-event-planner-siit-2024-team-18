@@ -45,6 +45,9 @@
             android:name=".activities.ReportRequestsActivity"
             android:exported="false" />
         <activity
+            android:name=".activities.CommentRequestsActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.EventTypesActivity"
             android:exported="false" />
         <activity
