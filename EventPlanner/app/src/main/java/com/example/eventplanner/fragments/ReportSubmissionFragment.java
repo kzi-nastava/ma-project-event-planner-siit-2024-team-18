@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -27,7 +28,9 @@ import retrofit2.Response;
 public class ReportSubmissionFragment extends Fragment {
 
     private EditText reasonInput;
-    private Button submitButton, closeButton;
+    private Button submitButton;
+
+    private ImageButton closeButton;
     private int reportedUserId;
 
     public ReportSubmissionFragment() {
