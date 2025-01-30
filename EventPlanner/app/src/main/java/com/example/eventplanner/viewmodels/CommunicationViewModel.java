@@ -1,6 +1,7 @@
 package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -9,22 +10,29 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.Message;
+import com.example.eventplanner.websocket.WebSocketManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 public class CommunicationViewModel extends ViewModel {
     private Context context;
+    private static final String TAG = "CommunicationViewModel";
     private final MutableLiveData<ArrayList<Chat>> chatsLiveData = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Message>> messagesLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Message> lastMessageLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
 
+    private WebSocketManager webSocketManager;
+    private final MutableLiveData<List<String>> realTimeMessages = new MutableLiveData<>(new ArrayList<>());
+
     public void setContext(Context context) {
         this.context = context.getApplicationContext();
+        initializeWebSocketManager();
     }
 
     public LiveData<String> getErrorMessage() {
@@ -43,11 +51,43 @@ public class CommunicationViewModel extends ViewModel {
         return messagesLiveData;
     }
 
+    public LiveData<Message> getLastMessage() {
+        return lastMessageLiveData;
+    }
+
+    public LiveData<List<String>> getRealTimeMessages() {
+        return realTimeMessages;
+    }
+
+    private void initializeWebSocketManager() {
+        if (context != null) {
+            webSocketManager = new WebSocketManager(context);
+            webSocketManager.connect();
+            // Subscribe to messages topic after WebSocket is connected
+            webSocketManager.subscribeToChat();
+        }
+    }
+
+    public void sendMessage(String content, int chatId, int senderId) {
+        webSocketManager.sendMessage(content, chatId, senderId);
+    }
+
+    public void unsubscribeFromMessages() {
+        webSocketManager.disconnect();
+    }
+
+    @Override
+    protected void onCleared() {
+        super.onCleared();
+        unsubscribeFromMessages();
+    }
+
+    // REST API Methods
     public void fetchChats(int userId) {
         Call<ArrayList<Chat>> call = ClientUtils.getCommunicationService(this.context).getChats(userId);
         call.enqueue(new Callback<ArrayList<Chat>>() {
             @Override
-            public void onResponse(Call<ArrayList<Chat>> call, Response<ArrayList<Chat>> response) {
+            public void onResponse(Call<ArrayList<Chat>> call, retrofit2.Response<ArrayList<Chat>> response) {
                 if (response.isSuccessful()) {
                     chatsLiveData.postValue(response.body());
                 } else {
@@ -60,5 +100,47 @@ public class CommunicationViewModel extends ViewModel {
                 errorMessage.postValue(t.getMessage());
             }
         });
+    }
+
+    public void fetchMessages(int chatId) {
+        Call<ArrayList<Message>> call = ClientUtils.getCommunicationService(this.context).getMessages(chatId);
+        call.enqueue(new Callback<ArrayList<Message>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Message>> call, retrofit2.Response<ArrayList<Message>> response) {
+                if (response.isSuccessful()) {
+                    messagesLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch messages. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Message>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchLastMessage(int chatId) {
+        Call<Message> call = ClientUtils.getCommunicationService(this.context).getLastMessage(chatId);
+        call.enqueue(new Callback<Message>() {
+            @Override
+            public void onResponse(Call<Message> call, retrofit2.Response<Message> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    lastMessageLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("No last message found. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Message> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void subscribeToMessages() {
+        Log.d(TAG, "Subscribed to WebSocket messages");
     }
 }

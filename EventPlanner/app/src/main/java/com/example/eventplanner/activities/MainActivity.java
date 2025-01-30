@@ -11,20 +11,24 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.UpdatedInvite;
+import com.example.eventplanner.websocket.WebSocketManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class MainActivity extends AppCompatActivity {
+    private WebSocketManager webSocketManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        initializeWebSocketManager();
 
         Uri data = getIntent().getData();
         if (data != null) {
@@ -32,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         } else {
             showSplashScreen();
         }
+    }
+
+    private void initializeWebSocketManager() {
+        webSocketManager = new WebSocketManager(this);
+        webSocketManager.connect();
     }
 
     private void showSplashScreen() {

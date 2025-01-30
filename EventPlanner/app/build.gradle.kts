@@ -73,4 +73,7 @@ dependencies {
     implementation(libs.android.jwtdecode)
     implementation(libs.okhttp)
     annotationProcessor (libs.compiler)
+    implementation(libs.stomp)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
 }

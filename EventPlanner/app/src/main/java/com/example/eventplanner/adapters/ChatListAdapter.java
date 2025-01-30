@@ -1,6 +1,6 @@
 package com.example.eventplanner.adapters;
 
-import android.app.Activity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,8 +11,11 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.FragmentActivity;
 
+import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
+import com.example.eventplanner.fragments.ChatDetailFragment;
 import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
 
@@ -21,13 +24,15 @@ import java.util.List;
 
 public class ChatListAdapter extends ArrayAdapter<Chat> {
     private CommunicationViewModel communicationViewModel;
+    private FragmentActivity activity;
     private LinearLayout chatCard;
     private ArrayList<Chat> chats;
     private ImageView chatImage;
     private TextView chatName, chatLastMessage, chatDate;
 
-    public ChatListAdapter(Activity context, CommunicationViewModel communicationViewModel) {
-        super(context, R.layout.chat_card);
+    public ChatListAdapter(FragmentActivity activity, CommunicationViewModel communicationViewModel) {
+        super(activity, R.layout.chat_card);
+        this.activity = activity;
         this.chats = new ArrayList<>();
         this.communicationViewModel = communicationViewModel;
     }
@@ -79,8 +84,14 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
     }
 
     private void setupListeners(Chat chat) {
-//        messageListFragment = MessageListFragment.newInstance();
-//        FragmentTransition.to(messageListFragment, this, false, R.id.listViewCategories);
+        chatCard.setOnClickListener(view -> {
+            ChatDetailFragment chatDetailFragment = new ChatDetailFragment();
+            Bundle args = new Bundle();
+            args.putInt("chatId", chat.getId());
+            chatDetailFragment.setArguments(args);
+
+            FragmentTransition.to(chatDetailFragment, activity, true, R.id.content_frame);
+        });
     }
 
     public void updateChatsList(List<Chat> allChats) {
