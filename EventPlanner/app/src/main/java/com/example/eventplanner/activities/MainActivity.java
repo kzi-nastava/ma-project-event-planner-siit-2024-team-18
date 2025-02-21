@@ -7,10 +7,13 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.UpdatedInvite;
+import com.example.eventplanner.models.User;
+import com.example.eventplanner.viewmodels.UserViewModel;
 import com.example.eventplanner.websocket.WebSocketManager;
 
 import java.util.Timer;
@@ -22,13 +25,15 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
     private WebSocketManager webSocketManager;
+    private UserViewModel userViewModel;
+    private User loggedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        initializeWebSocketManager();
+        getLoggedUser();
 
         Uri data = getIntent().getData();
         if (data != null) {
@@ -38,8 +43,28 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getLoggedUser() {
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
+
+        userViewModel.getLoggedUser().observe(this, loggedUser -> {
+            if (loggedUser != null) {
+                this.loggedUser = loggedUser;
+                initializeWebSocketManager();
+            }
+        });
+
+        userViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        userViewModel.fetchLoggedUser();
+    }
+
     private void initializeWebSocketManager() {
-        webSocketManager = new WebSocketManager(this);
+        webSocketManager = WebSocketManager.getInstance(this, loggedUser);
         webSocketManager.connect();
     }
 

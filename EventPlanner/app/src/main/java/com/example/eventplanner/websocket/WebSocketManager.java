@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.example.eventplanner.BuildConfig;
+import com.example.eventplanner.models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,18 +24,26 @@ import ua.naiksoftware.stomp.dto.StompHeader;
 
 public class WebSocketManager {
     private static final String TAG = "WebSocketManager";
+    private static WebSocketManager instance;
     private StompClient stompClient;
     private final Context context;
     private final Set<String> activeChatSubscriptions = new HashSet<>();
     private CompositeDisposable compositeDisposable;
     private String websocketUrl = "ws://" + BuildConfig.IP_ADDR + ":8080/chat/websocket";
-    private String loggedUserId;
+    private User loggedUser;
 
-    public WebSocketManager(Context context) {
+    private WebSocketManager(Context context, User loggedUser) {
         this.context = context;
-        this.loggedUserId = "2";
+        this.loggedUser = loggedUser;
         this.stompClient = Stomp.over(Stomp.ConnectionProvider.OKHTTP, websocketUrl);
         resetSubscriptions();
+    }
+
+    public static synchronized WebSocketManager getInstance(Context context, User loggedUser) {
+        if (instance == null) {
+            instance = new WebSocketManager(context, loggedUser);
+        }
+        return instance;
     }
 
     public void connect() {
@@ -48,7 +57,7 @@ public class WebSocketManager {
                 .subscribe(lifecycleEvent -> {
                     switch (lifecycleEvent.getType()) {
                         case OPENED:
-                            Log.d(TAG, "STOMP connection opened for userId: " + loggedUserId);
+                            Log.d(TAG, "STOMP connection opened for userId: " + loggedUser.getId());
                             break;
                         case ERROR:
                             Log.e(TAG, "STOMP connection error", lifecycleEvent.getException());

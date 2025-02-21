@@ -5,7 +5,6 @@ import android.widget.ImageView;
 
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.ChatListFragment;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
@@ -23,8 +22,6 @@ public class CommunicationActivity extends BaseActivity {
         initializeViews();
         initializeChatFragment();
         setupListeners();
-
-        loadChats();
     }
 
     private void initializeViews() {
@@ -36,7 +33,10 @@ public class CommunicationActivity extends BaseActivity {
 
     private void initializeChatFragment() {
         chatListFragment = chatListFragment.newInstance(communicationViewModel);
-        FragmentTransition.to(chatListFragment, this, false, R.id.listViewCommunicationItems);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.listViewCommunicationItems, chatListFragment, "ChatListFragment")
+                .commit();
     }
 
     private void setupListeners() {
@@ -45,9 +45,5 @@ public class CommunicationActivity extends BaseActivity {
 
     private void setupBackButton() {
         btnBack.setOnClickListener(view -> finish());
-    }
-
-    private void loadChats() {
-        communicationViewModel.getChats();
     }
 }

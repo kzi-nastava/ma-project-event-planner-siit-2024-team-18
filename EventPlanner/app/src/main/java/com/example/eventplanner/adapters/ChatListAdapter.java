@@ -8,33 +8,47 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 
+import com.bumptech.glide.Glide;
 import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.ChatDetailFragment;
 import com.example.eventplanner.models.Chat;
+import com.example.eventplanner.models.Message;
+import com.example.eventplanner.models.User;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class ChatListAdapter extends ArrayAdapter<Chat> {
     private CommunicationViewModel communicationViewModel;
+    private ChatDetailFragment chatDetailFragment;
+    private UserViewModel userViewModel;
     private FragmentActivity activity;
     private LinearLayout chatCard;
     private ArrayList<Chat> chats;
     private ImageView chatImage;
+    private User loggedUser;
+    private ArrayList<User> allUsers;
     private TextView chatName, chatLastMessage, chatDate;
+    private Map<ArrayList<Integer>, Message> lastMessages;
 
     public ChatListAdapter(FragmentActivity activity, CommunicationViewModel communicationViewModel) {
         super(activity, R.layout.chat_card);
         this.activity = activity;
         this.chats = new ArrayList<>();
         this.communicationViewModel = communicationViewModel;
+        userViewModel = communicationViewModel.getUserViewModel();
+        userViewModel.fetchAllUsers();
     }
 
     @NonNull
@@ -47,6 +61,7 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
         Chat chat = getItem(position);
 
         initializeViews(convertView);
+        setupViewModel();
         populateFields(chat);
         setupListeners(chat);
 
@@ -77,20 +92,76 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
         chatDate = convertView.findViewById(R.id.chatDate);
     }
 
-    // TODO: get information from the chat message for logged user
+    private void setupViewModel() {
+        loggedUser = communicationViewModel.getLoggedUser();
+        userViewModel.getAllUsers().observe(activity, users -> {
+            if (users != null) {
+                allUsers = users;
+                notifyDataSetChanged();
+            }
+        });
+
+        userViewModel.getErrorMessage().observe(activity, error -> {
+            if (error != null) {
+                Toast.makeText(getContext(), error, Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
     private void populateFields(Chat chat) {
-//        chatName.setText(chat.getName());
-//        chatImage.setImageURI(chat.getId());
+        chatName.setText(getUserFullName(loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2()));
+
+        String imageUrl = getUserImage(loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2());
+        Glide.with(activity)
+                .load(imageUrl)
+                .into(chatImage);
+
+//        lastMessages[chat.id]?.content === 'Start chatting!' ? '' : (lastMessages[chat.id]?.date ? formatDateOrTime(lastMessages[chat.id]!.date) : '')
+
+    }
+
+    private String getUserFullName(int userId) {
+        if (allUsers == null) return "Unknown User";
+
+        for (User user : allUsers) {
+            if (user.getId() == userId) {
+                return user.getFirstName() + " " + user.getLastName();
+            }
+        }
+
+        return "Unknown User";
+    }
+
+    private String getUserImage(int userId) {
+        if (allUsers == null) return "Unknown User";
+
+        for (User user : allUsers) {
+            if (user.getId() == userId) {
+                return user.getImage();
+            }
+        }
+
+        return "Unknown User";
     }
 
     private void setupListeners(Chat chat) {
         chatCard.setOnClickListener(view -> {
-            ChatDetailFragment chatDetailFragment = new ChatDetailFragment();
+            // Remove the existing ChatDetailFragment if it's already open
+            Fragment existingFragment = activity.getSupportFragmentManager().findFragmentByTag("ChatListFragment");
+            if (existingFragment != null) {
+                activity.getSupportFragmentManager().beginTransaction().remove(existingFragment).commit();
+            }
+
+            // Initialize the new ChatDetailFragment
+            chatDetailFragment = ChatDetailFragment.newInstance(communicationViewModel, chat, loggedUser, allUsers);
             Bundle args = new Bundle();
             args.putInt("chatId", chat.getId());
             chatDetailFragment.setArguments(args);
 
+            // Transition to the new fragment
             FragmentTransition.to(chatDetailFragment, activity, true, R.id.content_frame);
+            activity.findViewById(R.id.btnBack).setVisibility(View.GONE);
+            activity.findViewById(R.id.communicationTitle).setVisibility(View.GONE);
         });
     }
 

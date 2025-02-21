@@ -2,14 +2,19 @@ package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelStoreOwner;
 
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.Message;
+import com.example.eventplanner.models.User;
 import com.example.eventplanner.websocket.WebSocketManager;
 
 import java.util.ArrayList;
@@ -20,6 +25,8 @@ import retrofit2.Callback;
 
 public class CommunicationViewModel extends ViewModel {
     private Context context;
+    private User loggedUser;
+    private UserViewModel userViewModel;
     private static final String TAG = "CommunicationViewModel";
     private final MutableLiveData<ArrayList<Chat>> chatsLiveData = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Message>> messagesLiveData = new MutableLiveData<>();
@@ -32,7 +39,7 @@ public class CommunicationViewModel extends ViewModel {
 
     public void setContext(Context context) {
         this.context = context.getApplicationContext();
-        initializeWebSocketManager();
+        getLoggedUser(context);
     }
 
     public LiveData<String> getErrorMessage() {
@@ -43,6 +50,12 @@ public class CommunicationViewModel extends ViewModel {
         return success;
     }
 
+    public User getLoggedUser() {
+        return loggedUser;
+    }
+    public UserViewModel getUserViewModel() {
+        return userViewModel;
+    }
     public LiveData<ArrayList<Chat>> getChats() {
         return chatsLiveData;
     }
@@ -61,9 +74,8 @@ public class CommunicationViewModel extends ViewModel {
 
     private void initializeWebSocketManager() {
         if (context != null) {
-            webSocketManager = new WebSocketManager(context);
+            webSocketManager = WebSocketManager.getInstance(context, null);
             webSocketManager.connect();
-            // Subscribe to messages topic after WebSocket is connected
             webSocketManager.subscribeToChat();
         }
     }
@@ -82,9 +94,8 @@ public class CommunicationViewModel extends ViewModel {
         unsubscribeFromMessages();
     }
 
-    // REST API Methods
-    public void fetchChats(int userId) {
-        Call<ArrayList<Chat>> call = ClientUtils.getCommunicationService(this.context).getChats(userId);
+    public void fetchChats() {
+        Call<ArrayList<Chat>> call = ClientUtils.getCommunicationService(this.context).getChats(loggedUser.getId());
         call.enqueue(new Callback<ArrayList<Chat>>() {
             @Override
             public void onResponse(Call<ArrayList<Chat>> call, retrofit2.Response<ArrayList<Chat>> response) {
@@ -142,5 +153,26 @@ public class CommunicationViewModel extends ViewModel {
 
     public void subscribeToMessages() {
         Log.d(TAG, "Subscribed to WebSocket messages");
+    }
+
+    private void getLoggedUser(Context context) {
+        userViewModel = new ViewModelProvider((ViewModelStoreOwner) context).get(UserViewModel.class);
+        userViewModel.setContext(context);
+
+        userViewModel.getLoggedUser().observe((LifecycleOwner) context, loggedUser -> {
+            if (loggedUser != null) {
+                this.loggedUser = loggedUser;
+                fetchChats();
+                initializeWebSocketManager();
+            }
+        });
+
+        userViewModel.getErrorMessage().observe((LifecycleOwner) context, error -> {
+            if (error != null) {
+                Toast.makeText(context, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        userViewModel.fetchLoggedUser();
     }
 }

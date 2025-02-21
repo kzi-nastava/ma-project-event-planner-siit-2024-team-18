@@ -90,7 +90,6 @@ public class ServiceListAdapter extends ArrayAdapter<Service> {
         Glide.with(activity)
                 .load(imageUrl)
                 .into(imgService);
-
     }
 
     private void setupListeners(Service service) {

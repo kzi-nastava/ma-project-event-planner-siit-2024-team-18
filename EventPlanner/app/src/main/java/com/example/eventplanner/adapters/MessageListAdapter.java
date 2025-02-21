@@ -10,17 +10,27 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.Message;
+import com.example.eventplanner.models.User;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public class MessageListAdapter extends android.widget.BaseAdapter {
+    private CommunicationViewModel communicationViewModel;
     private final Context context;
-    private List<Message> messageList;
+    private Chat chat;
+    private User loggedUser;
+    private ArrayList<User> allUsers;
+    private ArrayList<Message> messageList;
 
-    public MessageListAdapter(Context context, List<Message> messageList) {
+    public MessageListAdapter(Context context, CommunicationViewModel communicationViewModel, Chat chat, User loggedUser, ArrayList<User> allUsers) {
         this.context = context;
-        this.messageList = messageList;
+        this.messageList = new ArrayList<>();
+        this.chat = chat;
+        this.loggedUser = loggedUser;
+        this.allUsers = allUsers;
     }
 
     @Override
@@ -55,14 +65,26 @@ public class MessageListAdapter extends android.widget.BaseAdapter {
         }
 
         Message message = messageList.get(position);
-//        holder.senderName.setText(message.getSenderName());
+        holder.senderName.setText(getUserFullName(loggedUser.getId() != chat.getUser2() ? chat.getUser1() : chat.getUser2()));
         holder.messageContent.setText(message.getContent());
         holder.timestamp.setText(message.getDate().toString());
 
         return convertView;
     }
 
-    public void updateMessageList(List<Message> newMessages) {
+    private String getUserFullName(int userId) {
+        if (allUsers == null) return "Unknown User";
+
+        for (User user : allUsers) {
+            if (user.getId() == userId) {
+                return user.getFirstName() + " " + user.getLastName();
+            }
+        }
+
+        return "Unknown User";
+    }
+
+    public void updateMessageList(ArrayList<Message> newMessages) {
         this.messageList = newMessages;
         notifyDataSetChanged();
     }
