@@ -1,9 +1,11 @@
 package com.example.eventplanner.adapters;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -22,6 +24,7 @@ public class MessageListAdapter extends android.widget.BaseAdapter {
     private final Context context;
     private Chat chat;
     private User loggedUser;
+    private User recipient;
     private ArrayList<User> allUsers;
     private ArrayList<Message> messageList;
 
@@ -56,18 +59,27 @@ public class MessageListAdapter extends android.widget.BaseAdapter {
         if (convertView == null) {
             convertView = LayoutInflater.from(context).inflate(R.layout.item_message, parent, false);
             holder = new ViewHolder();
-            holder.senderName = convertView.findViewById(R.id.senderName);
+            holder.messageRoot = convertView.findViewById(R.id.messageRoot);
             holder.messageContent = convertView.findViewById(R.id.messageContent);
-            holder.timestamp = convertView.findViewById(R.id.timestamp);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         Message message = messageList.get(position);
-        holder.senderName.setText(getUserFullName(loggedUser.getId() != chat.getUser2() ? chat.getUser1() : chat.getUser2()));
+        boolean isSentByLoggedUser = message.getSenderId() == loggedUser.getId();
+
+        holder.messageRoot.setGravity(isSentByLoggedUser ? Gravity.START : Gravity.END);
+        if (isSentByLoggedUser) {
+            holder.messageContent.setBackgroundResource(R.drawable.message_background_sent);
+            holder.messageContent.setTextColor(context.getResources().getColor(android.R.color.white));
+        } else {
+            holder.messageContent.setBackgroundResource(R.drawable.message_background_received);
+            holder.messageContent.setTextColor(context.getResources().getColor(R.color.primary));
+        }
+
+        recipient = getRecipient();
         holder.messageContent.setText(message.getContent());
-        holder.timestamp.setText(message.getDate().toString());
 
         return convertView;
     }
@@ -84,14 +96,39 @@ public class MessageListAdapter extends android.widget.BaseAdapter {
         return "Unknown User";
     }
 
+    public User getRecipient() {
+        if (allUsers == null) return null;
+
+        for (User user : allUsers) {
+            if (user.getId() != loggedUser.getId() && (chat.getUser1() == user.getId() || chat.getUser2() == user.getId())) {
+                return user;
+            }
+        }
+
+        return null;
+    }
+
     public void updateMessageList(ArrayList<Message> newMessages) {
         this.messageList = newMessages;
         notifyDataSetChanged();
     }
 
+    public void addNewMessage(Message newMessage) {
+        this.messageList.add(newMessage);
+        notifyDataSetChanged();
+    }
+
+    public boolean containsMessage(Message newMessage) {
+        for (Message msg : this.messageList) {
+            if (msg.getId() == newMessage.getId()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static class ViewHolder {
-        TextView senderName;
+        LinearLayout messageRoot;
         TextView messageContent;
-        TextView timestamp;
     }
 }

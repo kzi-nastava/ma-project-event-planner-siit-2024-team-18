@@ -6,17 +6,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
+import androidx.lifecycle.LiveData;
 
 import com.bumptech.glide.Glide;
-import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.fragments.ChatDetailFragment;
 import com.example.eventplanner.models.Chat;
@@ -25,7 +24,11 @@ import com.example.eventplanner.models.User;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
 import com.example.eventplanner.viewmodels.UserViewModel;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -34,13 +37,14 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
     private ChatDetailFragment chatDetailFragment;
     private UserViewModel userViewModel;
     private FragmentActivity activity;
-    private LinearLayout chatCard;
+    private RelativeLayout chatCard;
     private ArrayList<Chat> chats;
     private ImageView chatImage;
     private User loggedUser;
     private ArrayList<User> allUsers;
     private TextView chatName, chatLastMessage, chatDate;
-    private Map<ArrayList<Integer>, Message> lastMessages;
+    private final Map<Integer, Message> lastMessageCache = new HashMap<>();
+    private final Map<Integer, Void> lastMessageMap = new HashMap<>();
 
     public ChatListAdapter(FragmentActivity activity, CommunicationViewModel communicationViewModel) {
         super(activity, R.layout.chat_card);
@@ -109,15 +113,49 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
     }
 
     private void populateFields(Chat chat) {
-        chatName.setText(getUserFullName(loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2()));
+        int otherUserId = loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2();
 
-        String imageUrl = getUserImage(loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2());
+        chatName.setText(getUserFullName(otherUserId));
+
+        String imageUrl = getUserImage(otherUserId);
         Glide.with(activity)
                 .load(imageUrl)
                 .into(chatImage);
 
-//        lastMessages[chat.id]?.content === 'Start chatting!' ? '' : (lastMessages[chat.id]?.date ? formatDateOrTime(lastMessages[chat.id]!.date) : '')
+        if (lastMessageCache.containsKey(chat.getId())) {
+            Message message = lastMessageCache.get(chat.getId());
+            chatLastMessage.setText(message.getContent().isEmpty() ? "Start chatting!" : message.getContent());
+            chatDate.setText(message.getDate() == null ? "" : formatMessageDate(message.getDate()));
+        } else if (!lastMessageMap.containsKey(chat.getId())) {
+            LiveData<Message> liveData = communicationViewModel.fetchLastMessage(chat.getId());
 
+            liveData.observe(activity, message -> {
+                if (message != null) {
+                    lastMessageCache.put(chat.getId(), message);
+                    notifyDataSetChanged();
+                }
+            });
+
+            lastMessageMap.put(chat.getId(), null);
+        } else {
+            chatLastMessage.setText("Start chatting!");
+            chatDate.setText("");
+        }
+    }
+
+    private String formatMessageDate(LocalDateTime messageDateTime) {
+        if (messageDateTime == null) return "";
+
+        LocalDateTime now = LocalDateTime.now();
+        Duration duration = Duration.between(messageDateTime, now);
+
+        if (duration.toHours() < 24 && messageDateTime.toLocalDate().equals(now.toLocalDate())) {
+            DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            return messageDateTime.format(timeFormatter);
+        } else {
+            DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            return messageDateTime.format(dateFormatter);
+        }
     }
 
     private String getUserFullName(int userId) {
@@ -146,22 +184,20 @@ public class ChatListAdapter extends ArrayAdapter<Chat> {
 
     private void setupListeners(Chat chat) {
         chatCard.setOnClickListener(view -> {
-            // Remove the existing ChatDetailFragment if it's already open
-            Fragment existingFragment = activity.getSupportFragmentManager().findFragmentByTag("ChatListFragment");
-            if (existingFragment != null) {
-                activity.getSupportFragmentManager().beginTransaction().remove(existingFragment).commit();
-            }
+            chatDetailFragment = ChatDetailFragment.newInstance(communicationViewModel, chat, loggedUser, allUsers, loggedUser.getId() != chat.getUser1() ? chat.getUser1() : chat.getUser2());
 
-            // Initialize the new ChatDetailFragment
-            chatDetailFragment = ChatDetailFragment.newInstance(communicationViewModel, chat, loggedUser, allUsers);
             Bundle args = new Bundle();
             args.putInt("chatId", chat.getId());
             chatDetailFragment.setArguments(args);
 
-            // Transition to the new fragment
-            FragmentTransition.to(chatDetailFragment, activity, true, R.id.content_frame);
-            activity.findViewById(R.id.btnBack).setVisibility(View.GONE);
+            activity.getSupportFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.listViewCommunicationItems, chatDetailFragment, "ChatDetailFragment")
+                    .addToBackStack(null)
+                    .commit();
+
             activity.findViewById(R.id.communicationTitle).setVisibility(View.GONE);
+            activity.findViewById(R.id.btnBack).setVisibility(View.GONE);
         });
     }
 

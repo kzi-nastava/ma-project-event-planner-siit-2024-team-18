@@ -5,6 +5,7 @@ import com.example.eventplanner.models.Message;
 
 import java.util.ArrayList;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
@@ -25,7 +26,7 @@ public interface CommunicationService {
             "Content-Type:application/json"
     })
     @GET("chat/messages/{chatId}")
-    Call<ArrayList<Message>> getMessages(@Path("chatId") int chatId);
+    Call<ResponseBody> getMessagesRaw(@Path("chatId") int chatId);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -39,7 +40,7 @@ public interface CommunicationService {
             "Content-Type:application/json"
     })
     @GET("chat/messages/last/{chatId}")
-    Call<Message> getLastMessage(@Path("chatId") int chatId);
+    Call<ResponseBody> getLastMessageRaw(@Path("chatId") int chatId);
 
     @Headers({
             "User-Agent: Mobile-Android",

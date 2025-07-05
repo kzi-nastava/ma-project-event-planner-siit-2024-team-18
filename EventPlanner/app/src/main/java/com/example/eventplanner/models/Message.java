@@ -22,6 +22,8 @@ public class Message {
         this.isDeleted = isDeleted;
     }
 
+    public Message() {}
+
     public int getId() {
         return id;
     }

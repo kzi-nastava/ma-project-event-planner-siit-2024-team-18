@@ -13,6 +13,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.UpdatedInvite;
 import com.example.eventplanner.models.User;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
 import com.example.eventplanner.viewmodels.UserViewModel;
 import com.example.eventplanner.websocket.WebSocketManager;
 
@@ -26,6 +27,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private WebSocketManager webSocketManager;
     private UserViewModel userViewModel;
+    private CommunicationViewModel communicationViewModel;
     private User loggedUser;
 
     @Override
@@ -50,6 +52,9 @@ public class MainActivity extends AppCompatActivity {
         userViewModel.getLoggedUser().observe(this, loggedUser -> {
             if (loggedUser != null) {
                 this.loggedUser = loggedUser;
+                communicationViewModel = CommunicationViewModel.getInstance();
+                communicationViewModel.initialize(this);
+
                 initializeWebSocketManager();
             }
         });
@@ -64,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initializeWebSocketManager() {
-        webSocketManager = WebSocketManager.getInstance(this, loggedUser);
+        webSocketManager = WebSocketManager.getInstance(this, loggedUser, communicationViewModel);
         webSocketManager.connect();
     }
 
