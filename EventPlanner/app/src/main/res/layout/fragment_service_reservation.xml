@@ -37,14 +37,14 @@
                 android:text="@string/service_reservation"
                 android:textColor="#EBEBEB"
                 android:textSize="22sp"
-                android:layout_marginStart="20dp"
+                android:layout_marginStart="10dp"
                 android:fontFamily="@font/merriweather_bold" />
 
             <ImageButton
                 android:id="@+id/closeButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="18dp"
+                android:layout_marginStart="8dp"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:contentDescription="@string/close"
                 android:src="@drawable/ic_close" />

@@ -9,6 +9,7 @@ public class User {
     private String lastName;
     private String role;
     private String companyName;
+    private String notificationStatus;
     private String image;
     private String address;
     private String phone;
@@ -17,13 +18,14 @@ public class User {
     private List<String> eventTypes;
     private String password;
 
-    public User(int id, String email, String firstName, String lastName, String role, String companyName, String image, String address, String phone, String description, List<String> categories, List<String> eventTypes, String password) {
+    public User(int id, String email, String firstName, String lastName, String role, String companyName,String notificationStatus, String image, String address, String phone, String description, List<String> categories, List<String> eventTypes, String password) {
         this.id = id;
         this.email = email;
         this.firstName = firstName;
         this.lastName = lastName;
         this.role = role;
         this.companyName = companyName;
+        this.notificationStatus = notificationStatus;
         this.image = image;
         this.address = address;
         this.phone = phone;
@@ -79,6 +81,14 @@ public class User {
 
     public void setCompanyName(String companyName) {
         this.companyName = companyName;
+    }
+
+    public String getNotificationStatus() {
+        return notificationStatus;
+    }
+
+    public void setNotificationStatus(String notificationStatus) {
+        this.notificationStatus = notificationStatus;
     }
 
     public String getImage() {

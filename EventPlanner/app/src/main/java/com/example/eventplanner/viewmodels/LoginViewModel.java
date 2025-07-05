@@ -2,6 +2,7 @@ package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.widget.Toast;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -16,6 +17,8 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class LoginViewModel {
     private static final String PREFS_NAME = "auth_prefs";
@@ -151,5 +154,24 @@ public class LoginViewModel {
 
         userRole.setValue(null);
         loggedInStatus.setValue(false);
+    }
+
+    public void deactivateProfile() {
+        Call<Void> call = ClientUtils.getUserService(this.context).deactivateProfile();
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    signOut();
+                } else {
+                    Toast.makeText(context, "Failed to deactivate profile. Code: " + response.code(), Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                Toast.makeText(context, "Failed to deactivate profile: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }

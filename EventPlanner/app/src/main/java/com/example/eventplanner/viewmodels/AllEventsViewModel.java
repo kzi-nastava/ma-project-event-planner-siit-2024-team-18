@@ -7,10 +7,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.models.CalendarEvent;
 import com.example.eventplanner.models.EventCard;
 import com.example.eventplanner.models.PagedResponse;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +24,8 @@ import retrofit2.Response;
 public class AllEventsViewModel extends ViewModel {
 
     private final MutableLiveData<List<EventCard>> eventsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<EventCard>> favouriteEventsLiveData = new MutableLiveData<ArrayList<EventCard>>();
+    private final MutableLiveData<ArrayList<CalendarEvent>> acceptedEventsLiveData = new MutableLiveData<ArrayList<CalendarEvent>>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Integer> currentPageLiveData = new MutableLiveData<>(0);
@@ -41,6 +45,10 @@ public class AllEventsViewModel extends ViewModel {
     public LiveData<List<EventCard>> getEvents() {
         return eventsLiveData;
     }
+    public LiveData<ArrayList<EventCard>> getFavouriteEvents() {
+        return favouriteEventsLiveData;
+    }
+    public LiveData<ArrayList<CalendarEvent>> getAcceptedEvents() { return acceptedEventsLiveData; }
 
     public LiveData<Boolean> isLoading() {
         return loading;
@@ -104,6 +112,44 @@ public class AllEventsViewModel extends ViewModel {
             public void onFailure(Call<PagedResponse<EventCard>> call, Throwable t) {
                 loading.setValue(false);
                 errorMessage.setValue("Network error");
+            }
+        });
+    }
+
+    public void fetchFavouriteEvents() {
+        Call<ArrayList<EventCard>> call = ClientUtils.getUserService(this.context).getFavouriteEvents();
+        call.enqueue(new Callback<ArrayList<EventCard>>() {
+            @Override
+            public void onResponse(Call<ArrayList<EventCard>> call, Response<ArrayList<EventCard>> response) {
+                if (response.isSuccessful()) {
+                    favouriteEventsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch favourite events. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<EventCard>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchAcceptedEvents() {
+        Call<ArrayList<CalendarEvent>> call = ClientUtils.getUserService(this.context).getAcceptedEvents();
+        call.enqueue(new Callback<ArrayList<CalendarEvent>>() {
+            @Override
+            public void onResponse(Call<ArrayList<CalendarEvent>> call, Response<ArrayList<CalendarEvent>> response) {
+                if (response.isSuccessful()) {
+                    acceptedEventsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch accepted events. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<CalendarEvent>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
             }
         });
     }

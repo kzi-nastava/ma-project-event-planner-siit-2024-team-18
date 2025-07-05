@@ -137,6 +137,26 @@
     <string name="delete">Delete</string>
     <string name="send_invitations">Send Invitations</string>
     <string name="event_type_name">Event Type Name</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="deactivate_profile">Deactivate Profile</string>
+    <string name="block_user">Block User</string>
+    <string name="unblock_user">Unblock User</string>
+    <string name="report_user">Report User</string>
+    <string name="content_unavailable">Content Unavailable</string>
+    <string name="event_unavailable">This event is unavailable because you have blocked the organizer. If you believe this is an error, please contact support.</string>
+    <string name="solution_unavailable">This product/service is unavailable because you have blocked the provider. If you believe this is an error, please contact support.</string>
+    <string name="go_back">Go Back</string>
+    <string name="favourite_solutions">Favourite Solutions</string>
+    <string name="favourite_events">Favourite Events</string>
+    <string name="calendar">Calendar</string>
+    <string name="role">Role:</string>
+    <string name="e_mail">E-mail:</string>
+    <string name="address_profile">Address:</string>
+    <string name="phone_number_profile">Phone Number:</string>
+    <string name="company_name_profile">Company Name:</string>
+    <string name="categories_profile">Categories:</string>
+    <string name="event_types_profile">Event Types:</string>
+    <string name="description_profile">Description:</string>
     <string-array name="sort_options">
         <item>Ascending</item>
         <item>Descending</item>
@@ -181,4 +201,28 @@
         <item>categoryName</item>
         <item>providerFirstName</item>
     </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="there_are_no_favourite_events">There are no favourite events.</string>
+    <string name="there_are_no_favourite_solutions">There are no favourite solutions.</string>
+    <string name="edit">Edit</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="report_requests">Report Requests</string>
+    <string name="comment_requests">Comment Requests</string>
+    <string name="remove">Remove</string>
+    <string name="approve">Approve</string>
+    <string name="there_are_no_pending_reports_currently">There are no pending reports currently.</string>
+    <string name="loading_pending_reports">Loading pending reports...</string>
+    <string name="there_are_no_pending_comments_currently">There are no pending comments currently.</string>
+    <string name="loading_pending_comments">Loading pending comments...</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="type_your_reason_for_reporting">Type your reason for reporting</string>
+    <string name="x">×</string>
+    <string name="ok">OK</string>
+    <string name="your_account_has_been_temporarily_suspended_due_to_unprofessional_behavior">Your account has been temporarily suspended due to unprofessional behavior.</string>
+    <string name="account_suspended">Account Suspended</string>
+    <string name="please_review_our_community_guidelines_to_avoid_future_suspensions_for_further_assistance_contact_support">Please review our Community Guidelines to avoid future suspensions. For further assistance, contact support</string>
+    <string name="here">here</string>
 </resources>

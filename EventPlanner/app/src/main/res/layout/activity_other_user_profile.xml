@@ -1,0 +1,287 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#2C3E50"
+    android:padding="16dp"
+    tools:context=".activities.UserProfileActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center_horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/block_user_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="#A29BFE"
+                android:text="@string/block_user"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/merriweather_bold"/>
+
+            <Button
+                android:id="@+id/report_user_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:backgroundTint="#E57373"
+                android:text="@string/report_user"
+                android:textColor="#FFFFFF"
+                android:fontFamily="@font/merriweather_bold"/>
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:background="@drawable/profile_photo_placeholder" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="16dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/profile_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:textSize="18sp"
+                        android:textStyle="bold"
+                        android:fontFamily="@font/raleway_bold"/>
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/profile_role"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/role"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway_bold"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_role_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/profile_email"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/e_mail"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_email_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/profile_address"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/address_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_address_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/profile_phone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/phone_number_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_phone_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/company_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profile_company"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/company_name_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_company_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/categories_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profile_categories"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/categories_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_categories_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/event_types_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profile_event_types"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/event_types_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_event_types_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/description_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:id="@+id/profile_description"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/description_profile"
+                        android:fontFamily="@font/raleway_bold"
+                        android:textColor="#EBEBEB"
+                        android:paddingTop="8dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/profile_description_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="#EBEBEB"
+                        android:fontFamily="@font/raleway"
+                        android:paddingTop="8dp"
+                        android:paddingStart="5dp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>
