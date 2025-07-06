@@ -70,7 +70,6 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeWebSocketManager() {
         webSocketManager = WebSocketManager.getInstance(this, loggedUser, communicationViewModel);
-        webSocketManager.connect();
     }
 
     private void showSplashScreen() {
@@ -78,9 +77,7 @@ public class MainActivity extends AppCompatActivity {
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-//                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
-                Intent intent = new Intent(MainActivity.this, OtherUserProfileActivity.class);
-                intent.putExtra("userId", 3);
+                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
                 startActivity(intent);
                 finish();
             }

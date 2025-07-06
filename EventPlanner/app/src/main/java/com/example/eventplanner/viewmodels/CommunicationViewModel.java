@@ -86,7 +86,6 @@ public class CommunicationViewModel extends ViewModel {
 
     private void initializeWebSocketManager(User loggedUser) {
         webSocketManager = WebSocketManager.getInstance(context, loggedUser, this);
-        webSocketManager.connect();
         fetchChats();
     }
 

@@ -49,6 +49,7 @@ public class WebSocketManager {
     public static synchronized WebSocketManager getInstance(Context context, User loggedUser, CommunicationViewModel communicationViewModel) {
         if (instance == null) {
             instance = new WebSocketManager(context, loggedUser, communicationViewModel);
+            instance.connect();
         }
         return instance;
     }

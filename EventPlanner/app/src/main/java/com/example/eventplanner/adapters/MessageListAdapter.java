@@ -12,28 +12,20 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.Message;
 import com.example.eventplanner.models.User;
-import com.example.eventplanner.viewmodels.CommunicationViewModel;
 
 import java.util.ArrayList;
 
 public class MessageListAdapter extends android.widget.BaseAdapter {
-    private CommunicationViewModel communicationViewModel;
     private final Context context;
-    private Chat chat;
     private User loggedUser;
-    private User recipient;
-    private ArrayList<User> allUsers;
     private ArrayList<Message> messageList;
 
-    public MessageListAdapter(Context context, CommunicationViewModel communicationViewModel, Chat chat, User loggedUser, ArrayList<User> allUsers) {
+    public MessageListAdapter(Context context, User loggedUser) {
         this.context = context;
         this.messageList = new ArrayList<>();
-        this.chat = chat;
         this.loggedUser = loggedUser;
-        this.allUsers = allUsers;
     }
 
     @Override
@@ -78,34 +70,9 @@ public class MessageListAdapter extends android.widget.BaseAdapter {
             holder.messageContent.setTextColor(context.getResources().getColor(R.color.primary));
         }
 
-        recipient = getRecipient();
         holder.messageContent.setText(message.getContent());
 
         return convertView;
-    }
-
-    private String getUserFullName(int userId) {
-        if (allUsers == null) return "Unknown User";
-
-        for (User user : allUsers) {
-            if (user.getId() == userId) {
-                return user.getFirstName() + " " + user.getLastName();
-            }
-        }
-
-        return "Unknown User";
-    }
-
-    public User getRecipient() {
-        if (allUsers == null) return null;
-
-        for (User user : allUsers) {
-            if (user.getId() != loggedUser.getId() && (chat.getUser1() == user.getId() || chat.getUser2() == user.getId())) {
-                return user;
-            }
-        }
-
-        return null;
     }
 
     public void updateMessageList(ArrayList<Message> newMessages) {

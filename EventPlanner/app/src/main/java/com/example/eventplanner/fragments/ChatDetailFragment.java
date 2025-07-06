@@ -1,5 +1,6 @@
 package com.example.eventplanner.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.ListFragment;
 
 import com.example.eventplanner.R;
+import com.example.eventplanner.activities.OtherUserProfileActivity;
 import com.example.eventplanner.adapters.MessageListAdapter;
 import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.User;
@@ -22,13 +24,10 @@ import java.util.ArrayList;
 
 public class ChatDetailFragment extends ListFragment {
     private CommunicationViewModel communicationViewModel;
-    private ChatListFragment chatListFragment;
     private MessageListAdapter adapter;
     private Chat chat;
     private User loggedUser;
     private User recipient;
-    private TextView chatTitle;
-    private ArrayList<User> allUsers;
 
     public static ChatDetailFragment newInstance(CommunicationViewModel communicationViewModel, Chat chat, User loggedUser, ArrayList<User> allUsers, int recipientId) {
         ChatDetailFragment fragment = new ChatDetailFragment();
@@ -39,7 +38,6 @@ public class ChatDetailFragment extends ListFragment {
     public void setParameters(CommunicationViewModel communicationViewModel, Chat chat, User loggedUser, ArrayList<User> allUsers, int recipientId) {
         this.communicationViewModel = communicationViewModel;
         this.chat = chat;
-        this.allUsers = allUsers;
         this.loggedUser = loggedUser;
         for (User user : allUsers) {
             if (user.getId() == recipientId) {
@@ -71,7 +69,7 @@ public class ChatDetailFragment extends ListFragment {
 
         ((TextView) view.findViewById(R.id.chatTitle)).setText(recipient.getFirstName() + " " + recipient.getLastName());
 
-        adapter = new MessageListAdapter(requireContext(), communicationViewModel, chat, loggedUser, allUsers);
+        adapter = new MessageListAdapter(requireContext(), loggedUser);
         setListAdapter(adapter);
 
         communicationViewModel.getMessages().observe(getViewLifecycleOwner(), messages -> {
@@ -89,14 +87,13 @@ public class ChatDetailFragment extends ListFragment {
                 adapter.addNewMessage(message);
             }
             getListView().smoothScrollToPosition(adapter.getCount() - 1);
-
         });
+
         communicationViewModel.fetchMessages(chat.getId());
 
         communicationViewModel.fetchChats();
 
         view.findViewById(R.id.buttonSend).setOnClickListener(v -> {
-
             EditText editTextMessage = view.findViewById(R.id.editTextMessage);
             String newMessage = String.valueOf(editTextMessage.getText());
 
@@ -115,6 +112,12 @@ public class ChatDetailFragment extends ListFragment {
     private void setupListeners() {
         requireActivity().findViewById(R.id.btnBackDM).setOnClickListener(view -> {
             requireActivity().getSupportFragmentManager().popBackStack();
+        });
+
+        requireActivity().findViewById(R.id.chatTitle).setOnClickListener(view -> {
+            Intent intent = new Intent(getContext(), OtherUserProfileActivity.class);
+            intent.putExtra("userId", recipient.getId());
+            startActivity(intent);
         });
     }
 }
