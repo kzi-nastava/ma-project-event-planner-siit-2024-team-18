@@ -7,24 +7,35 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.UpdatedInvite;
+import com.example.eventplanner.models.User;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
+import com.example.eventplanner.websocket.WebSocketManager;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 public class MainActivity extends AppCompatActivity {
+    private WebSocketManager webSocketManager;
+    private UserViewModel userViewModel;
+    private CommunicationViewModel communicationViewModel;
+    private User loggedUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        getLoggedUser();
 
         Uri data = getIntent().getData();
         if (data != null) {
@@ -34,14 +45,39 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void getLoggedUser() {
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
+
+        userViewModel.getLoggedUser().observe(this, loggedUser -> {
+            if (loggedUser != null) {
+                this.loggedUser = loggedUser;
+                communicationViewModel = CommunicationViewModel.getInstance();
+                communicationViewModel.initialize(this);
+
+                initializeWebSocketManager();
+            }
+        });
+
+        userViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        userViewModel.fetchLoggedUser();
+    }
+
+    private void initializeWebSocketManager() {
+        webSocketManager = WebSocketManager.getInstance(this, loggedUser, communicationViewModel);
+    }
+
     private void showSplashScreen() {
         int SPLASH_TIME_OUT = 250;
         new Timer().schedule(new TimerTask() {
             @Override
             public void run() {
-//                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
-                Intent intent = new Intent(MainActivity.this, OtherUserProfileActivity.class);
-                intent.putExtra("userId", 3);
+                Intent intent = new Intent(MainActivity.this, HomeScreenActivity.class);
                 startActivity(intent);
                 finish();
             }

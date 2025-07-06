@@ -74,4 +74,7 @@ dependencies {
     implementation(libs.okhttp)
     implementation(libs.android.week.view)
     annotationProcessor (libs.compiler)
+    implementation(libs.stomp)
+    implementation(libs.rxjava)
+    implementation(libs.rxandroid)
 }

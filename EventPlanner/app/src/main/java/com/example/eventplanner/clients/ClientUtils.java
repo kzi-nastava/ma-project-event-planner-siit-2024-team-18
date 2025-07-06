@@ -95,6 +95,10 @@ public class ClientUtils {
         return retrofit(context).create(EventTypeService.class);
     }
 
+    public static CommunicationService getCommunicationService(Context context) {
+        return retrofit(context).create(CommunicationService.class);
+    }
+
     public static CategoryService getCategoryService(Context context) {
         return retrofit(context).create(CategoryService.class);
     }

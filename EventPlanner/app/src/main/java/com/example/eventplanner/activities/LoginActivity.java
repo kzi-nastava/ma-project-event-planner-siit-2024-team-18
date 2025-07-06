@@ -2,8 +2,8 @@ package com.example.eventplanner.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -14,6 +14,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
@@ -21,7 +22,10 @@ import com.example.eventplanner.fragments.SuspensionFragment;
 import com.example.eventplanner.models.AuthResponse;
 import com.example.eventplanner.models.Login;
 import com.example.eventplanner.models.SuspensionDetails;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
 import com.example.eventplanner.viewmodels.LoginViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
+import com.example.eventplanner.websocket.WebSocketManager;
 
 import java.util.List;
 
@@ -37,6 +41,9 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEditText;
     private Button signInButton;
     private LoginViewModel viewModel;
+    private UserViewModel userViewModel;
+    private CommunicationViewModel communicationViewModel;
+    private WebSocketManager webSocketManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,6 +144,7 @@ public class LoginActivity extends AppCompatActivity {
                 if (response.isSuccessful() && response.body() != null) {
                     String token = response.body().getToken();
                     viewModel.saveToken(token);
+                    handleWebsockets();
 
                     Intent intent = new Intent(LoginActivity.this, HomeScreenActivity.class);
                     startActivity(intent);
@@ -151,6 +159,26 @@ public class LoginActivity extends AppCompatActivity {
                 Toast.makeText(LoginActivity.this, "An unexpected error occurred.", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void handleWebsockets() {
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
+
+        userViewModel.getLoggedUser().observe(this, loggedUser -> {
+            if (loggedUser != null) {
+                communicationViewModel = CommunicationViewModel.getInstance();
+                communicationViewModel.initialize(this);
+            }
+        });
+
+        userViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        userViewModel.fetchLoggedUser();
     }
 
     private void handleError(int statusCode) {
