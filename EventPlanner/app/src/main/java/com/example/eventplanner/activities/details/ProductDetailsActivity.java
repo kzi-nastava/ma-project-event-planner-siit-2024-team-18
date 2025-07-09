@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -21,6 +22,7 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
+import com.example.eventplanner.dialogs.RateProductDialog;
 import com.example.eventplanner.fragments.ContentUnavailableFragment;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Product;
@@ -77,10 +79,23 @@ public class ProductDetailsActivity extends BaseActivity {
 
     private void setupViewModel() {
         productDetailsViewModel.fetchProductDetailsById(productId);
+        productDetailsViewModel.fetchProductRating(productId);
 
         productDetailsViewModel.getProductDetails().observe(this, this::displayProductDetails);
 
         productDetailsViewModel.isLoading().observe(this, isLoading -> {
+        });
+
+        productDetailsViewModel.getProductGrade().observe(this, grade -> {
+            if (grade != null) {
+                productRating.setRating(grade.getValue());
+            }
+        });
+
+        productDetailsViewModel.getProductReviews().observe(this, reviews -> {
+            if (reviews != null) {
+                productNumberOfReviews.setText("(" + reviews + " Reviews)");
+            }
         });
 
         productDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
@@ -121,10 +136,6 @@ public class ProductDetailsActivity extends BaseActivity {
             } else {
                 productAvailability.setText("(Unavailable)");
             }
-
-            // TODO: update logic
-            productRating.setRating(4);
-            productNumberOfReviews.setText("(42 Reviews)");
 
             SpannableString spannableDescription = new SpannableString(String.format("Description: %s", product.getDescription()));
             spannableDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -170,7 +181,17 @@ public class ProductDetailsActivity extends BaseActivity {
     private void buyProduct() {
         BuyProductDialog.show(this, product, (productId, eventId) -> {
             productDetailsViewModel.buyProduct(productId, eventId);
-            finish();
+            productDetailsViewModel.getProductPurchased().observe(this, success -> {
+                if (success != null) {
+                    if (success) {
+                        RateProductDialog.show(this, product, (value, comment) -> {
+                            productDetailsViewModel.rateProduct(productId, value, comment);
+                        }, this);
+                    } else {
+                        Toast.makeText(this, "Purchase failed.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         }, this);
     }
 
