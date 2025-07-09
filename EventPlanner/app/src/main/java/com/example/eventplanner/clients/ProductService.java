@@ -48,13 +48,6 @@ public interface ProductService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("products/comment/{id}")
-    Call<ResponseBody> commentProduct(@Body String commentContent, @Path("id") int id);
-
-    @Headers({
-            "User-Agent: Mobile-Android",
-            "Content-Type:application/json"
-    })
     @POST("budget/purchase-product/{productId}")
     Call<ResponseBody> buyProduct(@Path("productId") int productId, @Query("eventId") int eventId);
 

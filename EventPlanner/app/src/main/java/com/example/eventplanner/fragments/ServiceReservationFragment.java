@@ -20,7 +20,11 @@ import com.example.eventplanner.R;
 import com.example.eventplanner.activities.details.ServiceDetailsActivity;
 import com.example.eventplanner.adapters.ServiceReservationAdapter;
 import com.example.eventplanner.databinding.FragmentServiceReservationBinding;
+import com.example.eventplanner.dialogs.RateProductDialog;
+import com.example.eventplanner.dialogs.RateServiceDialog;
 import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.models.Service;
+import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
 import com.example.eventplanner.viewmodels.ServiceReservationViewModel;
 
 import java.time.LocalDate;
@@ -29,14 +33,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ServiceReservationFragment extends Fragment {
-
     private FragmentServiceReservationBinding binding;
     private ServiceReservationViewModel viewModel;
+    private final ServiceDetailsViewModel serviceDetailsViewModel;
+    private final Service service;
     private ServiceReservationAdapter adapter;
     private LocalDate selectedDate;
     private LocalTime selectedFromTime;
     private LocalTime selectedToTime;
     private int selectedEventId;
+
+    public ServiceReservationFragment(ServiceDetailsViewModel serviceDetailsViewModel, Service service) {
+        this.serviceDetailsViewModel = serviceDetailsViewModel;
+        this.service = service;
+    }
 
     @Nullable
     @Override
@@ -210,6 +220,10 @@ public class ServiceReservationFragment extends Fragment {
             if (success) {
                 Toast.makeText(getContext(), "Service booked successfully!", Toast.LENGTH_SHORT).show();
                 viewModel.fetchReservations(viewModel.getServiceId());
+                RateServiceDialog.show(getContext(), service, (value, comment) -> {
+                    serviceDetailsViewModel.rateService(service.getId(), value, comment);
+                }, this);
+
             } else {
                 Toast.makeText(getContext(), "Failed to book service.", Toast.LENGTH_SHORT).show();
             }

@@ -86,8 +86,21 @@ public class ServiceDetailsActivity extends BaseActivity {
 
     private void setupViewModel() {
         serviceDetailsViewModel.fetchServiceById(serviceId);
+        serviceDetailsViewModel.fetchServiceRating(serviceId);
 
         serviceDetailsViewModel.getService().observe(this, this::displayServiceDetails);
+
+        serviceDetailsViewModel.getServiceGrade().observe(this, grade -> {
+            if (grade != null) {
+                serviceRating.setRating(grade.getValue());
+            }
+        });
+
+        serviceDetailsViewModel.getServiceReviews().observe(this, reviews -> {
+            if (reviews != null) {
+                serviceNumberOfReviews.setText("(" + reviews + " Reviews)");
+            }
+        });
 
         serviceDetailsViewModel.getErrorMessage().observe(this, errorMessage -> {
             if (errorMessage != null) {
@@ -127,10 +140,6 @@ public class ServiceDetailsActivity extends BaseActivity {
             } else {
                 serviceAvailability.setText("(Unavailable)");
             }
-
-            // TODO: update logic
-            serviceRating.setRating(4);
-            serviceNumberOfReviews.setText("(42 Reviews)");
 
             SpannableString spannableDescription = new SpannableString(String.format("Description: %s", service.getDescription()));
             spannableDescription.setSpan(new StyleSpan(Typeface.BOLD), 0, 11, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -268,7 +277,7 @@ public class ServiceDetailsActivity extends BaseActivity {
     }
 
     private void navigateToServiceReservation(int serviceId) {
-        ServiceReservationFragment fragment = new ServiceReservationFragment();
+        ServiceReservationFragment fragment = new ServiceReservationFragment(serviceDetailsViewModel, service);
 
         Bundle bundle = new Bundle();
         bundle.putInt("serviceId", serviceId);

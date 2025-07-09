@@ -23,7 +23,6 @@ import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
 import com.example.eventplanner.dialogs.RateProductDialog;
-import com.example.eventplanner.fragments.ContentUnavailableFragment;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
