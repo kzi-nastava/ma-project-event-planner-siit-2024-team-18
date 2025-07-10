@@ -1,5 +1,6 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.Grade;
 import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Service;
 
@@ -8,7 +9,9 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
@@ -34,6 +37,27 @@ public interface ServiceService {
     })
     @GET("services/creator")
     Call<ArrayList<Service>> getAllByCreator();
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("services/grade/{id}")
+    Call<Grade> getServiceGrade(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("services/reviews/{id}")
+    Call<Integer> getServiceReviews(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @POST("services/grade/{serviceId}")
+    Call<ResponseBody> rateService(@Path("serviceId") int serviceId, @Body Grade grade);
 
     @Headers({
             "User-Agent: Mobile-Android",

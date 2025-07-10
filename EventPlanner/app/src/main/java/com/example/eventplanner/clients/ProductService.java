@@ -1,5 +1,6 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.Grade;
 import com.example.eventplanner.models.Product;
 
 import java.util.ArrayList;
@@ -26,6 +27,20 @@ public interface ProductService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
+    @GET("products/grade/{id}")
+    Call<Grade> getProductGrade(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("products/reviews/{id}")
+    Call<Integer> getProductReviews(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
     @GET("products/creator")
     Call<ArrayList<Product>> getAllByCreator();
 
@@ -33,13 +48,13 @@ public interface ProductService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("products/comment/{id}")
-    Call<ResponseBody> commentProduct(@Body String commentContent, @Path("id") int id);
+    @POST("budget/purchase-product/{productId}")
+    Call<ResponseBody> buyProduct(@Path("productId") int productId, @Query("eventId") int eventId);
 
     @Headers({
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
-    @POST("budget/purchase-product/{productId}")
-    Call<ResponseBody> buyProduct(@Path("productId") int productId, @Query("eventId") int eventId);
+    @POST("products/grade/{productId}")
+    Call<ResponseBody> rateProduct(@Path("productId") int productId, @Body Grade grade);
 }
