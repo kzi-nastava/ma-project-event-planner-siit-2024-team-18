@@ -113,6 +113,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent servicesIntent = new Intent(BaseActivity.this, AllServicesActivity.class);
                     startActivity(servicesIntent);
                 }
+            } else if (id == R.id.nav_products) {
+                if (currentActivity != AllProductsActivity.class) {
+                    Intent productsIntent = new Intent(BaseActivity.this, AllProductsActivity.class);
+                    startActivity(productsIntent);
+                }
             } else if (id == R.id.nav_categories) {
                 if (currentActivity != CategoriesActivity.class) {
                     Intent categoriesIntent = new Intent(BaseActivity.this, CategoriesActivity.class);

@@ -11,6 +11,10 @@ import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Grade;
 import com.example.eventplanner.models.Product;
 
+import java.util.List;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -23,6 +27,11 @@ public class ProductDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> productPurchased = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+
+    public LiveData<Boolean> getSuccess() {
+        return success;
+    }
     public LiveData<Boolean> getProductPurchased() {
         return productPurchased;
     }
@@ -75,6 +84,44 @@ public class ProductDetailsViewModel extends ViewModel {
                 loading.setValue(false);
                 Log.e("ProductDetailsActivity", "Failed to fetch product by id", t);
                 errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void addNewProduct(RequestBody nameBody, RequestBody descriptionBody, RequestBody categoryBody, RequestBody eventTypesBody, RequestBody locationBody, RequestBody cityBody, RequestBody countryBody, RequestBody latitudeBody, RequestBody longitudeBody, RequestBody priceBody, RequestBody discountBody, RequestBody visibleBody, RequestBody availableBody, List<MultipartBody.Part> imageParts) {
+        Call<Product> call = ClientUtils.getProductService(this.context).add(nameBody, descriptionBody, categoryBody, eventTypesBody, locationBody, cityBody, countryBody, latitudeBody, longitudeBody, priceBody, discountBody, visibleBody, availableBody, imageParts);
+        call.enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to add product. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void editProduct(int id, RequestBody nameBody, RequestBody descriptionBody, RequestBody categoryBody, RequestBody eventTypesBody, RequestBody locationBody, RequestBody cityBody, RequestBody countryBody, RequestBody latitudeBody, RequestBody longitudeBody, RequestBody priceBody, RequestBody discountBody, RequestBody visibleBody, RequestBody availableBody, List<MultipartBody.Part> imageParts) {
+        Call<Product> call = ClientUtils.getProductService(this.context).edit(id, nameBody, descriptionBody, categoryBody, eventTypesBody, locationBody, cityBody, countryBody, latitudeBody, longitudeBody, priceBody, discountBody, visibleBody, availableBody, imageParts);
+        call.enqueue(new Callback<Product>() {
+            @Override
+            public void onResponse(Call<Product> call, Response<Product> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to edit product. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Product> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
             }
         });
     }
