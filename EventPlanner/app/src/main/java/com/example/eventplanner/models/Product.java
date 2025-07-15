@@ -6,6 +6,9 @@ import android.os.Parcelable;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Arrays;
+import java.util.List;
+
 public class Product {
     @SerializedName("id")
     @Expose
@@ -127,8 +130,8 @@ public class Product {
         this.images = images;
     }
 
-    public String[] getEventTypes() {
-        return eventTypes;
+    public List<String> getEventTypes() {
+        return Arrays.asList(eventTypes);
     }
 
     public void setEventTypes(String[] eventTypes) {

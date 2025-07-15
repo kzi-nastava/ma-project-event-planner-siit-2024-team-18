@@ -225,4 +225,13 @@
     <string name="account_suspended">Account Suspended</string>
     <string name="please_review_our_community_guidelines_to_avoid_future_suspensions_for_further_assistance_contact_support">Please review our Community Guidelines to avoid future suspensions. For further assistance, contact support</string>
     <string name="here">here</string>
+    <string name="search_products">Search Products</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Product Description</string>
+    <string name="product">Product</string>
+    <string name="select_or_type_category">Select or type category</string>
+    <string name="location">Location</string>
+    <string name="product_price">Product Price</string>
+    <string name="product_discount">Product Discount</string>
+    <string name="visible">Visible</string>
 </resources>

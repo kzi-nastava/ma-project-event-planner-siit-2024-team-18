@@ -158,4 +158,8 @@ public class ClientUtils {
     public static CommentService getCommentService(Context context) {
         return retrofit(context).create(CommentService.class);
     }
+
+    public static LocationService getLocationService(Context context) {
+        return retrofit(context).create(LocationService.class);
+    }
 }
