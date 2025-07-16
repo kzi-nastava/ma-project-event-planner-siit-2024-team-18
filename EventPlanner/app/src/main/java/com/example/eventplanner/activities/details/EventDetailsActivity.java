@@ -82,9 +82,9 @@ public class EventDetailsActivity extends BaseActivity {
             eventTitle.setText(event.getName());
             eventDescription.setText(event.getDescription());
 
-            if (event.getImages() != null && !event.getImages().isEmpty()) {
+            if (event.getImages() != null && event.getImages().length > 0) {
                 Glide.with(this)
-                        .load(event.getImages().get(0))
+                        .load(event.getImages()[0])
                         .placeholder(R.drawable.event_placeholder)
                         .error(R.drawable.event_placeholder)
                         .into(eventImage);

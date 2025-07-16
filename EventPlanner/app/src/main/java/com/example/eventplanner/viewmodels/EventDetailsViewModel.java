@@ -10,9 +10,13 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.EventCard;
+import com.example.eventplanner.models.Product;
 
 import java.util.ArrayList;
+import java.util.List;
 
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -23,6 +27,11 @@ public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<Event> eventDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+
+    public LiveData<Boolean> getSuccess() {
+        return success;
+    }
 
     public LiveData<Event> getEventDetails() {
         return eventDetailsLiveData;
@@ -127,5 +136,43 @@ public class EventDetailsViewModel extends ViewModel {
             }
         }
         return null;
+    }
+
+    public void addNewEvent(RequestBody nameBody, RequestBody descriptionBody, RequestBody maxParticipantsBody, RequestBody eventTypeBody, RequestBody locationNameBody, RequestBody cityBody, RequestBody countryBody, RequestBody latitudeBody, RequestBody longitudeBody, RequestBody privacyTypeBody, RequestBody dateTimeBody, List<MultipartBody.Part> imageParts) {
+        Call<Void> call = ClientUtils.getEventService(this.context).add(nameBody, descriptionBody, maxParticipantsBody, privacyTypeBody, dateTimeBody, imageParts, eventTypeBody, locationNameBody, cityBody, countryBody, latitudeBody, longitudeBody);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to add event. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void editEvent(int id, RequestBody nameBody, RequestBody descriptionBody, RequestBody maxParticipantsBody, RequestBody eventTypeBody, RequestBody locationNameBody, RequestBody cityBody, RequestBody countryBody, RequestBody latitudeBody, RequestBody longitudeBody, RequestBody privacyTypeBody, RequestBody dateTimeBody, List<MultipartBody.Part> imageParts) {
+        Call<Void> call = ClientUtils.getEventService(this.context).edit(id, nameBody, descriptionBody, maxParticipantsBody, privacyTypeBody, dateTimeBody, imageParts, eventTypeBody, locationNameBody, cityBody, countryBody, latitudeBody, longitudeBody);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (response.isSuccessful()) {
+                    success.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to edit event. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
     }
 }

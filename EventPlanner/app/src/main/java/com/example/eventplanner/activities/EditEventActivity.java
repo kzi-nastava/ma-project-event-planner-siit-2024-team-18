@@ -1,6 +1,7 @@
 package com.example.eventplanner.activities;
 
 import android.app.AlertDialog;
+import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,14 +17,12 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -34,12 +33,15 @@ import androidx.loader.content.CursorLoader;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
+import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.LocationAutocompleteResponseDTO;
 import com.example.eventplanner.models.LocationDetailResponseDTO;
-import com.example.eventplanner.models.Product;
+import com.example.eventplanner.viewmodels.CategoryCardViewModel;
 import com.example.eventplanner.viewmodels.EventTypeCardViewModel;
-import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
+import com.example.eventplanner.viewmodels.EventDetailsViewModel;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -48,6 +50,7 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -56,24 +59,20 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class EditProductActivity extends BaseActivity {
+public class EditEventActivity extends BaseActivity {
     private static final int PICK_IMAGES_REQUEST = 1;
     private ArrayList<Uri> imageUris = new ArrayList<>();
     private List<EventType> listEventTypes = new ArrayList<>();
-    List<String> selectedEventTypes = new ArrayList<>();
-    private TextInputEditText productName, eventTypes, productDescription, productPrice, discount;
+    private TextInputEditText eventName, eventDescription, maxParticipants, eventDate, eventTime;
     private AutoCompleteTextView location;
-    private ImageView btnClose, btnSelectPictures, btnClearPictures;
-    private TextView errorProductName, errorProductDescription, errorProductEventTypes, errorProductLocation, errorProductPrice, errorProductDiscount, errorProductImages;
-    private Button btnSave;
-    private Product product;
-    private Spinner category;
+    private ImageView btnSelectPictures, btnClearPictures, btnPickEventDate, btnPickEventTime, btnClose;
+    private MaterialButton btnSaveNewEvent;
+    private TextView errorEventName, errorEventDescription, errorEventType, errorEventLocation, errorEventMaxParticipants, errorEventImages, errorEventPrivacyType, errorEventDate, errorEventTime;
     private LinearLayout selectedImagesContainer;
-    private SwitchCompat isVisible, isAvailable;
-    private int productId;
-    private ProductDetailsViewModel productDetailsViewModel;
+    private RadioGroup privacyType;
+    private Spinner eventTypes;
     private EventTypeCardViewModel eventTypeViewModel;
-
+    private EventDetailsViewModel eventDetailsViewModel;
     private ArrayAdapter<String> locationAdapter;
     private List<LocationAutocompleteResponseDTO> locationSuggestions = new ArrayList<>();
     private LocationDetailResponseDTO selectedLocationDetails = null;
@@ -82,71 +81,35 @@ public class EditProductActivity extends BaseActivity {
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Runnable locationRunnable;
+    private int eventId;
+    private Event event;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getLayoutInflater().inflate(R.layout.activity_edit_product, findViewById(R.id.content_frame));
+        getLayoutInflater().inflate(R.layout.activity_edit_event, findViewById(R.id.content_frame));
 
         initializeViews();
 
-        productId = getIntent().getIntExtra("productId", -1);
+        eventId = getIntent().getIntExtra("eventId", -1);
 
         loadViewModels();
-        setupListeners();
-    }
-
-    private void loadViewModels() {
-        productDetailsViewModel = new ViewModelProvider(this).get(ProductDetailsViewModel.class);
-        productDetailsViewModel.setContext(getApplicationContext());
-
-        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
-        eventTypeViewModel.setContext(getApplicationContext());
-
-        eventTypeViewModel.fetchEventTypes();
-        productDetailsViewModel.fetchProductDetailsById(productId);
-
-        // ViewModel setup
-        eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
-            if (eventTypes != null) {
-                this.listEventTypes = eventTypes;
-            }
-        });
-
-        eventTypeViewModel.getErrorMessage().observe(this, error -> {
-            if (error != null) {
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        productDetailsViewModel.getProductDetails().observe(this, product -> {
-            if (product != null) {
-                this.product = product;
-                populateFields();
-            }
-        });
-
-        productDetailsViewModel.getSuccess().observe(this, success -> {
-            if (success) {
-                Toast.makeText(this, "Product Updated Successfully", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
-
-        productDetailsViewModel.getErrorMessage().observe(this, error -> {
-            if (error != null) {
-                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
-            }
-        });
+        setupClickListeners();
     }
 
     private void initializeViews() {
-        productName = findViewById(R.id.editProductName);
-        productDescription = findViewById(R.id.editProductDescription);
-        productPrice = findViewById(R.id.editProductPrice);
-        discount = findViewById(R.id.editProductDiscount);
+        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.setContext(this);
+        eventDetailsViewModel = new ViewModelProvider(this).get(EventDetailsViewModel.class);
+        eventDetailsViewModel.setContext(this);
 
-        location = findViewById(R.id.inputProductLocation);
+        eventName = findViewById(R.id.createEventName);
+        eventDescription = findViewById(R.id.createEventDescription);
+        maxParticipants = findViewById(R.id.inputEventMaxParticipants);
+        eventDate = findViewById(R.id.editEventDate);
+        eventTime = findViewById(R.id.editEventTime);
+
+        location = findViewById(R.id.inputEventLocation);
         locationAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line);
         location.setAdapter(locationAdapter);
         location.setOnFocusChangeListener((v, hasFocus) -> {
@@ -192,31 +155,33 @@ public class EditProductActivity extends BaseActivity {
 
                         @Override
                         public void onFailure(Call<LocationDetailResponseDTO> call, Throwable t) {
-                            Toast.makeText(EditProductActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(EditEventActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                         }
                     });
         });
 
-        category = findViewById(R.id.categoryDisabled);
-        eventTypes = findViewById(R.id.editTextEventTypes);
+        eventTypes = findViewById(R.id.addEventType);
 
         btnSelectPictures = findViewById(R.id.btnSelectPictures);
         btnClearPictures = findViewById(R.id.btnClearPictures);
+        btnPickEventDate = findViewById(R.id.btnPickEventDate);
+        btnPickEventTime = findViewById(R.id.btnPickEventTime);
         btnClose = findViewById(R.id.btnClose);
-        btnSave = findViewById(R.id.btnSave);
+        btnSaveNewEvent = findViewById(R.id.btnSaveNewEvent);
 
         selectedImagesContainer = findViewById(R.id.selectedImagesContainer);
 
-        errorProductName = findViewById(R.id.errorProductName);
-        errorProductDescription = findViewById(R.id.errorProductDescription);
-        errorProductEventTypes = findViewById(R.id.errorProductEventTypes);
-        errorProductLocation = findViewById(R.id.errorProductLocation);
-        errorProductPrice = findViewById(R.id.errorProductPrice);
-        errorProductDiscount = findViewById(R.id.errorProductDiscount);
-        errorProductImages = findViewById(R.id.errorProductImages);
+        errorEventName = findViewById(R.id.errorEventName);
+        errorEventDescription = findViewById(R.id.errorEventDescription);
+        errorEventLocation = findViewById(R.id.errorEventLocation);
+        errorEventImages = findViewById(R.id.errorEventImages);
+        errorEventType = findViewById(R.id.errorEventType);
+        errorEventMaxParticipants = findViewById(R.id.errorEventMaxParticipants);
+        errorEventPrivacyType = findViewById(R.id.errorEventPrivacyType);
+        errorEventDate = findViewById(R.id.errorEventDate);
+        errorEventTime = findViewById(R.id.errorEventTime);
 
-        isVisible = findViewById(R.id.switchVisibility);
-        isAvailable = findViewById(R.id.switchAvailability);
+        privacyType = findViewById(R.id.radioGroupPrivacyType);
     }
 
     private void fetchLocationSuggestions(String query) {
@@ -244,90 +209,73 @@ public class EditProductActivity extends BaseActivity {
             @Override
             public void onFailure(Call<List<LocationAutocompleteResponseDTO>> call, Throwable t) {
                 if (!call.isCanceled()) {
-                    Toast.makeText(EditProductActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(EditEventActivity.this, "Error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
 
-    private void populateFields() {
-        productName.setText(product.getName());
-        productDescription.setText(product.getDescription());
-        productPrice.setText(String.valueOf(product.getPrice()));
-        discount.setText(String.valueOf(product.getDiscount()));
-        isVisible.setChecked(product.isVisible());
-        isAvailable.setChecked(product.isAvailable());
-        location.setText(product.getLocation());
-        loadExistingImages();
+    private void loadViewModels() {
+        eventTypeViewModel.fetchEventTypes();
+        eventDetailsViewModel.fetchEventDetailsById(eventId);
 
-        initializeEventTypes();
-
-        ArrayAdapter<String> categoryAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,new String[]{product.getCategory()});
-        categoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        category.setAdapter(categoryAdapter);
-        category.setEnabled(false);
-    }
-
-    private void setupListeners() {
-        btnSelectPictures.setOnClickListener(v -> openGallery());
-        btnClearPictures.setOnClickListener(v -> clearSelectedImages());
-        btnClose.setOnClickListener(v -> finish());
-        btnSave.setOnClickListener(v -> saveEditedProduct());
-    }
-
-    private void initializeEventTypes() {
-        selectedEventTypes = new ArrayList<>(product.getEventTypes());
-        setEventTypesSelection(selectedEventTypes);
-        setupEventTypesMultiSelect(selectedEventTypes);
-    }
-
-    private void setEventTypesSelection(List<String> selectedEventTypes) {
-        if (selectedEventTypes != null && !selectedEventTypes.isEmpty()) {
-            String selectedTypes = String.join(", ", selectedEventTypes);
-            eventTypes.setText(selectedTypes);
-        } else {
-            eventTypes.setText("No event types selected");
-        }
-    }
-
-    private void setupEventTypesMultiSelect(List<String> selectedEventTypes) {
-        eventTypes.setOnClickListener(view -> {
-            String[] eventTypeArray = listEventTypes.stream()
-                    .map(EventType::getName)
-                    .toArray(String[]::new);
-
-            boolean[] selectedItems = new boolean[eventTypeArray.length];
-
-            for (int i = 0; i < eventTypeArray.length; i++) {
-                selectedItems[i] = selectedEventTypes.contains(eventTypeArray[i]);
+        eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
+        eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
+            if (eventTypes != null) {
+                this.listEventTypes = eventTypes;
             }
+        });
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle("Select Event Types")
-                    .setMultiChoiceItems(eventTypeArray, selectedItems, (dialog, which, isChecked) -> {
-                        if (isChecked) {
-                            if (!selectedEventTypes.contains(eventTypeArray[which])) {
-                                selectedEventTypes.add(eventTypeArray[which]);
-                            }
-                        } else {
-                            selectedEventTypes.remove(eventTypeArray[which]);
-                        }
-                    })
-                    .setPositiveButton("OK", (dialog, which) -> {
-                        setEventTypesSelection(selectedEventTypes);
-                    })
-                    .setNegativeButton("Cancel", null)
-                    .show();
+        eventTypeViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, error, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        eventDetailsViewModel.getEventDetails().observe(this, event -> {
+            if (event != null) {
+                this.event = event;
+                populateFields();
+            }
+        });
+
+        eventDetailsViewModel.getSuccess().observe(this, success -> {
+            if (success) {
+                Toast.makeText(this, "Event Updated Successfully", Toast.LENGTH_SHORT).show();
+                finish();
+            }
+        });
+
+        eventDetailsViewModel.getErrorMessage().observe(this, error -> {
+            if (error != null) {
+                Toast.makeText(this, "Unexpected Error Occurred", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 
-    private void clearSelectedImages() {
-        imageUris.clear();
-        selectedImagesContainer.removeAllViews();
+    private void populateFields() {
+        eventName.setText(event.getName());
+        eventDescription.setText(event.getDescription());
+        maxParticipants.setText(String.valueOf(event.getMaxParticipants()));
+        if (event.getPrivacyType().equals("PRIVATE")) {
+            privacyType.check(R.id.radioPrivate);
+        } else {
+            privacyType.check(R.id.radioPublic);
+        }
+
+        eventDate.setText(event.getStartDate().toLocalDate().toString());
+        eventTime.setText(event.getStartDate().toLocalTime().toString());
+        location.setText(event.getLocationName());
+        loadExistingImages();
+
+        ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,new String[]{event.getEventType()});
+        eventTypeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        eventTypes.setAdapter(eventTypeAdapter);
+        eventTypes.setEnabled(false);
     }
 
     private void loadExistingImages() {
-        String[] existingImages = product.getImages();
+        String[] existingImages = event.getImages();
         if (existingImages != null) {
             for (String imageUrl : existingImages) {
                 Uri imageUri = Uri.parse(imageUrl);
@@ -358,6 +306,45 @@ public class EditProductActivity extends BaseActivity {
         selectedImagesContainer.addView(imageView);
     }
 
+    private void setupClickListeners() {
+        btnSelectPictures.setOnClickListener(v -> openGallery());
+        btnClearPictures.setOnClickListener(v -> clearSelectedImages());
+        btnPickEventDate.setOnClickListener(v -> showDatePicker(eventDate));
+        btnPickEventTime.setOnClickListener(v -> showTimePicker(eventTime));
+        btnClose.setOnClickListener(v -> finish());
+        btnSaveNewEvent.setOnClickListener(v -> saveNewEvent());
+    }
+
+    private void showDatePicker(TextInputEditText editText) {
+        Calendar calendar = Calendar.getInstance();
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
+            String selectedDate = String.format(Locale.getDefault(), "%04d-%02d-%02d", year, month + 1, dayOfMonth);
+            editText.setText(selectedDate);
+        },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH));
+
+        datePickerDialog.show();
+    }
+
+    private void showTimePicker(TextInputEditText editText) {
+        Calendar calendar = Calendar.getInstance();
+        new TimePickerDialog(this, (view, hourOfDay, minute) -> {
+            String selectedTime = String.format(Locale.getDefault(), "%02d:%02d", hourOfDay, minute);
+            editText.setText(selectedTime);
+        }, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE), true).show();
+    }
+
+    private List<String> getEventTypeNames() {
+        List<String> names = new ArrayList<>();
+        for (EventType eventType : listEventTypes) {
+            names.add(eventType.getName());
+        }
+        return names;
+    }
+
     private void openGallery() {
         Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
@@ -365,70 +352,98 @@ public class EditProductActivity extends BaseActivity {
         startActivityForResult(Intent.createChooser(intent, "Select Pictures"), PICK_IMAGES_REQUEST);
     }
 
+    private void clearSelectedImages() {
+        imageUris.clear();
+        selectedImagesContainer.removeAllViews();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_IMAGES_REQUEST && resultCode == RESULT_OK && data != null) {
             if (data.getClipData() != null) {
-                int count = data.getClipData().getItemCount();
-                for (int i = 0; i < count; i++) {
+                for (int i = 0; i < data.getClipData().getItemCount(); i++) {
                     Uri imageUri = data.getClipData().getItemAt(i).getUri();
-                    addImageToContainer(imageUri.toString(), true);
+                    addImageToContainer(imageUri);
+                    imageUris.add(imageUri);
                 }
             } else if (data.getData() != null) {
                 Uri imageUri = data.getData();
-                addImageToContainer(imageUri.toString(), true);
+                addImageToContainer(imageUri);
+                imageUris.add(imageUri);
             }
         }
     }
 
-    private void saveEditedProduct() {
+    private void addImageToContainer(Uri imageUri) {
+        ImageView imageView = new ImageView(this);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(200, 200));
+        imageView.setImageURI(imageUri);
+        selectedImagesContainer.addView(imageView);
+    }
+
+    private void saveNewEvent() {
         if (!validateInputs()) {
             Toast.makeText(this, "Invalid Input Detected!", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        updateProduct();
+        updateEvent();
     }
 
     private boolean validateInputs() {
         boolean isValid = true;
 
-        if (!validateField(productName, errorProductName)) {
+        if (!validateField(eventName, errorEventName)) {
             isValid = false;
         }
 
-        if (!validateField(productDescription, errorProductDescription)) {
+        if (!validateField(eventDescription, errorEventDescription)) {
             isValid = false;
         }
 
-        if (selectedEventTypes.isEmpty()) {
-            errorProductEventTypes.setVisibility(View.VISIBLE);
+        String input = maxParticipants.getText().toString().trim();
+        if (!input.matches("^[1-9][0-9]*$")) {
             isValid = false;
+            errorEventMaxParticipants.setVisibility(View.VISIBLE);
         } else {
-            errorProductEventTypes.setVisibility(View.GONE);
+            errorEventMaxParticipants.setVisibility(View.GONE);
         }
 
-        if (!validateField(location, errorProductLocation) || (selectedLocationDetails == null && !location.getText().toString().trim().equals(product.getLocation()))) {
+        if (eventTypes.getSelectedItem().toString().isEmpty()) {
             isValid = false;
-            errorProductLocation.setVisibility(View.VISIBLE);
+            errorEventType.setVisibility(View.VISIBLE);
         } else {
-            errorProductLocation.setVisibility(View.GONE);
+            errorEventType.setVisibility(View.GONE);
         }
 
-        if (!validateField(productPrice, errorProductPrice)) {
+        if (!validateField(location, errorEventLocation)  || (selectedLocationDetails == null && !location.getText().toString().trim().equals(event.getLocationName()))) {
             isValid = false;
-        }
-
-        if (!validateField(discount, errorProductDiscount)) {
-            isValid = false;
+            errorEventLocation.setVisibility(View.VISIBLE);
+        } else {
+            errorEventLocation.setVisibility(View.GONE);
         }
 
         if (imageUris.isEmpty()) {
-            errorProductImages.setVisibility(View.VISIBLE);
+            errorEventImages.setVisibility(View.VISIBLE);
             isValid = false;
         } else {
-            errorProductImages.setVisibility(View.GONE);
+            errorEventImages.setVisibility(View.GONE);
+        }
+
+        if (getSelectedPrivacyType() == null) {
+            errorEventPrivacyType.setVisibility(View.VISIBLE);
+            isValid = false;
+        } else {
+            errorEventPrivacyType.setVisibility(View.GONE);
+        }
+
+        if (!validateField(eventDate, errorEventDate)) {
+            isValid = false;
+        }
+
+        if (!validateField(eventTime, errorEventTime)) {
+            isValid = false;
         }
 
         return isValid;
@@ -440,29 +455,45 @@ public class EditProductActivity extends BaseActivity {
         return isValid;
     }
 
-    private void updateProduct() {
-        RequestBody locationBody, cityBody, countryBody, latitudeBody, longitudeBody;
-        RequestBody nameBody = RequestBody.create(MediaType.parse("text/plain"), productName.getText().toString().trim());
-        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), productDescription.getText().toString().trim());
-        RequestBody categoryBody = RequestBody.create(MediaType.parse("text/plain"), category.getSelectedItem().toString().trim());
-        RequestBody eventTypesBody = RequestBody.create(MediaType.parse("text/plain"), TextUtils.join(",", selectedEventTypes));
+    private String getSelectedPrivacyType() {
+        int selectedId = privacyType.getCheckedRadioButtonId();
+        if (selectedId == R.id.radioPrivate) {
+            return "PRIVATE";
+        } else if (selectedId == R.id.radioPublic) {
+            return "PUBLIC";
+        }
+        return null;
+    }
+
+    private String getCombinedDateTimeForBackend() {
+        if (!eventDate.getText().toString().isEmpty() && !eventTime.getText().toString().isEmpty()) {
+            return eventDate.getText().toString().trim() + "T" + eventTime.getText().toString().trim() + ":00";
+        } else {
+            return "";
+        }
+    }
+
+    private void updateEvent() {
+        RequestBody locationNameBody, cityBody, countryBody, latitudeBody, longitudeBody;
+        RequestBody nameBody = RequestBody.create(MediaType.parse("text/plain"), eventName.getText().toString().trim());
+        RequestBody descriptionBody = RequestBody.create(MediaType.parse("text/plain"), eventDescription.getText().toString().trim());
+        RequestBody maxParticipantsBody = RequestBody.create(MediaType.parse("text/plain"), maxParticipants.getText().toString().trim());
+        RequestBody eventTypeBody = RequestBody.create(MediaType.parse("text/plain"), eventTypes.getSelectedItem().toString().trim());
         if (selectedLocationDetails != null) {
-            locationBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getName());
+            locationNameBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getName());
             cityBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getCity());
             countryBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getCountry());
             latitudeBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getLatitude().toString());
             longitudeBody = RequestBody.create(MediaType.parse("text/plain"), selectedLocationDetails.getLongitude().toString());
         } else {
-            locationBody = RequestBody.create(MediaType.parse("text/plain"), location.getText().toString().trim());
+            locationNameBody = RequestBody.create(MediaType.parse("text/plain"), location.getText().toString().trim());
             cityBody = RequestBody.create(MediaType.parse("text/plain"), "");
             countryBody = RequestBody.create(MediaType.parse("text/plain"), "");
             latitudeBody = RequestBody.create(MediaType.parse("text/plain"), "0");
             longitudeBody = RequestBody.create(MediaType.parse("text/plain"), "0");
         }
-        RequestBody priceBody = RequestBody.create(MediaType.parse("text/plain"), productPrice.getText().toString().trim());
-        RequestBody discountBody = RequestBody.create(MediaType.parse("text/plain"), discount.getText().toString().trim());
-        RequestBody visibleBody = RequestBody.create(MediaType.parse("text/plain"), isVisible.isChecked() ? "1" : "0");
-        RequestBody availableBody = RequestBody.create(MediaType.parse("text/plain"), isAvailable.isChecked() ? "1" : "0");
+        RequestBody privacyTypeBody = RequestBody.create(MediaType.parse("text/plain"), getSelectedPrivacyType());
+        RequestBody dateTimeBody = RequestBody.create(MediaType.parse("text/plain"), getCombinedDateTimeForBackend());
 
         List<MultipartBody.Part> imageParts = new ArrayList<>();
         for (Uri uri : imageUris) {
@@ -485,8 +516,7 @@ public class EditProductActivity extends BaseActivity {
             }
         }
 
-        productDetailsViewModel.editProduct(productId, nameBody, descriptionBody, categoryBody, eventTypesBody, locationBody, cityBody, countryBody, latitudeBody, longitudeBody,
-                priceBody, discountBody, visibleBody, availableBody, imageParts);
+        eventDetailsViewModel.editEvent(eventId, nameBody, descriptionBody, maxParticipantsBody, eventTypeBody, locationNameBody, cityBody, countryBody, latitudeBody, longitudeBody, privacyTypeBody, dateTimeBody, imageParts);
     }
 
     private String getRealPathFromURI(Uri contentUri) {
