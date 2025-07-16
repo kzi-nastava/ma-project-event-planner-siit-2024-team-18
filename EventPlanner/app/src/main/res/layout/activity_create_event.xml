@@ -1,0 +1,426 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background"
+    android:paddingHorizontal="16dp">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/btnClose"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/description"
+                android:src="@drawable/close"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/createEventTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/merriweather_bold"
+                android:text="@string/create_event"
+                android:textAlignment="center"
+                android:textSize="32sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/btnClose" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputEventName"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createEventTitle">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createEventName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/event_name"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorEventName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputEventName" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/inputEventDescription"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventName">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/createEventDescription"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="Event Description"
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorEventDescription"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/inputEventDescription" />
+
+            <Spinner
+                android:id="@+id/addEventType"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginTop="16dp"
+                android:layout_weight="1"
+                android:completionThreshold="1"
+                android:dropDownHeight="200dp"
+                android:fontFamily="@font/raleway"
+                android:hint="Select event type"
+                android:inputType="text"
+                android:padding="8dp"
+                android:textColor="@color/darkText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventDescription" />
+
+            <TextView
+                android:id="@+id/errorEventType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/addEventType" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/createEventLocation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventType">
+
+                <AutoCompleteTextView
+                    android:id="@+id/inputEventLocation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="@string/location"
+                    android:inputType="text"
+                    android:completionThreshold="1" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorEventLocation"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createEventLocation" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/createEventMaxParticipants"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/raleway"
+                app:boxBackgroundMode="outline"
+                app:boxStrokeColor="@color/darkText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventLocation">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/inputEventMaxParticipants"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/raleway"
+                    android:hint="Max Participants"
+                    android:inputType="number" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/errorEventMaxParticipants"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/createEventMaxParticipants" />
+
+            <LinearLayout
+                android:id="@+id/imagesLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="107dp"
+                android:baselineAligned="false"
+                android:orientation="horizontal"
+                app:layout_constraintTop_toBottomOf="@id/errorEventMaxParticipants">
+
+                <HorizontalScrollView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1">
+
+                    <LinearLayout
+                        android:id="@+id/selectedImagesContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:padding="8dp" />
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:id="@+id/imagesButtonsLinearLayout"
+                    android:layout_width="35dp"
+                    android:layout_height="107dp"
+                    android:orientation="vertical">
+
+                    <ImageView
+                        android:id="@+id/btnSelectPictures"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="@string/description"
+                        android:src="@drawable/add_image" />
+
+                    <ImageView
+                        android:id="@+id/btnClearPictures"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginTop="8dp"
+                        android:clickable="true"
+                        android:contentDescription="@string/description"
+                        android:src="@drawable/delete" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/errorEventImages"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/imagesLinearLayout" />
+
+            <LinearLayout
+                android:id="@+id/privacyType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:fontFamily="@font/raleway"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventImages">
+
+                <TextView
+                    android:id="@+id/txtPrivacyTypeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginEnd="16dp"
+                    android:fontFamily="@font/raleway"
+                    android:text="Privacy Type"
+                    android:textColor="@color/darkText"
+                    android:textStyle="bold" />
+
+                <RadioGroup
+                    android:id="@+id/radioGroupPrivacyType"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioPrivate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="16dp"
+                        android:fontFamily="@font/raleway"
+                        android:text="PRIVATE"
+                        android:textColor="@color/darkText" />
+
+                    <RadioButton
+                        android:id="@+id/radioPublic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/raleway"
+                        android:text="PUBLIC"
+                        android:textColor="@color/darkText" />
+                </RadioGroup>
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/errorEventPrivacyType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/required"
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/privacyType" />
+
+            <LinearLayout
+                android:id="@+id/dateTimeSelectLinearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorEventPrivacyType">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputEventDate"
+                        android:layout_width="0dp"
+                        android:layout_height="63dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/raleway"
+                        android:hint="Event Date"
+                        app:boxBackgroundMode="outline">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editEventDate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="none"
+                            android:focusable="false"
+                            android:fontFamily="@font/raleway" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/btnPickEventDate"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/description"
+                        android:src="@drawable/calendar" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/errorEventDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/required"
+                    android:textColor="@color/alert"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputEventDate" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/inputEventTime"
+                        android:layout_width="0dp"
+                        android:layout_height="63dp"
+                        android:layout_weight="1"
+                        android:fontFamily="@font/raleway"
+                        android:hint="Event Time"
+                        app:boxBackgroundMode="outline">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/editEventTime"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:focusable="false"
+                            android:fontFamily="@font/raleway"
+                            android:inputType="none" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <ImageView
+                        android:id="@+id/btnPickEventTime"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:contentDescription="@string/description"
+                        android:src="@drawable/clock" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/errorEventTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/required"
+                    android:textColor="@color/alert"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/inputEventTime" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveNewEvent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:backgroundTint="@color/secondary"
+                android:fontFamily="@font/raleway"
+                android:text="@string/submit"
+                android:textColor="@android:color/white"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dateTimeSelectLinearLayout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>

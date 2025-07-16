@@ -234,4 +234,6 @@
     <string name="product_price">Product Price</string>
     <string name="product_discount">Product Discount</string>
     <string name="visible">Visible</string>
+    <string name="event_name">Event Name</string>
+    <string name="create_event">Create Event</string>
 </resources>

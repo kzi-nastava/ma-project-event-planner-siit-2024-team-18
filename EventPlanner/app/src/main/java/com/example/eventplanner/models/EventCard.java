@@ -9,6 +9,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 public class EventCard implements Parcelable, Serializable {
 
@@ -32,6 +33,10 @@ public class EventCard implements Parcelable, Serializable {
     @Expose
     private String cardImage;
 
+    @SerializedName("startDate")
+    @Expose
+    private LocalDateTime startDate;
+
     public EventCard() {
     }
 
@@ -41,6 +46,8 @@ public class EventCard implements Parcelable, Serializable {
         description = in.readString();
         locationName = in.readString();
         cardImage = in.readString();
+        String dateTimeString = in.readString();
+        startDate = dateTimeString != null ? LocalDateTime.parse(dateTimeString) : null;
     }
 
     public static final Creator<EventCard> CREATOR = new Creator<EventCard>() {
@@ -114,5 +121,14 @@ public class EventCard implements Parcelable, Serializable {
         dest.writeString(description);
         dest.writeString(locationName);
         dest.writeString(cardImage);
+        dest.writeString(startDate != null ? startDate.toString() : null);
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
     }
 }
