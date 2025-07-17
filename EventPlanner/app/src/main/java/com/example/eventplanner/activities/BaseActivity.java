@@ -128,11 +128,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                     Intent categoriesIntent = new Intent(BaseActivity.this, CategoriesActivity.class);
                     startActivity(categoriesIntent);
                 }
-            } else if (id == R.id.nav_budget) {
-                if (currentActivity != BudgetActivity.class) {
-                    Intent budgetIntent = new Intent(BaseActivity.this, BudgetActivity.class);
-                    startActivity(budgetIntent);
-                }
             } else if (id == R.id.nav_event_types) {
                 if (currentActivity != EventTypesActivity.class) {
                     Intent eventTypesIntent = new Intent(BaseActivity.this, EventTypesActivity.class);
@@ -179,7 +174,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         menu.findItem(R.id.nav_products).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_categories).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
         menu.findItem(R.id.nav_event_types).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));
-        menu.findItem(R.id.nav_budget).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "EVENT_ORGANIZER"));
         menu.findItem(R.id.nav_pricelist).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "SERVICE_PRODUCT_PROVIDER"));
         menu.findItem(R.id.nav_profile).setVisible(isLoggedIn);
         menu.findItem(R.id.nav_reports).setVisible(isLoggedIn && Objects.equals(viewModel.getRole(), "ADMIN"));

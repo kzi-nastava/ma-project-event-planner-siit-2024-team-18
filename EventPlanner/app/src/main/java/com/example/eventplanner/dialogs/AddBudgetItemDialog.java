@@ -30,15 +30,15 @@ public class AddBudgetItemDialog {
     private static TextView errorBudgetItemCategory, errorBudgetItemMaxAmount;
     private static View dialogView;
     private static CategoryCardViewModel categoriesViewModel;
-    private static Event event;
+    private static int eventId;
     public interface AddBudgetItemListener {
         void onBudgetItemCreated(String category, String maxAmount);
     }
 
-    public static void show(Event eventAdd, Context context, AddBudgetItemDialog.AddBudgetItemListener listener) {
+    public static void show(int id, Context context, AddBudgetItemDialog.AddBudgetItemListener listener) {
         LayoutInflater inflater = LayoutInflater.from(context);
         dialogView = inflater.inflate(R.layout.dialog_add_budget_item, null);
-        event = eventAdd;
+        eventId = id;
 
         initializeViews(context);
         populateFields();
@@ -70,7 +70,7 @@ public class AddBudgetItemDialog {
             }
         });
 
-        categoriesViewModel.fetchCategoriesForEvent(event.getId());
+        categoriesViewModel.fetchCategoriesForEvent(eventId);
     }
 
 

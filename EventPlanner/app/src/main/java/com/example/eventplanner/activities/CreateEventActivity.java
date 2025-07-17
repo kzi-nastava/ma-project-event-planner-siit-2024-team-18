@@ -46,6 +46,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -66,7 +67,7 @@ public class CreateEventActivity extends BaseActivity {
     private AutoCompleteTextView location;
     private ImageView btnSelectPictures, btnClearPictures, btnPickEventDate, btnPickEventTime, btnClose;
     private MaterialButton btnSaveNewEvent;
-    private TextView errorEventName, errorEventDescription, errorEventType, errorEventLocation, errorEventMaxParticipants, errorEventImages, errorEventPrivacyType, errorEventDate, errorEventTime;
+    private TextView errorEventName, errorEventDescription, errorEventType, errorEventLocation, errorEventMaxParticipants, errorEventImages, errorEventPrivacyType, errorEventDate, errorEventTime, errorDateTime;
     private LinearLayout selectedImagesContainer;
     private RadioGroup privacyType;
     private Spinner eventTypes;
@@ -174,6 +175,7 @@ public class CreateEventActivity extends BaseActivity {
         errorEventPrivacyType = findViewById(R.id.errorEventPrivacyType);
         errorEventDate = findViewById(R.id.errorEventDate);
         errorEventTime = findViewById(R.id.errorEventTime);
+        errorDateTime = findViewById(R.id.errorDateTime);
 
         privacyType = findViewById(R.id.radioGroupPrivacyType);
     }
@@ -274,11 +276,6 @@ public class CreateEventActivity extends BaseActivity {
     private void setupEventTypeSpinner() {
         ArrayAdapter<String> eventTypeAdapter = new ArrayAdapter<>(this, android.R.layout.simple_dropdown_item_1line, getEventTypeNames());
         eventTypes.setAdapter(eventTypeAdapter);
-//        categories.setOnFocusChangeListener((v, hasFocus) -> {
-//            if (hasFocus) {
-//                categories.showDropDown();
-//            }
-//        });
     }
 
     private List<String> getEventTypeNames() {
@@ -392,6 +389,16 @@ public class CreateEventActivity extends BaseActivity {
 
         if (!validateField(eventTime, errorEventTime)) {
             isValid = false;
+        }
+
+        if (!eventDate.getText().toString().trim().isEmpty() && !eventTime.getText().toString().trim().isEmpty()) {
+            LocalDateTime eventDateTime = LocalDateTime.parse(eventDate.getText().toString().trim() + "T" + eventTime.getText().toString().trim() + ":00");
+            if (eventDateTime.isBefore(LocalDateTime.now())) {
+                isValid = false;
+                errorDateTime.setVisibility(View.VISIBLE);
+            } else {
+                errorDateTime.setVisibility(View.GONE);
+            }
         }
 
         return isValid;

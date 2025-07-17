@@ -18,17 +18,17 @@ import com.example.eventplanner.viewmodels.BudgetViewModel;
 public class BudgetItemListFragment extends ListFragment {
     private BudgetItemListAdapter adapter;
     private BudgetViewModel budgetViewModel;
-    private Event event;
+    private int eventId;
 
-    public static BudgetItemListFragment newInstance(BudgetViewModel budgetViewModel, Event event) {
+    public static BudgetItemListFragment newInstance(BudgetViewModel budgetViewModel, int eventId) {
         BudgetItemListFragment fragment = new BudgetItemListFragment();
-        fragment.setBudgetViewModelAndEvent(budgetViewModel, event);
+        fragment.setBudgetViewModelAndEvent(budgetViewModel, eventId);
         return fragment;
     }
 
-    public void setBudgetViewModelAndEvent(BudgetViewModel budgetViewModel, Event event) {
+    public void setBudgetViewModelAndEvent(BudgetViewModel budgetViewModel, int eventId) {
         this.budgetViewModel = budgetViewModel;
-        this.event = event;
+        this.eventId = eventId;
     }
 
     @Nullable
@@ -43,7 +43,7 @@ public class BudgetItemListFragment extends ListFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        adapter = new BudgetItemListAdapter(requireActivity(), budgetViewModel, event);
+        adapter = new BudgetItemListAdapter(requireActivity(), budgetViewModel, eventId);
         setListAdapter(adapter);
 
         budgetViewModel.getBudgetItems().observe(getViewLifecycleOwner(), budgetItems -> {
@@ -58,7 +58,7 @@ public class BudgetItemListFragment extends ListFragment {
             }
         });
 
-        budgetViewModel.fetchBudgetItems(event.getId());
+        budgetViewModel.fetchBudgetItems(eventId);
     }
 
     @Override

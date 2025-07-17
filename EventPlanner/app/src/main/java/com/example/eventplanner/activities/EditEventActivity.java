@@ -17,6 +17,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,6 +34,7 @@ import androidx.loader.content.CursorLoader;
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.fragments.InviteScreenFragment;
 import com.example.eventplanner.models.Category;
 import com.example.eventplanner.models.EventType;
 import com.example.eventplanner.models.Event;
@@ -47,6 +49,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -67,7 +70,7 @@ public class EditEventActivity extends BaseActivity {
     private AutoCompleteTextView location;
     private ImageView btnSelectPictures, btnClearPictures, btnPickEventDate, btnPickEventTime, btnClose;
     private MaterialButton btnSaveNewEvent;
-    private TextView errorEventName, errorEventDescription, errorEventType, errorEventLocation, errorEventMaxParticipants, errorEventImages, errorEventPrivacyType, errorEventDate, errorEventTime;
+    private TextView errorEventName, errorEventDescription, errorEventType, errorEventLocation, errorEventMaxParticipants, errorEventImages, errorEventPrivacyType, errorEventDate, errorEventTime, errorDateTime;
     private LinearLayout selectedImagesContainer;
     private RadioGroup privacyType;
     private Spinner eventTypes;
@@ -83,6 +86,7 @@ public class EditEventActivity extends BaseActivity {
     private Runnable locationRunnable;
     private int eventId;
     private Event event;
+    private Button eventAgenda, eventBudget, eventInvites;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,8 +184,36 @@ public class EditEventActivity extends BaseActivity {
         errorEventPrivacyType = findViewById(R.id.errorEventPrivacyType);
         errorEventDate = findViewById(R.id.errorEventDate);
         errorEventTime = findViewById(R.id.errorEventTime);
+        errorDateTime = findViewById(R.id.errorDateTime);
 
         privacyType = findViewById(R.id.radioGroupPrivacyType);
+
+        eventAgenda = findViewById(R.id.eventAgenda);
+        eventAgenda.setOnClickListener(v -> {
+            Intent agendaIntent = new Intent(EditEventActivity.this, AgendaActivity.class);
+            agendaIntent.putExtra("eventId", event.getId());
+            agendaIntent.putExtra("eventStartDateTime", event.getStartDate().toString());
+            startActivity(agendaIntent);
+        });
+        eventInvites = findViewById(R.id.eventInvites);
+        eventInvites.setOnClickListener(v -> {
+            InviteScreenFragment fragment = new InviteScreenFragment();
+
+            Bundle bundle = new Bundle();
+            bundle.putInt("eventId", eventId);
+            fragment.setArguments(bundle);
+
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, fragment)
+                    .addToBackStack(null)
+                    .commit();
+        });
+        eventBudget = findViewById(R.id.eventBudget);
+        eventBudget.setOnClickListener(v -> {
+            Intent budgetIntent = new Intent(EditEventActivity.this, BudgetActivity.class);
+            budgetIntent.putExtra("eventId", event.getId());
+            startActivity(budgetIntent);
+        });
     }
 
     private void fetchLocationSuggestions(String query) {
@@ -444,6 +476,16 @@ public class EditEventActivity extends BaseActivity {
 
         if (!validateField(eventTime, errorEventTime)) {
             isValid = false;
+        }
+
+        if (!eventDate.getText().toString().trim().isEmpty() && !eventTime.getText().toString().trim().isEmpty()) {
+            LocalDateTime eventDateTime = LocalDateTime.parse(eventDate.getText().toString().trim() + "T" + eventTime.getText().toString().trim() + ":00");
+            if (eventDateTime.isBefore(LocalDateTime.now())) {
+                isValid = false;
+                errorDateTime.setVisibility(View.VISIBLE);
+            } else {
+                errorDateTime.setVisibility(View.GONE);
+            }
         }
 
         return isValid;

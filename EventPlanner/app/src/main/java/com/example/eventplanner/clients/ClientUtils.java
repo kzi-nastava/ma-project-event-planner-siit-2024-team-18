@@ -107,6 +107,10 @@ public class ClientUtils {
         return retrofit(context).create(BudgetService.class);
     }
 
+    public static ActivityService getActivityService(Context context) {
+        return retrofit(context).create(ActivityService.class);
+    }
+
     public static PricelistService getPricelistService(Context context) {
         return retrofit(context).create(PricelistService.class);
     }

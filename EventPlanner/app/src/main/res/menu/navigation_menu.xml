@@ -35,10 +35,6 @@
                     android:title="@string/event_types"
                     android:icon="@drawable/ic_event" />
 
-                <item android:id="@+id/nav_budget"
-                    android:title="Budget"
-                    android:icon="@drawable/ic_lock" />
-
                 <item android:id="@+id/nav_pricelist"
                     android:title="Pricelist"
                     android:icon="@drawable/ic_pricelist" />

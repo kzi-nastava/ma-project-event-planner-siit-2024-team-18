@@ -29,13 +29,13 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
     private BudgetViewModel budgetViewModel;
     private TextView budgetItemCategory, budgetItemMaxAmount;
     private FrameLayout frameEditBudgetItem, frameDeleteBudgetItem;
-    private Event event;
+    private int eventId;
 
-    public BudgetItemListAdapter(Activity context, BudgetViewModel budgetViewModel, Event event) {
+    public BudgetItemListAdapter(Activity context, BudgetViewModel budgetViewModel, int eventId) {
         super(context, R.layout.budget_item_card);
         this.budgetItems = new ArrayList<>();
         this.budgetViewModel = budgetViewModel;
-        this.event = event;
+        this.eventId = eventId;
     }
 
     @NonNull
@@ -86,7 +86,7 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
     private void setupListeners(BudgetItem budgetItem) {
         frameEditBudgetItem.setOnClickListener(v -> {
             EditBudgetItemDialog.show(getContext(), budgetItem, updatedBudgetItem -> {
-                budgetViewModel.editBudgetItem(event.getId(), updatedBudgetItem.getId(), updatedBudgetItem);
+                budgetViewModel.editBudgetItem(eventId, updatedBudgetItem.getId(), updatedBudgetItem);
             });
         });
 
@@ -95,7 +95,7 @@ public class BudgetItemListAdapter extends ArrayAdapter<BudgetItem> {
                     .setTitle("Confirm Deletion")
                     .setMessage("Are you sure you want to delete this budget item?")
                     .setPositiveButton("Yes", (dialog, which) -> {
-                        budgetViewModel.deleteBudgetItemById(event.getId(), budgetItem.getId());
+                        budgetViewModel.deleteBudgetItemById(eventId, budgetItem.getId());
                         Toast.makeText(v.getContext(), "Budget Item deleted", Toast.LENGTH_SHORT).show();
                     })
                     .setNegativeButton("No", (dialog, which) -> dialog.dismiss())

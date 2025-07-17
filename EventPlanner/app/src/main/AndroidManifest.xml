@@ -29,6 +29,9 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".activities.AgendaActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.EditEventActivity"
             android:exported="false" />
         <activity
