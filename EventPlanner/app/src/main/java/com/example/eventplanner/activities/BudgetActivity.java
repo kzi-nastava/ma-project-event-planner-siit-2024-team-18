@@ -21,14 +21,14 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private BudgetViewModel budgetViewModel;
     private BudgetItemListFragment budgetItemListFragment;
     private TextView solutionDetails, totalBudget;
-    private Event event = new Event() {};
+    private int eventId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getLayoutInflater().inflate(R.layout.activity_budget, findViewById(R.id.content_frame));
 
-        event.setId(1);
+        eventId = getIntent().getIntExtra("eventId", -1);
         initializeViews();
         initializeBudgetItemsFragment();
         populateData();
@@ -43,7 +43,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private void initializeViews() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
         budgetViewModel.setContext(this);
-        budgetViewModel.getTotalBudget(event.getId());
+        budgetViewModel.getTotalBudget(eventId);
 
         addBudgetItemButton = findViewById(R.id.addBudgetItem);
         solutionDetails = findViewById(R.id.solutionDetails);
@@ -54,7 +54,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private void initializeBudgetItemsFragment() {
         budgetViewModel = new ViewModelProvider(this).get(BudgetViewModel.class);
         budgetViewModel.setContext(this);
-        budgetItemListFragment = BudgetItemListFragment.newInstance(budgetViewModel, event);
+        budgetItemListFragment = BudgetItemListFragment.newInstance(budgetViewModel, eventId);
 
         FragmentTransition.to(budgetItemListFragment, this, false, R.id.listViewBudgetItems);
     }
@@ -77,8 +77,8 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
 
     private void setupAddBudgetItemButton() {
         addBudgetItemButton.setOnClickListener(v -> {
-            AddBudgetItemDialog.show(event, this, (category, maxAmount) -> {
-                budgetViewModel.addBudgetItem(event.getId(), new BudgetItem(category, Integer.parseInt(maxAmount)));
+            AddBudgetItemDialog.show(eventId, this, (category, maxAmount) -> {
+                budgetViewModel.addBudgetItem(eventId, new BudgetItem(category, Integer.parseInt(maxAmount)));
             });
         });
     }

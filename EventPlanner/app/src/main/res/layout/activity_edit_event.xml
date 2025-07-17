@@ -409,6 +409,58 @@
                     app:layout_constraintTop_toBottomOf="@id/inputEventTime" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/errorDateTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Event starting date and time must be in future."
+                android:textColor="@color/alert"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/dateTimeSelectLinearLayout" />
+
+            <LinearLayout
+                android:id="@+id/layoutButtons"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/errorDateTime">
+
+                <Button
+                    android:id="@+id/eventAgenda"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/lightText"
+                    android:backgroundTint="@color/secondary"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="Agenda" />
+
+                <Button
+                    android:id="@+id/eventBudget"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/lightText"
+                    android:backgroundTint="@color/secondary"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginEnd="10dp"
+                    android:text="Budget" />
+
+                <Button
+                    android:id="@+id/eventInvites"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/lightText"
+                    android:backgroundTint="@color/secondary"
+                    android:layout_marginTop="32dp"
+                    android:text="Invites" />
+
+            </LinearLayout>
+
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSaveNewEvent"
                 android:layout_width="0dp"
@@ -420,7 +472,7 @@
                 android:textColor="@android:color/white"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dateTimeSelectLinearLayout" />
+                app:layout_constraintTop_toBottomOf="@id/layoutButtons" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

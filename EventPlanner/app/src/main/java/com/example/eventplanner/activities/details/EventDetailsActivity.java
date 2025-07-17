@@ -27,7 +27,6 @@ public class EventDetailsActivity extends BaseActivity {
 
     private ImageView eventImage;
     private TextView eventTitle, eventDescription;
-    private Button sendInvitationsButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,11 +37,6 @@ public class EventDetailsActivity extends BaseActivity {
         eventImage = findViewById(R.id.event_image);
         eventTitle = findViewById(R.id.event_title);
         eventDescription = findViewById(R.id.event_description);
-        sendInvitationsButton = findViewById(R.id.send_invitations_button);
-
-        if(!Objects.equals(loginViewModel.getRole(), "EVENT_ORGANIZER")){
-            sendInvitationsButton.setVisibility(View.GONE);
-        }
 
         int eventId = getIntent().getIntExtra("eventId", -1);
 
@@ -52,8 +46,6 @@ public class EventDetailsActivity extends BaseActivity {
         } else {
             Toast.makeText(this, "Invalid Event ID", Toast.LENGTH_SHORT).show();
         }
-
-        setupListeners(eventId);
     }
 
     private void setupViewModel() {
@@ -98,23 +90,6 @@ public class EventDetailsActivity extends BaseActivity {
         ContentUnavailableFragment fragment = new ContentUnavailableFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, fragment)
-                .commit();
-    }
-
-    private void setupListeners(int eventId) {
-        sendInvitationsButton.setOnClickListener(v -> navigateToInvitationFragment(eventId));
-    }
-
-    private void navigateToInvitationFragment(int eventId) {
-        InviteScreenFragment fragment = new InviteScreenFragment();
-
-        Bundle bundle = new Bundle();
-        bundle.putInt("eventId", eventId);
-        fragment.setArguments(bundle);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 }

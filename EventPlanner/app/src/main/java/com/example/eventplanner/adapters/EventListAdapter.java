@@ -119,7 +119,7 @@ public class EventListAdapter extends ArrayAdapter<EventCard> {
 
         eventCard.setOnClickListener(v -> {
             Intent detailIntent = new Intent(activity, EventDetailsActivity.class);
-            detailIntent.putExtra("solutionId", event.getId());
+            detailIntent.putExtra("eventId", event.getId());
             activity.startActivity(detailIntent);
         });
     }
