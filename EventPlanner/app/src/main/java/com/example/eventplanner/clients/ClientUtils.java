@@ -30,6 +30,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ClientUtils {
 
     public static final String SERVICE_API_PATH = "http://" + BuildConfig.IP_ADDR + ":8080/api/";
+    public static final String BASE_URL_NO_API = "http://" + BuildConfig.IP_ADDR + ":8080/";
 
     public static OkHttpClient test(Context context) {
         HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
@@ -82,6 +83,14 @@ public class ClientUtils {
     public static Retrofit retrofit(Context context) {
         return new Retrofit.Builder()
                 .baseUrl(SERVICE_API_PATH)
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .client(test(context))
+                .build();
+    }
+
+    public static Retrofit retrofitNoApi(Context context) {
+        return new Retrofit.Builder()
+                .baseUrl(BASE_URL_NO_API)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .client(test(context))
                 .build();
@@ -161,5 +170,9 @@ public class ClientUtils {
 
     public static LocationService getLocationService(Context context) {
         return retrofit(context).create(LocationService.class);
+    }
+
+    public static NotificationService getNotificationService(Context context) {
+        return retrofitNoApi(context).create(NotificationService.class);
     }
 }

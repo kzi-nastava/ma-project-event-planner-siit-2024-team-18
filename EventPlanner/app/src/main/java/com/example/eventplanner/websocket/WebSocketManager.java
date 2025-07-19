@@ -5,7 +5,9 @@ import android.util.Log;
 
 import com.example.eventplanner.BuildConfig;
 import com.example.eventplanner.models.Message;
+import com.example.eventplanner.models.NotificationModel;
 import com.example.eventplanner.models.User;
+import com.example.eventplanner.utils.NotificationHelper;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
 
 import org.json.JSONException;
@@ -31,10 +33,13 @@ public class WebSocketManager {
     private String websocketUrl = "ws://" + BuildConfig.IP_ADDR + ":8080/chat/websocket";
     private static final String TAG = "WebSocketManager";
     private static WebSocketManager instance;
+    private boolean notificationsMuted = false;
     private StompClient stompClient;
     private final Context context;
     private final Set<String> activeChatSubscriptions = new HashSet<>();
-    private CompositeDisposable compositeDisposable;
+    private final Set<String> activeNotificationSubscriptions = new HashSet<>();
+    private CompositeDisposable chatDisposable;
+    private CompositeDisposable notificationDisposable;
     private User loggedUser;
     private CommunicationViewModel communicationViewModel;
 
@@ -79,18 +84,7 @@ public class WebSocketManager {
                     }
                 });
 
-        compositeDisposable.add(dispLifecycle);
-
-        Disposable dispTopic = stompClient.topic("/topic/messages/1")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(topicMessage -> {
-                    Log.d(TAG, "Received " + topicMessage.getPayload());
-                }, throwable -> {
-                    Log.e(TAG, "Error on subscribe topic", throwable);
-                });
-
-        compositeDisposable.add(dispTopic);
+        chatDisposable.add(dispLifecycle);
 
         String authToken = retrieveAuthToken();
 
@@ -100,6 +94,70 @@ public class WebSocketManager {
         stompClient.connect(headers);
     }
 
+    public void subscribeToNotifications() {
+        String topic = "/topic/notifications/" + loggedUser.getId();
+
+        if (activeNotificationSubscriptions.contains(topic)) {
+            Log.d(TAG, "Already subscribed to notification topic: " + topic);
+            return;
+        }
+
+        Disposable topicDisp = stompClient.topic(topic)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(message -> {
+                    Log.d(TAG, "Received notification: " + message.getPayload());
+                    if (!notificationsMuted) {
+                        handleIncomingNotification(message.getPayload());
+                    } else {
+                        Log.d(TAG, "Notification muted");
+                    }
+                }, throwable -> Log.e(TAG, "Error on notification topic", throwable));
+
+        notificationDisposable.add(topicDisp);
+        activeNotificationSubscriptions.add(topic);
+        Log.d(TAG, "Subscribed to notification topic: " + topic);
+    }
+
+
+
+    private void handleIncomingNotification(String payload) {
+        try {
+            JSONObject json = new JSONObject(payload);
+
+            int id = json.getInt("id");
+            String title = json.getString("title");
+            String content = json.getString("content");
+            boolean seen = json.getBoolean("seen");
+            String type = json.getString("notificationType");
+            int itemId = json.getInt("itemId");
+            String dateString = json.optString("date", null);
+
+            NotificationModel notification = new NotificationModel(id, title, content, seen, type, itemId);
+
+            if (dateString != null) {
+                try {
+                    LocalDateTime date = LocalDateTime.parse(dateString, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                    notification.setDate(date);
+                } catch (Exception e) {
+                    Log.e(TAG, "Failed to parse date: " + dateString, e);
+                }
+            }
+
+            communicationViewModel.postNewNotification(notification);
+
+            NotificationHelper.showNotification(context, notification.getTitle(), notification.getContent());
+
+        } catch (JSONException e) {
+            Log.e(TAG, "Error parsing notification JSON", e);
+        }
+    }
+
+    public void setNotificationsMuted(boolean muted) {
+        this.notificationsMuted = muted;
+    }
+
+
     private String retrieveAuthToken() {
         return context.getSharedPreferences("auth_prefs", Context.MODE_PRIVATE)
                 .getString("user_token", null);
@@ -108,7 +166,7 @@ public class WebSocketManager {
     public void loadInitialChatSubscriptions(int chatId) {
         String topic = "/topic/messages/" + chatId;
         if (activeChatSubscriptions.contains(topic)) {
-            Log.d(TAG, "Already subscribed to topic: " + topic);
+            Log.d(TAG, "Already subscribed to chat topic: " + topic);
             return;
         }
 
@@ -118,9 +176,9 @@ public class WebSocketManager {
                 .subscribe(message -> {
                     Log.d(TAG, "Received message: " + message.getPayload());
                     handleIncomingMessage(message.getPayload(), chatId);
-                }, throwable -> Log.e(TAG, "Error on topic subscription", throwable));
+                }, throwable -> Log.e(TAG, "Error on chat topic", throwable));
 
-        compositeDisposable.add(topicDisp);
+        chatDisposable.add(topicDisp);
         activeChatSubscriptions.add(topic);
     }
 
@@ -172,16 +230,24 @@ public class WebSocketManager {
     }
 
     private void resetSubscriptions() {
-        if (compositeDisposable != null) {
-            compositeDisposable.dispose();
-        }
-        compositeDisposable = new CompositeDisposable();
+        if (chatDisposable != null) chatDisposable.dispose();
+        if (notificationDisposable != null) notificationDisposable.dispose();
+
+        chatDisposable = new CompositeDisposable();
+        notificationDisposable = new CompositeDisposable();
+
+        activeChatSubscriptions.clear();
+        activeNotificationSubscriptions.clear();
     }
 
     public void disconnect() {
-        compositeDisposable.dispose();
-        stompClient.disconnect();
+        if (chatDisposable != null) chatDisposable.dispose();
+        if (notificationDisposable != null) notificationDisposable.dispose();
+        if (stompClient != null) stompClient.disconnect();
+
         activeChatSubscriptions.clear();
+        activeNotificationSubscriptions.clear();
+
         Log.d(TAG, "Disconnected from WebSocket");
     }
 }
