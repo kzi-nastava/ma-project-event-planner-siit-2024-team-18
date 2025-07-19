@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ActivityListAdapter extends ArrayAdapter<EventActivity> {
-    private LinearLayout eventActivityCard;
     private ArrayList<EventActivity> activities;
     private AgendaViewModel agendaViewModel;
     private TextView activityName, description, location, startDate, endDate;
@@ -32,7 +31,7 @@ public class ActivityListAdapter extends ArrayAdapter<EventActivity> {
     private int eventId;
 
     public ActivityListAdapter(Activity context, AgendaViewModel agendaViewModel, int eventId) {
-        super(context, R.layout.budget_item_card);
+        super(context, R.layout.event_activity_card);
         this.activities = new ArrayList<>();
         this.agendaViewModel = agendaViewModel;
         this.eventId = eventId;
@@ -71,7 +70,6 @@ public class ActivityListAdapter extends ArrayAdapter<EventActivity> {
     }
 
     private void initializeViews(View convertView) {
-        eventActivityCard = convertView.findViewById(R.id.eventActivityCard);
         activityName = convertView.findViewById(R.id.activityName);
         description = convertView.findViewById(R.id.description);
         location = convertView.findViewById(R.id.location);

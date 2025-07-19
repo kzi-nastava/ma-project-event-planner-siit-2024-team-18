@@ -84,4 +84,46 @@ public interface UserService {
     })
     @PUT("/api/user-profiles")
     Call<Void> updateProfile(@Body UpdateUser user);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/favourite-events/is-in/{eventId}")
+    Call<Boolean> isEventInFavourites(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("/api/user-profiles/event-participation/is-joined/{eventId}")
+    Call<Boolean> isUserJoinedToEvent(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @POST("user-profiles/event-participation/join/{eventId}")
+    Call<Void> joinEvent(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @DELETE("user-profiles/event-participation/leave/{eventId}")
+    Call<Void> leaveEvent(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("user-profiles/favourite-events/add/{eventId}")
+    Call<Void> addEventToFavourites(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("user-profiles/favourite-events/remove/{eventId}")
+    Call<Void> removeEventFromFavourites(@Path("eventId") int eventId);
 }

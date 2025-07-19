@@ -20,6 +20,22 @@ public class UserViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<User> loggedUserLiveData = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<User>> usersLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> joinSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> leaveSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> addFavSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> removeFavSuccess = new MutableLiveData<>();
+    public LiveData<Boolean> getRemoveFavSuccess() {
+        return removeFavSuccess;
+    }
+    public LiveData<Boolean> getAddFavSuccess() {
+        return addFavSuccess;
+    }
+    public LiveData<Boolean> getLeaveSuccess() {
+        return leaveSuccess;
+    }
+    public LiveData<Boolean> getJoinSuccess() {
+        return joinSuccess;
+    }
 
     public void setContext(Context context) {
         this.context = context.getApplicationContext();
@@ -70,6 +86,82 @@ public class UserViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<ArrayList<User>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void addToFavourites(int eventId) {
+        Call<Void> call = ClientUtils.getUserService(context).addEventToFavourites(eventId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to add to favourites. Code: " + response.code());
+                } else {
+                    addFavSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void removeFromFavourites(int eventId) {
+        Call<Void> call = ClientUtils.getUserService(context).removeEventFromFavourites(eventId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to remove from favourites. Code: " + response.code());
+                } else {
+                    removeFavSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void joinEvent(int eventId) {
+        Call<Void> call = ClientUtils.getUserService(context).joinEvent(eventId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("There is no space available on this event.");
+                } else {
+                    joinSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void leaveEvent(int eventId) {
+        Call<Void> call = ClientUtils.getUserService(context).leaveEvent(eventId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to leave event. Code: " + response.code());
+                } else {
+                    leaveSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });

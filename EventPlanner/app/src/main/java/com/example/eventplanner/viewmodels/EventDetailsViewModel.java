@@ -1,7 +1,6 @@
 package com.example.eventplanner.viewmodels;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -10,7 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Event;
 import com.example.eventplanner.models.EventCard;
-import com.example.eventplanner.models.Product;
+import com.example.eventplanner.models.EventDetails;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +23,8 @@ import retrofit2.Response;
 public class EventDetailsViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Event>> allEventsLiveData = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<EventCard>> allEventsByCreatorLiveData = new MutableLiveData<>();
-    private final MutableLiveData<Event> eventDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Event> eventLiveData = new MutableLiveData<>();
+    private final MutableLiveData<EventDetails> eventDetailsLiveData = new MutableLiveData<>();
     private final MutableLiveData<Boolean> loading = new MutableLiveData<>(false);
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
@@ -33,7 +33,11 @@ public class EventDetailsViewModel extends ViewModel {
         return success;
     }
 
-    public LiveData<Event> getEventDetails() {
+    public LiveData<Event> getEvent() {
+        return eventLiveData;
+    }
+
+    public LiveData<EventDetails> getEventDetails() {
         return eventDetailsLiveData;
     }
 
@@ -97,22 +101,51 @@ public class EventDetailsViewModel extends ViewModel {
         });
     }
 
-    public void fetchEventDetailsById(int eventId) {
+    public void fetchEventById(int eventId) {
         if (Boolean.TRUE.equals(loading.getValue())) return;
 
         loading.setValue(true);
         errorMessage.setValue(null);
 
-        Call<Event> call = ClientUtils.getEventService(this.context).getEventDetailsById(eventId);
+        Call<Event> call = ClientUtils.getEventService(this.context).getEventById(eventId);
         call.enqueue(new Callback<Event>() {
             @Override
             public void onResponse(Call<Event> call, Response<Event> response) {
                 loading.setValue(false);
                 if (response.isSuccessful()) {
                     if (response.body() != null) {
+                        eventLiveData.setValue(response.body());
+                    } else {
+                        errorMessage.setValue("Event not found or no data available.");
+                    }
+                } else {
+                    errorMessage.setValue("Error fetching event: " + response.message());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Event> call, Throwable t) {
+                loading.setValue(false);
+                errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchEventDetailsById(int eventId) {
+        if (Boolean.TRUE.equals(loading.getValue())) return;
+
+        loading.setValue(true);
+        errorMessage.setValue(null);
+
+        Call<EventDetails> call = ClientUtils.getEventService(this.context).getEventDetailsById(eventId);
+        call.enqueue(new Callback<EventDetails>() {
+            @Override
+            public void onResponse(Call<EventDetails> call, Response<EventDetails> response) {
+                loading.setValue(false);
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
                         eventDetailsLiveData.setValue(response.body());
                     } else {
-                        // Handle empty response
                         errorMessage.setValue("Event not found or no data available.");
                     }
                 } else {
@@ -121,9 +154,8 @@ public class EventDetailsViewModel extends ViewModel {
             }
 
             @Override
-            public void onFailure(Call<Event> call, Throwable t) {
+            public void onFailure(Call<EventDetails> call, Throwable t) {
                 loading.setValue(false);
-                Log.e("EventDetailsActivity", "Failed to fetch event by id", t);
                 errorMessage.setValue("Network error: " + t.getMessage());
             }
         });

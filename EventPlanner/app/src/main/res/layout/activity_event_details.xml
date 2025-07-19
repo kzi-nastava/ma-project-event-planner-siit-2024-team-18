@@ -1,29 +1,262 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@color/primary"
+    android:padding="20dp">
 
-    <ImageView
-        android:id="@+id/event_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:contentDescription="@string/event_details_image"
-        android:scaleType="centerCrop" />
-
-    <TextView
-        android:id="@+id/event_title"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        android:paddingTop="8dp" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:id="@+id/event_description"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:paddingTop="8dp" />
+        <TextView
+            android:id="@+id/event_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event Title"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/merriweather"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:layout_gravity="center" />
 
-</LinearLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/button_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <Button
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Back"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <Button
+                android:id="@+id/btn_join"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Join"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <Button
+                android:id="@+id/btn_leave"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leave"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <Button
+                android:id="@+id/btn_add_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add To Favourites"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <Button
+                android:id="@+id/btn_remove_fav"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Remove From Favourites"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <Button
+                android:id="@+id/btn_download"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="PDF"
+                android:textColor="@color/lightText"
+                android:backgroundTint="@color/secondary" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/button_flow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:constraint_referenced_ids="btn_back,btn_join,btn_leave,btn_add_fav,btn_remove_fav,btn_download"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:flow_wrapMode="chain"
+                app:flow_horizontalGap="12dp"
+                app:flow_verticalGap="12dp"
+                app:flow_horizontalAlign="center" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/event_image_slider"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:clipToPadding="false"
+            android:padding="4dp"
+            android:elevation="4dp"
+            android:layout_marginBottom="8dp" />
+
+        <LinearLayout
+            android:id="@+id/slider_dots_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event description."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="16dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/event_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event type."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/location_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event location name."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/city"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event city."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/country"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event country."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/start_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event start date."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/end_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event end date."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/max_participants"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event max participants."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/privacy_type"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event privacy type."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <TextView
+            android:id="@+id/creator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="This is a sample event creator."
+            android:textSize="16sp"
+            android:textColor="#EBEBEB"
+            android:fontFamily="@font/raleway"
+            android:paddingTop="7dp"
+            android:lineSpacingExtra="4dp" />
+
+        <org.osmdroid.views.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp" />
+
+        <FrameLayout
+            android:id="@+id/listViewActivities"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp" />
+
+        <FrameLayout
+            android:id="@+id/listViewBudget"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:layout_marginStart="8dp" />
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/attendanceChart"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            android:layout_margin="16dp" />
+
+        <Button
+            android:id="@+id/btn_attendance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Download Attendance Stats PDF Report"
+            android:textColor="@color/lightText"
+            android:backgroundTint="@color/secondary"
+            android:layout_gravity="center" />
+    </LinearLayout>
+</ScrollView>

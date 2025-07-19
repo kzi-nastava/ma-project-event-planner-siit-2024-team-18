@@ -12,7 +12,6 @@ import androidx.fragment.app.ListFragment;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.adapters.ActivityListAdapter;
-import com.example.eventplanner.models.Event;
 import com.example.eventplanner.viewmodels.AgendaViewModel;
 
 public class ActivityListFragment extends ListFragment {
