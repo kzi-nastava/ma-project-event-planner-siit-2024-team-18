@@ -1,7 +1,9 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.AttendanceStat;
 import com.example.eventplanner.models.EventCard;
 import com.example.eventplanner.models.Event;
+import com.example.eventplanner.models.EventDetails;
 import com.example.eventplanner.models.PagedResponse;
 
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ import java.util.List;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
@@ -21,6 +24,7 @@ import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Streaming;
 
 public interface EventService {
     @Headers({
@@ -42,7 +46,14 @@ public interface EventService {
             "Content-Type:application/json"
     })
     @GET("events/{id}")
-    Call<Event> getEventDetailsById(@Path("id") int id);
+    Call<Event> getEventById(@Path("id") int id);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("events/details/{id}")
+    Call<EventDetails> getEventDetailsById(@Path("id") int id);
 
     @Headers({
             "User-Agent: Mobile-Android",
@@ -126,4 +137,28 @@ public interface EventService {
             @Part("latitude") RequestBody latitude,
             @Part("longitude") RequestBody longitude
     );
+
+    @Headers({
+            "User-Agent: Mobile-Android"
+    })
+    @GET("/api/pdf/{eventId}")
+    @Streaming
+    Call<ResponseBody> downloadEventPdf(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android"
+    })
+    @GET("/api/pdf/attendance/{eventId}")
+    @Streaming
+    Call<ResponseBody> downloadAttendancePdf(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android"
+    })
+    @GET("/api/pdf/event-guests/{eventId}")
+    @Streaming
+    Call<ResponseBody> downloadEventGuestsPDF(@Path("eventId") int eventId);
+
+    @GET("events/attendance-stats/{eventId}")
+    Call<List<AttendanceStat>> getAttendanceStats(@Path("eventId") int eventId);
 }

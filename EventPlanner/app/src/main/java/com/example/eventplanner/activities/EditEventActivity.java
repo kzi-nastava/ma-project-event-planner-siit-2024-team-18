@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -49,6 +50,8 @@ import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +61,7 @@ import java.util.Locale;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -86,7 +90,7 @@ public class EditEventActivity extends BaseActivity {
     private Runnable locationRunnable;
     private int eventId;
     private Event event;
-    private Button eventAgenda, eventBudget, eventInvites;
+    private Button eventAgenda, eventBudget, eventInvites, eventGuests;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -214,6 +218,10 @@ public class EditEventActivity extends BaseActivity {
             budgetIntent.putExtra("eventId", event.getId());
             startActivity(budgetIntent);
         });
+        eventGuests = findViewById(R.id.eventGuests);
+        eventGuests.setOnClickListener(v -> {
+            downloadEventGuestsPDF(eventId);
+        });
     }
 
     private void fetchLocationSuggestions(String query) {
@@ -249,7 +257,7 @@ public class EditEventActivity extends BaseActivity {
 
     private void loadViewModels() {
         eventTypeViewModel.fetchEventTypes();
-        eventDetailsViewModel.fetchEventDetailsById(eventId);
+        eventDetailsViewModel.fetchEventById(eventId);
 
         eventTypeViewModel = new ViewModelProvider(this).get(EventTypeCardViewModel.class);
         eventTypeViewModel.getEventTypes().observe(this, eventTypes -> {
@@ -264,7 +272,7 @@ public class EditEventActivity extends BaseActivity {
             }
         });
 
-        eventDetailsViewModel.getEventDetails().observe(this, event -> {
+        eventDetailsViewModel.getEvent().observe(this, event -> {
             if (event != null) {
                 this.event = event;
                 populateFields();
@@ -592,5 +600,46 @@ public class EditEventActivity extends BaseActivity {
             e.printStackTrace();
             return null;
         }
+    }
+
+    public void downloadEventGuestsPDF(int eventId) {
+        Call<ResponseBody> call = ClientUtils.getEventService(getApplicationContext()).downloadEventGuestsPDF(eventId);
+
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        File downloadsDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+                        File outputFile = new File(downloadsDir, "event_guests_" + eventId + ".pdf");
+
+                        InputStream inputStream = response.body().byteStream();
+                        FileOutputStream outputStream = new FileOutputStream(outputFile);
+
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = inputStream.read(buffer)) != -1) {
+                            outputStream.write(buffer, 0, bytesRead);
+                        }
+
+                        outputStream.flush();
+                        outputStream.close();
+                        inputStream.close();
+
+                        Toast.makeText(getApplicationContext(), "PDF saved to Downloads!", Toast.LENGTH_LONG).show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        Toast.makeText(getApplicationContext(), "Failed to save PDF", Toast.LENGTH_LONG).show();
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "PDF download failed", Toast.LENGTH_LONG).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Toast.makeText(getApplicationContext(), "Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
