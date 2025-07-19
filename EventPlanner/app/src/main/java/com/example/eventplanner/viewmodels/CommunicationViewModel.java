@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelStoreOwner;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.Chat;
 import com.example.eventplanner.models.Message;
+import com.example.eventplanner.models.NotificationModel;
 import com.example.eventplanner.models.User;
 import com.example.eventplanner.websocket.WebSocketManager;
 
@@ -43,7 +44,13 @@ public class CommunicationViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Message>> messagesLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Message> newMessageLiveData = new MutableLiveData<>();
+    private final MutableLiveData<NotificationModel> newNotification = new MutableLiveData<>();
+    private final MutableLiveData<List<NotificationModel>> notificationsLiveData = new MutableLiveData<>();
     private final Map<Integer, MutableLiveData<Message>> lastMessageMap = new HashMap<>();
+
+    public LiveData<List<NotificationModel>> getNotificationsLiveData() {
+        return notificationsLiveData;
+    }
 
     private CommunicationViewModel() {}
 
@@ -87,6 +94,7 @@ public class CommunicationViewModel extends ViewModel {
     private void initializeWebSocketManager(User loggedUser) {
         webSocketManager = WebSocketManager.getInstance(context, loggedUser, this);
         fetchChats();
+        fetchNotifications();
     }
 
     public void sendMessage(String content, int chatId, int senderId) {
@@ -251,5 +259,80 @@ public class CommunicationViewModel extends ViewModel {
         });
 
         userViewModel.fetchLoggedUser();
+    }
+
+    public LiveData<NotificationModel> getNewNotification() {
+        return newNotification;
+    }
+
+    public void postNewNotification(NotificationModel notification) {
+        newNotification.postValue(notification);
+
+        List<NotificationModel> currentList = notificationsLiveData.getValue();
+        if (currentList == null) {
+            currentList = new ArrayList<>();
+        } else {
+            currentList = new ArrayList<>(currentList);
+        }
+
+        currentList.add(0, notification);
+        notificationsLiveData.postValue(currentList);
+    }
+
+
+    public void fetchNotifications() {
+        Call<List<NotificationModel>> call = ClientUtils.getNotificationService(this.context).getAllNotifications();
+        call.enqueue(new Callback<List<NotificationModel>>() {
+            @Override
+            public void onResponse(Call<List<NotificationModel>> call, Response<List<NotificationModel>> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    notificationsLiveData.postValue(response.body());
+                    webSocketManager.subscribeToNotifications();
+                } else {
+                    errorMessage.postValue("Failed to fetch notifications. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<NotificationModel>> call, Throwable t) {
+                errorMessage.postValue("Failed to fetch notifications: " + t.getMessage());
+            }
+        });
+    }
+
+    public void toggleNotifications() {
+        Call<ResponseBody> call = ClientUtils.getNotificationService(this.context).toggleNotifications();
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, "Notification settings updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    errorMessage.postValue("Failed to toggle notifications. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                errorMessage.postValue("Failed to toggle notifications: " + t.getMessage());
+            }
+        });
+    }
+
+    public void markNotificationAsSeen(int notificationId) {
+        Call<NotificationModel> call = ClientUtils.getNotificationService(context).getNotificationById(notificationId);
+        call.enqueue(new Callback<NotificationModel>() {
+            @Override
+            public void onResponse(Call<NotificationModel> call, Response<NotificationModel> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to mark notification as seen. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<NotificationModel> call, Throwable t) {
+                errorMessage.postValue("Error: " + t.getMessage());
+            }
+        });
     }
 }

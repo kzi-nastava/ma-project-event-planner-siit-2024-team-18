@@ -16,10 +16,15 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.bumptech.glide.Glide;
 import com.example.eventplanner.R;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
 import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Objects;
+
+import androidx.core.view.MenuItemCompat;
+import android.view.LayoutInflater;
+import android.widget.FrameLayout;
 
 public abstract class BaseActivity extends AppCompatActivity {
 
@@ -31,6 +36,7 @@ public abstract class BaseActivity extends AppCompatActivity {
     private ImageView profileImageView;
     private TextView userFullNameTextView;
     private TextView userEmailTextView;
+    private TextView notificationBadgeTextView;
     private View headerView;
 
     @Override
@@ -93,6 +99,28 @@ public abstract class BaseActivity extends AppCompatActivity {
             updateMenuVisibility(navigationView.getMenu(), isLoggedIn);
         });
 
+        MenuItem notificationItem = navigationView.getMenu().findItem(R.id.nav_notifications);
+        FrameLayout actionView = (FrameLayout) LayoutInflater.from(this).inflate(R.layout.notification_badge_layout, null);
+        notificationBadgeTextView = actionView.findViewById(R.id.notifications_badge);
+
+        MenuItemCompat.setActionView(notificationItem, actionView);
+
+        CommunicationViewModel communicationViewModel = CommunicationViewModel.getInstance();
+//        communicationViewModel.initialize(this);
+
+        communicationViewModel.getNotificationsLiveData().observe(this, notifications -> {
+            if (notifications != null && notificationBadgeTextView != null) {
+                long unseenCount = notifications.stream().filter(n -> !n.isSeen()).count();
+
+                if (unseenCount > 0) {
+                    notificationBadgeTextView.setVisibility(View.VISIBLE);
+                    notificationBadgeTextView.setText(String.valueOf(unseenCount));
+                } else {
+                    notificationBadgeTextView.setVisibility(View.GONE);
+                }
+            }
+        });
+
         navigationView.setNavigationItemSelectedListener(item -> {
             int id = item.getItemId();
 
@@ -107,6 +135,11 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (currentActivity != CommunicationActivity.class) {
                     Intent communicationIntent = new Intent(BaseActivity.this, CommunicationActivity.class);
                     startActivity(communicationIntent);
+                }
+            } else if (id == R.id.nav_notifications) {
+                if (currentActivity != NotificationsActivity.class) {
+                    Intent notificationsIntent = new Intent(BaseActivity.this, NotificationsActivity.class);
+                    startActivity(notificationsIntent);
                 }
             } else if (id == R.id.nav_services) {
                 if (currentActivity != AllServicesActivity.class) {

@@ -1,18 +1,25 @@
 package com.example.eventplanner.activities;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.UpdatedInvite;
 import com.example.eventplanner.models.User;
+import com.example.eventplanner.utils.NotificationHelper;
+import com.example.eventplanner.utils.PermissionHelper;
 import com.example.eventplanner.viewmodels.CommunicationViewModel;
 import com.example.eventplanner.viewmodels.UserViewModel;
 import com.example.eventplanner.websocket.WebSocketManager;
@@ -34,6 +41,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        if (!PermissionHelper.hasNotificationPermission(this)) {
+            PermissionHelper.requestNotificationPermission(this);
+        }
+
+        NotificationHelper.createChannel(getApplicationContext());
 
         getLoggedUser();
 
