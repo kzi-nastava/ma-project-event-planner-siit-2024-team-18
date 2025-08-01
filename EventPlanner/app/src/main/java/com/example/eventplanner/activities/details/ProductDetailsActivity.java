@@ -26,6 +26,7 @@ import com.example.eventplanner.dialogs.RateProductDialog;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public class ProductDetailsActivity extends BaseActivity {
     private RatingBar productRating;
     boolean isFavorite = false;
     private int productId;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +59,9 @@ public class ProductDetailsActivity extends BaseActivity {
     private void initializeViews() {
         productDetailsViewModel = new ViewModelProvider(this).get(ProductDetailsViewModel.class);
         productDetailsViewModel.setContext(this);
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         productImageSlider = findViewById(R.id.product_image_slider);
@@ -119,11 +124,17 @@ public class ProductDetailsActivity extends BaseActivity {
         if (product != null) {
             this.product = product;
 
-            if (isFavorite) {
-                favoriteButton.setImageResource(R.drawable.liked);
-            } else {
-                favoriteButton.setImageResource(R.drawable.heart);
-            }
+            userViewModel.isLiked().observe(this, liked -> {
+                if (Boolean.TRUE.equals(liked)) {
+                    isFavorite = true;
+                    favoriteButton.setImageResource(R.drawable.liked);
+                } else {
+                    isFavorite = false;
+                    favoriteButton.setImageResource(R.drawable.heart);
+                }
+            });
+            userViewModel.fetchIsLiked(productId);
+
 
             if (product.getImages() != null && product.getImages().length != 0) {
                 setupImageSlider();
@@ -171,6 +182,12 @@ public class ProductDetailsActivity extends BaseActivity {
     private void toggleFavorite() {
         isFavorite = !isFavorite;
         favoriteButton.setImageResource(isFavorite ? R.drawable.liked : R.drawable.heart);
+
+        if (isFavorite) {
+            userViewModel.addToFavouritesSolution(productId);
+        } else {
+            userViewModel.removeFromFavouritesSolution(productId);
+        }
     }
 
     private void openComments() {}

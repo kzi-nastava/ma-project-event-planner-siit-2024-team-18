@@ -25,6 +25,7 @@ import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Service;
 import com.example.eventplanner.viewmodels.LoginViewModel;
 import com.example.eventplanner.viewmodels.ServiceDetailsViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +35,7 @@ public class ServiceDetailsActivity extends BaseActivity {
     private Service service;
     private ServiceDetailsViewModel serviceDetailsViewModel;
     private LoginViewModel loginViewModel;
+    private UserViewModel userViewModel;
     private ViewPager2 serviceImageSlider;
     private LinearLayout sliderDotsContainer;
     private TextView serviceName, serviceDiscountedPrice, serviceDescription, serviceAvailability, serviceOriginalPrice, serviceNumberOfReviews, serviceSpecifics, serviceCategory, serviceEventTypes, serviceDuration, serviceEngagement, serviceReservationDeadline, serviceCancellationDeadline, serviceWorkingHours, serviceLocation;
@@ -59,6 +61,9 @@ public class ServiceDetailsActivity extends BaseActivity {
         serviceDetailsViewModel = new ViewModelProvider(this).get(ServiceDetailsViewModel.class);
         serviceDetailsViewModel.setContext(this);
         loginViewModel = LoginViewModel.getInstance(getApplicationContext());
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         serviceImageSlider = findViewById(R.id.service_image_slider);
@@ -124,11 +129,16 @@ public class ServiceDetailsActivity extends BaseActivity {
         if (service != null) {
             this.service = service;
 
-            if (isFavorite) {
-                favoriteButton.setImageResource(R.drawable.liked);
-            } else {
-                favoriteButton.setImageResource(R.drawable.heart);
-            }
+            userViewModel.isLiked().observe(this, liked -> {
+                if (Boolean.TRUE.equals(liked)) {
+                    isFavorite = true;
+                    favoriteButton.setImageResource(R.drawable.liked);
+                } else {
+                    isFavorite = false;
+                    favoriteButton.setImageResource(R.drawable.heart);
+                }
+            });
+            userViewModel.fetchIsLiked(serviceId);
 
             if (service.getImages() != null && service.getImages().length != 0) {
                 setupImageSlider();
@@ -208,6 +218,12 @@ public class ServiceDetailsActivity extends BaseActivity {
     private void toggleFavorite() {
         isFavorite = !isFavorite;
         favoriteButton.setImageResource(isFavorite ? R.drawable.liked : R.drawable.heart);
+
+        if (isFavorite) {
+            userViewModel.addToFavouritesSolution(serviceId);
+        } else {
+            userViewModel.removeFromFavouritesSolution(serviceId);
+        }
     }
 
     private void openComments() {}

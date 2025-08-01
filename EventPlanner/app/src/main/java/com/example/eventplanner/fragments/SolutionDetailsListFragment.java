@@ -18,9 +18,17 @@ import com.example.eventplanner.viewmodels.BudgetViewModel;
 public class SolutionDetailsListFragment extends ListFragment {
     private SolutionDetailsListAdapter adapter;
     private BudgetViewModel budgetViewModel;
+    private int eventId;
 
-    public static SolutionDetailsListFragment newInstance() {
-        return new SolutionDetailsListFragment();
+    public static SolutionDetailsListFragment newInstance(int eventId) {
+        SolutionDetailsListFragment fragment = new SolutionDetailsListFragment();
+        fragment.setEventId(eventId);
+
+        return fragment;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
     @Nullable
@@ -38,7 +46,7 @@ public class SolutionDetailsListFragment extends ListFragment {
         budgetViewModel = new ViewModelProvider(requireActivity()).get(BudgetViewModel.class);
         budgetViewModel.setContext(requireContext());
 
-        adapter = new SolutionDetailsListAdapter(requireActivity(), budgetViewModel);
+        adapter = new SolutionDetailsListAdapter(requireActivity(), budgetViewModel, getViewLifecycleOwner());
         setListAdapter(adapter);
 
         budgetViewModel.getSolutionDetails().observe(getViewLifecycleOwner(), products -> {
@@ -51,7 +59,7 @@ public class SolutionDetailsListFragment extends ListFragment {
             }
         });
 
-        budgetViewModel.fetchSolutionDetails(1);
+        budgetViewModel.fetchSolutionDetails(eventId);
     }
 
     @Override

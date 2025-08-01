@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.eventplanner.clients.ClientUtils;
 import com.example.eventplanner.models.BudgetItem;
 import com.example.eventplanner.models.ProductDetails;
+import com.example.eventplanner.models.SolutionDetails;
 
 import java.util.ArrayList;
 
@@ -18,7 +19,8 @@ import retrofit2.Response;
 
 public class BudgetViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<BudgetItem>> budgetItemsLiveData = new MutableLiveData<>();
-    private final MutableLiveData<ArrayList<ProductDetails>> solutionDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<SolutionDetails>> solutionDetailsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isProductLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> totalBudgetLiveData = new MutableLiveData<>();
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
@@ -27,8 +29,11 @@ public class BudgetViewModel extends ViewModel {
         return budgetItemsLiveData;
     }
 
-    public LiveData<ArrayList<ProductDetails>> getSolutionDetails() {
+    public LiveData<ArrayList<SolutionDetails>> getSolutionDetails() {
         return solutionDetailsLiveData;
+    }
+    public LiveData<Boolean> isProduct() {
+        return isProductLiveData;
     }
 
     public LiveData<Integer> getTotalBudgetLiveData() {
@@ -69,19 +74,38 @@ public class BudgetViewModel extends ViewModel {
     }
 
     public void fetchSolutionDetails(int eventId) {
-        Call<ArrayList<ProductDetails>> call = ClientUtils.getBudgetService(this.context).getSolutionDetails(eventId);
-        call.enqueue(new Callback<ArrayList<ProductDetails>>() {
+        Call<ArrayList<SolutionDetails>> call = ClientUtils.getBudgetService(this.context).getSolutionDetails(eventId);
+        call.enqueue(new Callback<ArrayList<SolutionDetails>>() {
             @Override
-            public void onResponse(Call<ArrayList<ProductDetails>> call, Response<ArrayList<ProductDetails>> response) {
+            public void onResponse(Call<ArrayList<SolutionDetails>> call, Response<ArrayList<SolutionDetails>> response) {
                 if (response.isSuccessful()) {
                     solutionDetailsLiveData.postValue(response.body());
                 } else {
-                    errorMessage.postValue("Failed to fetch solutoin details. Code: " + response.code());
+                    errorMessage.postValue("Failed to fetch solution details. Code: " + response.code());
                 }
             }
 
             @Override
-            public void onFailure(Call<ArrayList<ProductDetails>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<SolutionDetails>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchIsProduct(int solutionId) {
+        Call<Boolean> call = ClientUtils.getBudgetService(this.context).isProduct(solutionId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (response.isSuccessful()) {
+                    isProductLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch solution details. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });
