@@ -1,12 +1,12 @@
 package com.example.eventplanner.activities.details;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.activities.CommentsActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
 import com.example.eventplanner.dialogs.RateProductDialog;
@@ -135,7 +136,6 @@ public class ProductDetailsActivity extends BaseActivity {
             });
             userViewModel.fetchIsLiked(productId);
 
-
             if (product.getImages() != null && product.getImages().length != 0) {
                 setupImageSlider();
             }
@@ -190,7 +190,11 @@ public class ProductDetailsActivity extends BaseActivity {
         }
     }
 
-    private void openComments() {}
+    private void openComments() {
+        Intent intent = new Intent(ProductDetailsActivity.this, CommentsActivity.class);
+        intent.putExtra("solutionId", productId);
+        startActivity(intent);
+    }
 
     private void visitProvider() {}
 

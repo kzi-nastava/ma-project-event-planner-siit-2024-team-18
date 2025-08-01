@@ -1,5 +1,6 @@
 package com.example.eventplanner.activities.details;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.activities.CommentsActivity;
 import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
@@ -226,7 +228,11 @@ public class ServiceDetailsActivity extends BaseActivity {
         }
     }
 
-    private void openComments() {}
+    private void openComments() {
+        Intent intent = new Intent(ServiceDetailsActivity.this, CommentsActivity.class);
+        intent.putExtra("solutionId", serviceId);
+        startActivity(intent);
+    }
 
     private void visitProvider() {}
 

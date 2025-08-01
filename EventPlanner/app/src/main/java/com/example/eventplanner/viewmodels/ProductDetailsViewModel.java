@@ -8,9 +8,12 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.eventplanner.clients.ClientUtils;
+import com.example.eventplanner.models.Category;
+import com.example.eventplanner.models.Comment;
 import com.example.eventplanner.models.Grade;
 import com.example.eventplanner.models.Product;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -29,6 +32,7 @@ public class ProductDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> productPurchased = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
 
+    private final MutableLiveData<ArrayList<Comment>> commentsLiveData = new MutableLiveData<>();
     public LiveData<Boolean> getSuccess() {
         return success;
     }
@@ -37,6 +41,9 @@ public class ProductDetailsViewModel extends ViewModel {
     }
     public LiveData<Product> getProductDetails() {
         return productDetailsLiveData;
+    }
+    public LiveData<ArrayList<Comment>> getComments() {
+        return commentsLiveData;
     }
 
     public LiveData<Grade> getProductGrade() {
@@ -231,6 +238,25 @@ public class ProductDetailsViewModel extends ViewModel {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 loading.setValue(false);
                 errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchComments(int solutionId) {
+        Call<ArrayList<Comment>> call = ClientUtils.getProductService(this.context).getComments(solutionId);
+        call.enqueue(new Callback<ArrayList<Comment>>() {
+            @Override
+            public void onResponse(Call<ArrayList<Comment>> call, Response<ArrayList<Comment>> response) {
+                if (response.isSuccessful()) {
+                    commentsLiveData.postValue(response.body());
+                } else {
+                    errorMessage.postValue("Failed to fetch Comments. Code: " + response.code());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ArrayList<Comment>> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
             }
         });
     }
