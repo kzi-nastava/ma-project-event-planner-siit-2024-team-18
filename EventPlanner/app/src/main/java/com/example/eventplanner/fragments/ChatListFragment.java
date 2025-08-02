@@ -54,6 +54,8 @@ public class ChatListFragment extends ListFragment {
                 Toast.makeText(requireContext(), error, Toast.LENGTH_SHORT).show();
             }
         });
+
+        communicationViewModel.fetchChats();
     }
 
     @Override

@@ -79,6 +79,13 @@ public interface ProductService {
             "User-Agent: Mobile-Android",
             "Content-Type:application/json"
     })
+    @GET("chat/chat/create/product/{productId}")
+    Call<ResponseBody> getChat(@Path("productId") int productId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
     @GET("products/search")
     Call<PagedResponse<Product>> searchAndFilter(
             @Query("name") String name,
