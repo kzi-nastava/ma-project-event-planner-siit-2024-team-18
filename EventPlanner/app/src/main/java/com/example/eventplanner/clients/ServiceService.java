@@ -90,6 +90,13 @@ public interface ServiceService {
     Call<Service> getById(@Path("id") int id);
 
     @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("chat/chat/create/service/{serviceId}")
+    Call<ResponseBody> getChat(@Path("serviceId") int serviceId);
+
+    @Headers({
             "User-Agent: Mobile-Android"
     })
     @Multipart

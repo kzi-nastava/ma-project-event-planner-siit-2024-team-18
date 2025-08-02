@@ -31,10 +31,14 @@ public class ProductDetailsViewModel extends ViewModel {
     private final MutableLiveData<String> errorMessage = new MutableLiveData<>();
     private final MutableLiveData<Boolean> productPurchased = new MutableLiveData<>();
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> successChat = new MutableLiveData<>();
 
     private final MutableLiveData<ArrayList<Comment>> commentsLiveData = new MutableLiveData<>();
     public LiveData<Boolean> getSuccess() {
         return success;
+    }
+    public LiveData<Boolean> getSuccessChat() {
+        return successChat;
     }
     public LiveData<Boolean> getProductPurchased() {
         return productPurchased;
@@ -257,6 +261,27 @@ public class ProductDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ArrayList<Comment>> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchChats(int solutionId) {
+        Call<ResponseBody> call = ClientUtils.getProductService(this.context).getChat(solutionId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    successChat.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to fetch chats. Code: " + response.code());
+                    successChat.postValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+                successChat.postValue(false);
             }
         });
     }

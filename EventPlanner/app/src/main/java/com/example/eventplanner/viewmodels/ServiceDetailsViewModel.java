@@ -26,11 +26,15 @@ public class ServiceDetailsViewModel extends ViewModel {
     private final MutableLiveData<Boolean> success = new MutableLiveData<>();
     private final MutableLiveData<Grade> serviceGradeLiveData = new MutableLiveData<>();
     private final MutableLiveData<Integer> serviceReviewsLiveData = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> successChat = new MutableLiveData<>();
     public LiveData<Boolean> getSuccess() {
         return success;
     }
     public LiveData<String> getErrorMessage() {
         return errorMessage;
+    }
+    public LiveData<Boolean> getSuccessChat() {
+        return successChat;
     }
 
     public void setService(Service service) {
@@ -178,6 +182,27 @@ public class ServiceDetailsViewModel extends ViewModel {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 errorMessage.setValue("Network error: " + t.getMessage());
+            }
+        });
+    }
+
+    public void fetchChats(int solutionId) {
+        Call<ResponseBody> call = ClientUtils.getServiceService(this.context).getChat(solutionId);
+        call.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    successChat.postValue(true);
+                } else {
+                    errorMessage.postValue("Failed to fetch chats. Code: " + response.code());
+                    successChat.postValue(false);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+                successChat.postValue(false);
             }
         });
     }

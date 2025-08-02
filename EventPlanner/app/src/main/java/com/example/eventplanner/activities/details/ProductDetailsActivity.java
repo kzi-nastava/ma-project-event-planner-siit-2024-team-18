@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.activities.CommentsActivity;
+import com.example.eventplanner.activities.CommunicationActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
 import com.example.eventplanner.dialogs.RateProductDialog;
@@ -196,7 +197,16 @@ public class ProductDetailsActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void visitProvider() {}
+    private void visitProvider() {
+        productDetailsViewModel.getSuccessChat().observe(this, success -> {
+            if (success) {
+                Intent intent = new Intent(ProductDetailsActivity.this, CommunicationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        productDetailsViewModel.fetchChats(productId);
+    }
 
     private void buyProduct() {
         BuyProductDialog.show(this, product, (productId, eventId) -> {

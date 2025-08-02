@@ -21,6 +21,7 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
 import com.example.eventplanner.activities.CommentsActivity;
+import com.example.eventplanner.activities.CommunicationActivity;
 import com.example.eventplanner.fragments.ServiceReservationFragment;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
@@ -234,7 +235,16 @@ public class ServiceDetailsActivity extends BaseActivity {
         startActivity(intent);
     }
 
-    private void visitProvider() {}
+    private void visitProvider() {
+        serviceDetailsViewModel.getSuccessChat().observe(this, success -> {
+            if (success) {
+                Intent intent = new Intent(ServiceDetailsActivity.this, CommunicationActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        serviceDetailsViewModel.fetchChats(serviceId);
+    }
 
     private void setupPaginationDots(int size) {
         dots = new ArrayList<>();
