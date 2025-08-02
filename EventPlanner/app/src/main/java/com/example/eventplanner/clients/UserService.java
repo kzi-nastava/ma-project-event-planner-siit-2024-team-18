@@ -126,4 +126,25 @@ public interface UserService {
     })
     @PUT("user-profiles/favourite-events/remove/{eventId}")
     Call<Void> removeEventFromFavourites(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("user-profiles/favourite-solutions/add/{solutionId}")
+    Call<Void> addToFavouritesSolution(@Path("solutionId") int solutionId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @PUT("user-profiles/favourite-solutions/remove/{solutionId}")
+    Call<Void> removeFromFavouritesSolution(@Path("solutionId") int solutionId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("user-profiles/favourite-solutions/liked/{solutionId}")
+    Call<Boolean> isLiked(@Path("solutionId") int solutionId);
 }

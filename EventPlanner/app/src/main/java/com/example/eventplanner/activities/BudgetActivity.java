@@ -90,7 +90,7 @@ public class BudgetActivity extends BaseActivity implements SolutionDetailsFragm
     private void setupSolutionDetails() {
         solutionDetails.setOnClickListener(view -> {
             onPause();
-            FragmentTransition.to(SolutionDetailsFragment.newInstance(), this, true, R.id.content_frame);
+            FragmentTransition.to(SolutionDetailsFragment.newInstance(eventId), this, true, R.id.content_frame);
         });
     }
 

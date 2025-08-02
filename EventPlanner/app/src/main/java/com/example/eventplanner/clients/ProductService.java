@@ -1,5 +1,7 @@
 package com.example.eventplanner.clients;
 
+import com.example.eventplanner.models.Category;
+import com.example.eventplanner.models.Comment;
 import com.example.eventplanner.models.Grade;
 import com.example.eventplanner.models.PagedResponse;
 import com.example.eventplanner.models.Product;
@@ -65,6 +67,13 @@ public interface ProductService {
     })
     @POST("products/grade/{productId}")
     Call<ResponseBody> rateProduct(@Path("productId") int productId, @Body Grade grade);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("products/comments/{productId}")
+    Call<ArrayList<Comment>> getComments(@Path("productId") int productId);
 
     @Headers({
             "User-Agent: Mobile-Android",

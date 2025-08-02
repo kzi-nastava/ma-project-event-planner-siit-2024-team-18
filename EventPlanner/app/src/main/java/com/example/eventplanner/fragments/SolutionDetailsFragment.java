@@ -14,17 +14,26 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.eventplanner.FragmentTransition;
 import com.example.eventplanner.R;
 import com.example.eventplanner.viewmodels.BudgetViewModel;
+import com.example.eventplanner.viewmodels.CommunicationViewModel;
 
 public class SolutionDetailsFragment extends Fragment {
     private ImageView btnBack;
     private BudgetViewModel budgetViewModel;
+    private int eventId;
 
-    public static SolutionDetailsFragment newInstance() {
-        return new SolutionDetailsFragment();
+    public static SolutionDetailsFragment newInstance(int eventId) {
+        SolutionDetailsFragment fragment = new SolutionDetailsFragment();
+        fragment.setEventId(eventId);
+
+        return fragment;
     }
 
     public interface OnFragmentCloseListener {
         void onFragmentClosed();
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 
     @Nullable
@@ -56,7 +65,7 @@ public class SolutionDetailsFragment extends Fragment {
     }
 
     private void initializeFragment() {
-        FragmentTransition.to(SolutionDetailsListFragment.newInstance(), requireActivity(), false, R.id.listViewSolutionDetails);
+        FragmentTransition.to(SolutionDetailsListFragment.newInstance(eventId), requireActivity(), false, R.id.listViewSolutionDetails);
     }
 
     private void setupListeners() {

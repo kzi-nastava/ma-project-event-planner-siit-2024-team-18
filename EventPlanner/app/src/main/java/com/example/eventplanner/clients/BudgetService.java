@@ -2,6 +2,7 @@ package com.example.eventplanner.clients;
 
 import com.example.eventplanner.models.BudgetItem;
 import com.example.eventplanner.models.ProductDetails;
+import com.example.eventplanner.models.SolutionDetails;
 
 import java.util.ArrayList;
 
@@ -34,7 +35,14 @@ public interface BudgetService {
             "Content-Type:application/json"
     })
     @GET("budget/details/{eventId}")
-    Call<ArrayList<ProductDetails>> getSolutionDetails(@Path("eventId") int eventId);
+    Call<ArrayList<SolutionDetails>> getSolutionDetails(@Path("eventId") int eventId);
+
+    @Headers({
+            "User-Agent: Mobile-Android",
+            "Content-Type:application/json"
+    })
+    @GET("solutions/isProduct/{solutionId}")
+    Call<Boolean> isProduct(@Path("solutionId") int solutionId);
 
     @Headers({
             "User-Agent: Mobile-Android",

@@ -1,12 +1,12 @@
 package com.example.eventplanner.activities.details;
 
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -20,12 +20,14 @@ import androidx.viewpager2.widget.ViewPager2;
 
 import com.example.eventplanner.R;
 import com.example.eventplanner.activities.BaseActivity;
+import com.example.eventplanner.activities.CommentsActivity;
 import com.example.eventplanner.adapters.ImageSliderAdapter;
 import com.example.eventplanner.dialogs.BuyProductDialog;
 import com.example.eventplanner.dialogs.RateProductDialog;
 import com.example.eventplanner.fragments.SolutionContentUnavailableFragment;
 import com.example.eventplanner.models.Product;
 import com.example.eventplanner.viewmodels.ProductDetailsViewModel;
+import com.example.eventplanner.viewmodels.UserViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +44,7 @@ public class ProductDetailsActivity extends BaseActivity {
     private RatingBar productRating;
     boolean isFavorite = false;
     private int productId;
+    private UserViewModel userViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +60,9 @@ public class ProductDetailsActivity extends BaseActivity {
     private void initializeViews() {
         productDetailsViewModel = new ViewModelProvider(this).get(ProductDetailsViewModel.class);
         productDetailsViewModel.setContext(this);
+
+        userViewModel = new ViewModelProvider(this).get(UserViewModel.class);
+        userViewModel.setContext(this);
 
         favoriteButton = findViewById(R.id.favorite_button);
         productImageSlider = findViewById(R.id.product_image_slider);
@@ -119,11 +125,16 @@ public class ProductDetailsActivity extends BaseActivity {
         if (product != null) {
             this.product = product;
 
-            if (isFavorite) {
-                favoriteButton.setImageResource(R.drawable.liked);
-            } else {
-                favoriteButton.setImageResource(R.drawable.heart);
-            }
+            userViewModel.isLiked().observe(this, liked -> {
+                if (Boolean.TRUE.equals(liked)) {
+                    isFavorite = true;
+                    favoriteButton.setImageResource(R.drawable.liked);
+                } else {
+                    isFavorite = false;
+                    favoriteButton.setImageResource(R.drawable.heart);
+                }
+            });
+            userViewModel.fetchIsLiked(productId);
 
             if (product.getImages() != null && product.getImages().length != 0) {
                 setupImageSlider();
@@ -171,9 +182,19 @@ public class ProductDetailsActivity extends BaseActivity {
     private void toggleFavorite() {
         isFavorite = !isFavorite;
         favoriteButton.setImageResource(isFavorite ? R.drawable.liked : R.drawable.heart);
+
+        if (isFavorite) {
+            userViewModel.addToFavouritesSolution(productId);
+        } else {
+            userViewModel.removeFromFavouritesSolution(productId);
+        }
     }
 
-    private void openComments() {}
+    private void openComments() {
+        Intent intent = new Intent(ProductDetailsActivity.this, CommentsActivity.class);
+        intent.putExtra("solutionId", productId);
+        startActivity(intent);
+    }
 
     private void visitProvider() {}
 

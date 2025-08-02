@@ -24,6 +24,7 @@ public class UserViewModel extends ViewModel {
     private final MutableLiveData<Boolean> leaveSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> addFavSuccess = new MutableLiveData<>();
     private final MutableLiveData<Boolean> removeFavSuccess = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> isLiked = new MutableLiveData<>();
     public LiveData<Boolean> getRemoveFavSuccess() {
         return removeFavSuccess;
     }
@@ -35,6 +36,9 @@ public class UserViewModel extends ViewModel {
     }
     public LiveData<Boolean> getJoinSuccess() {
         return joinSuccess;
+    }
+    public LiveData<Boolean> isLiked() {
+        return isLiked;
     }
 
     public void setContext(Context context) {
@@ -124,6 +128,63 @@ public class UserViewModel extends ViewModel {
 
             @Override
             public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void addToFavouritesSolution(int solutionId) {
+        Call<Void> call = ClientUtils.getUserService(context).addToFavouritesSolution(solutionId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to add to favourites. Code: " + response.code());
+                } else {
+                    addFavSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void removeFromFavouritesSolution(int solutionId) {
+        Call<Void> call = ClientUtils.getUserService(context).removeFromFavouritesSolution(solutionId);
+        call.enqueue(new Callback<Void>() {
+            @Override
+            public void onResponse(Call<Void> call, Response<Void> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to remove from favourites. Code: " + response.code());
+                } else {
+                    removeFavSuccess.postValue(true);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Void> call, Throwable t) {
+                errorMessage.postValue(t.getMessage());
+            }
+        });
+    }
+
+    public void fetchIsLiked(int solutionId) {
+        Call<Boolean> call = ClientUtils.getUserService(context).isLiked(solutionId);
+        call.enqueue(new Callback<Boolean>() {
+            @Override
+            public void onResponse(Call<Boolean> call, Response<Boolean> response) {
+                if (!response.isSuccessful()) {
+                    errorMessage.postValue("Failed to get status. Code: " + response.code());
+                } else {
+                    isLiked.postValue(response.body());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<Boolean> call, Throwable t) {
                 errorMessage.postValue(t.getMessage());
             }
         });
