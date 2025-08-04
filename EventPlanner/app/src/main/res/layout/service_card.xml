@@ -10,10 +10,10 @@
     app:cardElevation="0dp"
     app:strokeWidth="0dp"
     android:clickable="true"
-    android:focusable="true"
-    app:rippleColor="?attr/colorControlHighlight">
+    android:focusable="true">
 
     <LinearLayout
+        android:id="@+id/serviceCard"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,7 +30,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop"
-                android:contentDescription="@string/description"
                 android:src="@drawable/no_image" />
 
             <LinearLayout

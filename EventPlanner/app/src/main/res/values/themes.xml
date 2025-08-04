@@ -5,5 +5,7 @@
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
 
-    <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner" />
+    <style name="Theme.EventPlanner" parent="Base.Theme.EventPlanner">
+        <item name="android:statusBarColor">@color/primary</item>
+    </style>
 </resources>

@@ -1,27 +1,25 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="250dp"
-    android:layout_height="250dp"
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="16dp"
-    android:layout_marginEnd="8dp"
-    android:layout_marginBottom="16dp"
-    card_view:cardCornerRadius="16dp"
-    card_view:cardElevation="4dp"
-    tools:ignore="TextSizeCheck">
+    android:layout_width="330dp"
+    android:layout_height="330dp"
+    android:layout_marginEnd="4dp"
+    android:layout_marginStart="4dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+    card_view:cardElevation="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:padding="8dp">
+        android:padding="8dp"
+        android:background="@android:color/white">
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/carousel_item_image"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="200dp"
             android:contentDescription="@string/product_service_image_description"
             android:scaleType="centerCrop"
             android:src="@drawable/product_service_placeholder"

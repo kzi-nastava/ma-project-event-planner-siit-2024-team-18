@@ -1,0 +1,187 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#F5F5F5"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/gradient_background"
+        android:padding="20dp"
+        android:elevation="10dp"
+        android:layout_margin="8dp"
+        android:clipToPadding="false"
+        android:layout_gravity="center">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:paddingBottom="10dp">
+
+            <ImageView
+                android:id="@+id/logoImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/logo"
+                android:contentDescription="@string/logo" />
+
+            <TextView
+                android:id="@+id/reservationTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/service_reservation"
+                android:textColor="#EBEBEB"
+                android:textSize="22sp"
+                android:layout_marginStart="10dp"
+                android:fontFamily="@font/merriweather_bold" />
+
+            <ImageButton
+                android:id="@+id/closeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="@string/close"
+                android:src="@drawable/ic_close" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/select_event"
+            android:textColor="#EBEBEB"
+            android:layout_marginBottom="8dp" />
+
+        <Spinner
+            android:id="@+id/eventSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:background="@drawable/general_border"
+            android:spinnerMode="dropdown"
+            android:textAlignment="center" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="16dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/pick_a_date"
+                android:textColor="#EBEBEB"
+                android:layout_marginBottom="8dp" />
+
+            <Button
+                android:id="@+id/selectDateButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/select_date"
+                android:backgroundTint="#A29BFE"
+                android:textColor="#EBEBEB"
+                android:drawableLeft="@drawable/date"
+                android:drawableTint="#EBEBEB"
+                android:gravity="center_vertical|start"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/select_time"
+                android:textColor="#EBEBEB"
+                android:layout_marginTop="16dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:layout_marginTop="8dp">
+
+                <Button
+                    android:id="@+id/selectFromTimeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/from_time"
+                    android:backgroundTint="#A29BFE"
+                    android:textColor="#EBEBEB"
+                    android:drawableLeft="@drawable/ic_clock"
+                    android:drawableTint="#EBEBEB"
+                    android:gravity="center_vertical|start"/>
+
+                <Button
+                    android:id="@+id/selectToTimeButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/to_time"
+                    android:backgroundTint="#A29BFE"
+                    android:textColor="#EBEBEB"
+                    android:drawableLeft="@drawable/ic_clock"
+                    android:gravity="center_vertical|start"/>
+            </LinearLayout>
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/bookServiceButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#A29BFE"
+            android:text="@string/book_a_service"
+            android:textColor="#EBEBEB"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/chatLink"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/chat_with_service_provider"
+            android:textColor="#A29BFE"
+            android:layout_marginTop="16dp"
+            android:layout_marginStart="75dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/currentReservationsTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_reservations"
+            android:textColor="#EBEBEB"
+            android:textSize="22sp"
+            android:layout_marginTop="24dp" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/reservationRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:id="@+id/noReservationsMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/there_are_no_reservations_currently"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/lightText" />
+
+        <TextView
+            android:id="@+id/loadingReservationsMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/loading_reservations"
+            android:textSize="16sp"
+            android:gravity="center"
+            android:visibility="gone"
+            android:textColor="@color/lightText" />
+
+    </LinearLayout>
+</LinearLayout>

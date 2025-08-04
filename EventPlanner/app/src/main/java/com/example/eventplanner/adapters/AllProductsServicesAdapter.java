@@ -13,62 +13,73 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.eventplanner.activities.ProductServiceDetailsActivity;
+import com.bumptech.glide.Glide;
+import com.example.eventplanner.activities.details.ProductDetailsActivity;
 import com.example.eventplanner.R;
-import com.example.eventplanner.models.ProductService;
+import com.example.eventplanner.activities.details.ServiceDetailsActivity;
+import com.example.eventplanner.models.SolutionCard;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class AllProductsServicesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> implements Filterable {
     private final Context context;
-    private final List<ProductService> productServiceList;
-    private List<ProductService> productServiceListFiltered;
+    private List<SolutionCard> solutionCardList;
+    private List<SolutionCard> solutionCardListFiltered;
 
-    public AllProductsServicesAdapter(Context context, List<ProductService> productServiceList) {
+    public AllProductsServicesAdapter(Context context, List<SolutionCard> solutionCardList) {
         this.context = context;
-        this.productServiceList = new ArrayList<>(productServiceList);
-        this.productServiceListFiltered = new ArrayList<>(productServiceList);
+        this.solutionCardList = new ArrayList<>(solutionCardList);
+        this.solutionCardListFiltered = new ArrayList<>(solutionCardList);
     }
 
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.item_product_service, parent, false);
-        return new ProductServiceViewHolder(view);
+        return new SolutionCardViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        ProductService productService = productServiceListFiltered.get(position);
-        ProductServiceViewHolder productServiceHolder = (ProductServiceViewHolder) holder;
-        productServiceHolder.productServiceTitle.setText(productService.getTitle());
-        productServiceHolder.productServiceDescription.setText(productService.getDescription());
-        productServiceHolder.productServiceImage.setImageResource(productService.getImageResourceId());
+        SolutionCard solutionCard = solutionCardListFiltered.get(position);
+        SolutionCardViewHolder solutionCardHolder = (SolutionCardViewHolder) holder;
 
-        productServiceHolder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, ProductServiceDetailsActivity.class);
-            intent.putExtra("productServiceTitle", productService.getTitle());
-            intent.putExtra("productServiceDescription", productService.getDescription());
-            intent.putExtra("productServiceImage", productService.getImageResourceId());
+        solutionCardHolder.solutionCardTitle.setText(solutionCard.getName());
+        solutionCardHolder.solutionCardDescription.setText(solutionCard.getDescription());
+
+        Glide.with(context)
+                .load(solutionCard.getCardImage())
+                .into(solutionCardHolder.solutionCardImage);
+
+        solutionCardHolder.itemView.setOnClickListener(v -> {
+            Intent intent;
+
+            if ("PRODUCT".equals(solutionCard.getSolutionType())) {
+                intent = new Intent(context, ProductDetailsActivity.class);
+            } else {
+                intent = new Intent(context, ServiceDetailsActivity.class);
+            }
+
+            intent.putExtra("solutionId", solutionCard.getId());
             context.startActivity(intent);
         });
     }
 
     @Override
     public int getItemCount() {
-        return productServiceListFiltered.size();
+        return solutionCardListFiltered.size();
     }
 
-    public static class ProductServiceViewHolder extends RecyclerView.ViewHolder {
-        TextView productServiceTitle, productServiceDescription;
-        ImageView productServiceImage;
+    public static class SolutionCardViewHolder extends RecyclerView.ViewHolder {
+        TextView solutionCardTitle, solutionCardDescription;
+        ImageView solutionCardImage;
 
-        public ProductServiceViewHolder(@NonNull View itemView) {
+        public SolutionCardViewHolder(@NonNull View itemView) {
             super(itemView);
-            productServiceTitle = itemView.findViewById(R.id.product_service_title);
-            productServiceDescription = itemView.findViewById(R.id.product_service_description);
-            productServiceImage = itemView.findViewById(R.id.product_service_image);
+            solutionCardTitle = itemView.findViewById(R.id.product_service_title);
+            solutionCardDescription = itemView.findViewById(R.id.product_service_description);
+            solutionCardImage = itemView.findViewById(R.id.product_service_image);
         }
     }
 
@@ -77,14 +88,14 @@ public class AllProductsServicesAdapter extends RecyclerView.Adapter<RecyclerVie
         return new Filter() {
             @Override
             protected FilterResults performFiltering(CharSequence constraint) {
-                List<ProductService> filteredList = new ArrayList<>();
+                List<SolutionCard> filteredList = new ArrayList<>();
                 if (constraint == null || constraint.length() == 0) {
-                    filteredList.addAll(productServiceList);
+                    filteredList.addAll(solutionCardList);
                 } else {
                     String filterPattern = constraint.toString().toLowerCase().trim();
-                    for (ProductService productService : productServiceList) {
-                        if (productService.getTitle().toLowerCase().contains(filterPattern)) {
-                            filteredList.add(productService);
+                    for (SolutionCard solutionCard : solutionCardList) {
+                        if (solutionCard.getName().toLowerCase().contains(filterPattern)) {
+                            filteredList.add(solutionCard);
                         }
                     }
                 }
@@ -95,17 +106,17 @@ public class AllProductsServicesAdapter extends RecyclerView.Adapter<RecyclerVie
 
             @Override
             protected void publishResults(CharSequence constraint, FilterResults results) {
-                productServiceListFiltered.clear();
-                productServiceListFiltered.addAll((List) results.values);
+                solutionCardListFiltered.clear();
+                solutionCardListFiltered.addAll((List) results.values);
                 notifyDataSetChanged();
             }
         };
     }
 
-    public void updateProductServiceList(List<ProductService> newProductServiceList) {
-        productServiceList.clear();
-        productServiceList.addAll(newProductServiceList);
-        productServiceListFiltered = new ArrayList<>(productServiceList);
+    public void updateSolutionCardList(List<SolutionCard> newSolutionCardList) {
+        solutionCardList.clear();
+        solutionCardList.addAll(newSolutionCardList);
+        solutionCardListFiltered = new ArrayList<>(solutionCardList);
         notifyDataSetChanged();
     }
 }

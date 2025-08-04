@@ -122,19 +122,26 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <ListView
-        android:id="@+id/listViewServices"
+    <LinearLayout
+        android:id="@+id/listViewServicesContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_margin="16dp"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="16dp"
+        android:orientation="vertical"
+        android:padding="8dp"
+        android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/filtersFragmentContainer"
         app:layout_constraintBottom_toTopOf="@id/paginationButtonsLayout"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
+        <FrameLayout
+            android:id="@+id/listViewServices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp" />
+    </LinearLayout>
+
+    <include
         android:id="@+id/paginationButtonsLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -142,26 +149,6 @@
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-        <ImageView
-            android:id="@+id/btnPreviousPage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_back_arrow"
-            android:padding="4dp" />
-
-        <TextView
-            android:id="@+id/tvCurrentPage"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="1"
-            android:paddingHorizontal="16dp" />
-
-        <ImageView
-            android:id="@+id/btnNextPage"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/right_arrow"
-            android:padding="4dp" />
-    </LinearLayout>
+        app:layout_constraintStart_toStartOf="parent"
+        layout="@layout/pagination_buttons"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

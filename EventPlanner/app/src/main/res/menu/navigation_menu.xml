@@ -27,9 +27,29 @@
                     android:title="@string/products"
                     android:icon="@drawable/ic_box" />
 
+                <item android:id="@+id/nav_categories"
+                    android:title="@string/categories"
+                    android:icon="@drawable/ic_category" />
+
+                <item android:id="@+id/nav_event_types"
+                    android:title="@string/event_types"
+                    android:icon="@drawable/ic_event" />
+
+                <item android:id="@+id/nav_pricelist"
+                    android:title="Pricelist"
+                    android:icon="@drawable/ic_pricelist" />
+
                 <item android:id="@+id/nav_profile"
                     android:title="@string/profile"
                     android:icon="@drawable/ic_user" />
+
+                <item android:id="@+id/nav_reports"
+                    android:title="@string/report_requests"
+                    android:icon="@drawable/ic_report_request" />
+
+                <item android:id="@+id/nav_comments"
+                    android:title="@string/comment_requests"
+                    android:icon="@drawable/ic_comment_request" />
 
                 <item android:id="@+id/nav_sign_out"
                     android:title="@string/sign_out"

@@ -1,35 +1,42 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/swipe_refresh_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <FrameLayout
-            android:id="@+id/top_5_events_container"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/top_5_events_section" />
+            android:orientation="vertical">
 
-        <FrameLayout
-            android:id="@+id/all_events_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/all_events_section" />
+            <FrameLayout
+                android:id="@+id/top_5_events_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/top_5_events_section" />
 
-        <FrameLayout
-            android:id="@+id/top_5_products_services_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/top_5_products_services_section" />
+            <FrameLayout
+                android:id="@+id/all_events_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/all_events_section" />
 
-        <FrameLayout
-            android:id="@+id/all_products_services_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:contentDescription="@string/all_products_services_section" />
+            <FrameLayout
+                android:id="@+id/top_5_products_services_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/top_5_products_services_section" />
 
-    </LinearLayout>
-</ScrollView>
+            <FrameLayout
+                android:id="@+id/all_products_services_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/all_products_services_section" />
+
+        </LinearLayout>
+    </ScrollView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

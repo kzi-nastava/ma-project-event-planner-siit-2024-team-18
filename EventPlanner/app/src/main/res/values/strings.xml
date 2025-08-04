@@ -6,6 +6,7 @@
     <string name="homeScreen_name">Home Screen</string>
     <string name="sign_in">Sign in</string>
     <string name="sign_up">Sign up</string>
+    <string name="fast_registration">Fast Registration</string>
     <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="remember_me">Remember me</string>
@@ -96,6 +97,7 @@
     <string name="product_service_image_description">Product/Service Image</string>
     <string name="top_5_events_label">Top 5 Events</string>
     <string name="top_5_products_services_label">Top 5 Products/Services</string>
+    <string name="there_are_no_solutions_currently">There are no solutions currently.</string>
     <string name="home">Home</string>
     <string name="chat">Chat</string>
     <string name="notifications">Notifications</string>
@@ -109,19 +111,130 @@
     <string name="close_drawer">Close Navigation Drawer</string>
     <string name="johndoe_gmail_com">johndoe@gmail.com</string>
     <string name="john_doe">John Doe</string>
+    <string name="there_are_no_events_currently">There are no events currently.</string>
+    <string name="loading_events">Loading Events...</string>
+    <string name="search_products_services">Search Products/Services</string>
+    <string name="there_are_no_products_services_currently">There are no Products/Services currently.</string>
+    <string name="loading_products_services">Loading Products/Services...</string>
+    <string name="current_reservations">Current Reservations</string>
+    <string name="there_are_no_reservations_currently">There are no reservations currently.</string>
+    <string name="loading_reservations">Loading Reservations...</string>
+    <string name="chat_with_service_provider">Chat with Service Provider</string>
+    <string name="book_a_service">Book a Service</string>
+    <string name="to_time">To Time</string>
+    <string name="from_time">From Time</string>
+    <string name="select_time">Select Time</string>
+    <string name="select_date">Select Date</string>
+    <string name="pick_a_date">Pick a Date</string>
+    <string name="select_event">Select Event</string>
+    <string name="close">Close</string>
+    <string name="logo">Logo</string>
+    <string name="service_reservation">Service Reservation</string>
+    <string name="enter_email">Enter Email</string>
+    <string name="add_email">Add Email</string>
+    <string name="send_invites">Send Invites</string>
+    <string name="invitations">Invitations</string>
+    <string name="delete">Delete</string>
+    <string name="send_invitations">Send Invitations</string>
+    <string name="event_type_name">Event Type Name</string>
+    <string name="edit_profile">Edit Profile</string>
+    <string name="deactivate_profile">Deactivate Profile</string>
+    <string name="block_user">Block User</string>
+    <string name="unblock_user">Unblock User</string>
+    <string name="report_user">Report User</string>
+    <string name="content_unavailable">Content Unavailable</string>
+    <string name="event_unavailable">This event is unavailable because you have blocked the organizer. If you believe this is an error, please contact support.</string>
+    <string name="solution_unavailable">This product/service is unavailable because you have blocked the provider. If you believe this is an error, please contact support.</string>
+    <string name="go_back">Go Back</string>
+    <string name="favourite_solutions">Favourite Solutions</string>
+    <string name="favourite_events">Favourite Events</string>
+    <string name="calendar">Calendar</string>
+    <string name="role">Role:</string>
+    <string name="e_mail">E-mail:</string>
+    <string name="address_profile">Address:</string>
+    <string name="phone_number_profile">Phone Number:</string>
+    <string name="company_name_profile">Company Name:</string>
+    <string name="categories_profile">Categories:</string>
+    <string name="event_types_profile">Event Types:</string>
+    <string name="description_profile">Description:</string>
     <string-array name="sort_options">
-        <item>Select sort</item>
         <item>Ascending</item>
         <item>Descending</item>
-        <item>Sort by Date</item>
-        <item>Sort by Name</item>
-        <!-- Add more sorting options -->
     </string-array>
     <string-array name="filter_options">
-        <item>Select filter</item>
-        <item>All</item>
-        <item>Upcoming</item>
-        <item>Past</item>
-        <!-- Add more filtering options -->
+        <item>Title</item>
+        <item>Description</item>
+        <item>City</item>
+        <item>Country</item>
+        <item>Max participants</item>
+        <item>Budget</item>
+        <item>Event Type</item>
+        <item>Creator Name</item>
     </string-array>
+    <string-array name="filter_values">
+        <item>name</item>
+        <item>description</item>
+        <item>city</item>
+        <item>country</item>
+        <item>maxParticipants</item>
+        <item>budget</item>
+        <item>eventType</item>
+        <item>organizerFirstName</item>
+    </string-array>
+    <string-array name="filter_options_products_services">
+        <item>Title</item>
+        <item>Description</item>
+        <item>City</item>
+        <item>Country</item>
+        <item>Price</item>
+        <item>Discount</item>
+        <item>Category</item>
+        <item>Creator Name</item>
+    </string-array>
+    <string-array name="filter_values_products_services">
+        <item>name</item>
+        <item>description</item>
+        <item>city</item>
+        <item>country</item>
+        <item>price</item>
+        <item>discount</item>
+        <item>categoryName</item>
+        <item>providerFirstName</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="there_are_no_favourite_events">There are no favourite events.</string>
+    <string name="there_are_no_favourite_solutions">There are no favourite solutions.</string>
+    <string name="edit">Edit</string>
+    <string name="old_password">Old Password</string>
+    <string name="new_password">New Password</string>
+    <string name="confirm_new_password">Confirm New Password</string>
+    <string name="report_requests">Report Requests</string>
+    <string name="comment_requests">Comment Requests</string>
+    <string name="remove">Remove</string>
+    <string name="approve">Approve</string>
+    <string name="there_are_no_pending_reports_currently">There are no pending reports currently.</string>
+    <string name="loading_pending_reports">Loading pending reports...</string>
+    <string name="there_are_no_pending_comments_currently">There are no pending comments currently.</string>
+    <string name="loading_pending_comments">Loading pending comments...</string>
+    <string name="submit_report">Submit Report</string>
+    <string name="type_your_reason_for_reporting">Type your reason for reporting</string>
+    <string name="x">×</string>
+    <string name="ok">OK</string>
+    <string name="your_account_has_been_temporarily_suspended_due_to_unprofessional_behavior">Your account has been temporarily suspended due to unprofessional behavior.</string>
+    <string name="account_suspended">Account Suspended</string>
+    <string name="please_review_our_community_guidelines_to_avoid_future_suspensions_for_further_assistance_contact_support">Please review our Community Guidelines to avoid future suspensions. For further assistance, contact support</string>
+    <string name="here">here</string>
+    <string name="search_products">Search Products</string>
+    <string name="product_name">Product Name</string>
+    <string name="product_description">Product Description</string>
+    <string name="product">Product</string>
+    <string name="select_or_type_category">Select or type category</string>
+    <string name="location">Location</string>
+    <string name="product_price">Product Price</string>
+    <string name="product_discount">Product Discount</string>
+    <string name="visible">Visible</string>
+    <string name="event_name">Event Name</string>
+    <string name="create_event">Create Event</string>
+    <string name="agenda">Agenda</string>
 </resources>
